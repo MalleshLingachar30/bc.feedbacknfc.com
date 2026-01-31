@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -94,12 +93,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: white;
-            border-radius: 8px;
-            padding: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 50px;
+            height: 50px;
         }
 
         .qr-logo img {
@@ -301,9 +296,9 @@
             <p class="contact-position" id="contactPosition"></p>
             
             <div class="qr-container">
-                <div id="qrCode"></div>
+                <img id="qrCode" src="" alt="QR Code" style="width: 280px; height: 280px; border-radius: 8px;">
                 <div class="qr-logo">
-                    <img src="logo.png" alt="Logo">
+                    <img src="public/logos/lulu.png" alt="Logo">
                 </div>
             </div>
 
@@ -411,87 +406,63 @@
         }
 
         function generateQRCode(url) {
-            const qrContainer = document.getElementById('qrCode');
+            const qrImg = document.getElementById('qrCode');
             
-            QRCode.toCanvas(url, {
-                width: 280,
-                margin: 2,
-                color: {
-                    dark: '#000000',
-                    light: '#F5F3EF'
-                },
-                errorCorrectionLevel: 'H'
-            }, function(error, canvas) {
-                if (error) {
-                    console.error(error);
-                    return;
-                }
-                
-                qrContainer.appendChild(canvas);
-                
+            // Use QR Server API - green QR code
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(url)}&color=22C55E&bgcolor=F5F3EF&margin=10&ecc=H`;
+            
+            qrImg.onload = function() {
                 // Show QR card
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('qrCard').style.display = 'block';
-            });
+            };
+            
+            qrImg.onerror = function() {
+                // Fallback to black QR if green fails
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(url)}&margin=10&ecc=H`;
+            };
+            
+            qrImg.src = qrApiUrl;
         }
 
         function downloadQR() {
-            const canvas = document.querySelector('#qrCode canvas');
-            if (!canvas) return;
+            const qrImg = document.getElementById('qrCode');
+            if (!qrImg.src) return;
             
             // Create a new canvas with logo
             const downloadCanvas = document.createElement('canvas');
             const ctx = downloadCanvas.getContext('2d');
             const size = 400;
-            const logoSize = 80;
+            const logoSize = 60;
             
             downloadCanvas.width = size;
             downloadCanvas.height = size;
             
-            // Draw background
-            ctx.fillStyle = '#F5F3EF';
-            ctx.fillRect(0, 0, size, size);
-            
             // Draw QR code
-            ctx.drawImage(canvas, 0, 0, size, size);
-            
-            // Draw white background for logo
-            const logoX = (size - logoSize) / 2;
-            const logoY = (size - logoSize) / 2;
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.roundRect(logoX - 5, logoY - 5, logoSize + 10, logoSize + 10, 8);
-            ctx.fill();
-            
-            // Load and draw logo
-            const logo = new Image();
-            logo.crossOrigin = 'anonymous';
-            logo.onload = function() {
-                ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+            const tempImg = new Image();
+            tempImg.crossOrigin = 'anonymous';
+            tempImg.onload = function() {
+                ctx.drawImage(tempImg, 0, 0, size, size);
                 
-                // Download
-                const link = document.createElement('a');
-                link.download = `qr-${currentContact.nameEn.toLowerCase().replace(/\s+/g, '-')}.png`;
-                link.href = downloadCanvas.toDataURL('image/png');
-                link.click();
+                // Load and draw logo (no white background)
+                const logo = new Image();
+                logo.crossOrigin = 'anonymous';
+                logo.onload = function() {
+                    const logoX = (size - logoSize) / 2;
+                    const logoY = (size - logoSize) / 2;
+                    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                    
+                    // Download
+                    const link = document.createElement('a');
+                    link.download = `qr-${currentContact.nameEn.toLowerCase().replace(/\s+/g, '-')}.png`;
+                    link.href = downloadCanvas.toDataURL('image/png');
+                    link.click();
+                };
+                logo.src = 'public/logos/lulu.png';
             };
-            logo.src = 'logo.png';
+            tempImg.src = qrImg.src;
         }
 
-        // Polyfill for roundRect
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
-                if (width < 2 * radius) radius = width / 2;
-                if (height < 2 * radius) radius = height / 2;
-                this.moveTo(x + radius, y);
-                this.arcTo(x + width, y, x + width, y + height, radius);
-                this.arcTo(x + width, y + height, x, y + height, radius);
-                this.arcTo(x, y + height, x, y, radius);
-                this.arcTo(x, y, x + width, y, radius);
-                this.closePath();
-                return this;
-            };
-        }
     </script>
 </body>
 </html>

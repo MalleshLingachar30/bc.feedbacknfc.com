@@ -171,10 +171,16 @@
     </div>
 
     <script>
+        // Hardcoded credentials for localhost testing
+        const VALID_CREDENTIALS = {
+            email: 'admin@lulu.com',
+            password: 'admin123'
+        };
+
         document.getElementById('signinForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
             const btn = this.querySelector('.signin-btn');
@@ -187,24 +193,28 @@
             btn.textContent = 'Signing in...';
             btn.disabled = true;
             
-            // Simulate authentication (replace with actual auth logic)
+            // Simulate authentication
             setTimeout(() => {
-                // For demo purposes - you can replace this with actual authentication
-                // Example: redirect to dashboard on success
-                if (email && password) {
+                // Check credentials
+                if (email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password) {
                     btn.textContent = 'Success!';
                     btn.style.background = '#16A34A';
+                    
+                    // Store session
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userEmail', email);
                     
                     // Redirect to admin dashboard
                     setTimeout(() => {
                         window.location.href = 'admin.html';
                     }, 1000);
                 } else {
+                    errorMessage.textContent = 'Invalid credentials. Use: admin@lulu.com / admin123';
                     errorMessage.classList.add('show');
                     btn.textContent = originalText;
                     btn.disabled = false;
                 }
-            }, 1500);
+            }, 1000);
         });
     </script>
 </body>
