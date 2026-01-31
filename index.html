@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Business Card | Your Business Card, Reimagined</title>
+    <title>FeedbackNFC | TapCard - Your Business Card, Reimagined</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -59,13 +59,33 @@
             align-items: center;
         }
 
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 56px;
+            width: auto;
+        }
+
+        .logo-separator {
+            color: var(--text-secondary);
+            font-weight: 300;
+            font-size: 1.75rem;
+            opacity: 0.3;
+        }
+
         .logo {
             font-size: 1.5rem;
-            font-weight: 800;
+            font-weight: 600;
             background: var(--gradient-1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            opacity: 0.7;
         }
 
         .nav-links {
@@ -844,7 +864,11 @@
     <!-- Header -->
     <header>
         <nav>
-            <a href="#" class="logo">TapCard</a>
+            <a href="#" class="logo-container">
+                <img src="logo.png" alt="FeedbackNFC" class="logo-img">
+                <span class="logo-separator">|</span>
+                <span class="logo">TapCard</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="#features">Features</a></li>
                 <li><a href="#how-it-works">How It Works</a></li>
@@ -1042,7 +1066,11 @@
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
-                <a href="#" class="logo">TapCard</a>
+                <a href="#" class="logo-container">
+                    <img src="logo.png" alt="FeedbackNFC" class="logo-img">
+                    <span class="logo-separator">|</span>
+                    <span class="logo">TapCard</span>
+                </a>
                 <p>The future of networking is here. Share your story with a single tap.</p>
                 <div class="social-links">
                     <a href="#" aria-label="Twitter">
@@ -1091,7 +1119,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 TapCard. All rights reserved. Made with ❤️ for better networking.</p>
+            <p>&copy; 2026 FeedbackNFC | TapCard. All rights reserved. Made with ❤️ for better networking.</p>
         </div>
     </footer>
 
