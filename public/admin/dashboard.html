@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | FeedbackNFC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F0F1A;
+            min-height: 100vh;
+            color: #FFFFFF;
+        }
+
+        /* Header */
+        .admin-header {
+            background: #1A1A2E;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-email {
+            color: #A0A0B2;
+            font-size: 0.9rem;
+        }
+
+        .signout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            color: #A0A0B2;
+            font-family: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .signout-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            color: #FFFFFF;
+        }
+
+        .signout-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            color: #A0A0B2;
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .add-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .add-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #1A1A2E;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #A0A0B2;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Companies Table */
+        .companies-table {
+            background: #1A1A2E;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: #A0A0B2;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.05);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .company-name {
+            font-weight: 600;
+        }
+
+        .company-logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .company-logo-placeholder {
+            font-size: 1.25rem;
+            color: #8B5CF6;
+        }
+
+        .contact-count {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ADE80;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #A0A0B2;
+        }
+
+        .action-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #FFFFFF;
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: rgba(220, 38, 38, 0.3);
+            color: #F87171;
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #A0A0B2;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #1A1A2E;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group label .required {
+            color: #F87171;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #6B7280;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        .generate-password {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.5rem 0.75rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: none;
+            border-radius: 6px;
+            color: #A0A0B2;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .generate-password:hover {
+            background: rgba(139, 92, 246, 0.3);
+            color: #FFFFFF;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid rgba(139, 92, 246, 0.1);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            padding: 0.875rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 10px;
+            color: #A0A0B2;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: #FFFFFF;
+        }
+
+        .btn-submit {
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Delete Modal */
+        .confirm-modal {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-modal .modal-body {
+            padding: 2rem;
+        }
+
+        .confirm-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(220, 38, 38, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #F87171;
+        }
+
+        .confirm-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .confirm-text {
+            color: #A0A0B2;
+            margin-bottom: 1.5rem;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-delete {
+            padding: 0.875rem 1.5rem;
+            background: #DC2626;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background: #B91C1C;
+        }
+
+        /* Credentials Modal */
+        .credentials-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .credentials-title {
+            color: #4ADE80;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .credential-label {
+            color: #A0A0B2;
+            font-size: 0.85rem;
+        }
+
+        .credential-value {
+            font-family: 'SF Mono', monospace;
+            color: #FFFFFF;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: none;
+            border-radius: 6px;
+            color: #A0A0B2;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(139, 92, 246, 0.3);
+            color: #FFFFFF;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            color: #A0A0B2;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: #8B5CF6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .companies-table {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 700px;
+            }
+
+            .modal {
+                margin: 1rem;
+            }
+
+            .header-right {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-left">
+            <span class="logo">FeedbackNFC</span>
+            <span class="admin-badge">Super Admin</span>
+        </div>
+        <div class="header-right">
+            <span class="user-email" id="userEmail">ml@feedbacknfc.com</span>
+            <button class="signout-btn" onclick="signOut()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16 17 21 12 16 7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Sign Out
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" style="display: none;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Company Management</h1>
+                    <p class="page-subtitle">Create and manage company accounts</p>
+                </div>
+                <button class="add-btn" onclick="openAddModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Company
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCompanies">0</div>
+                    <div class="stat-label">Total Companies</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalContacts">0</div>
+                    <div class="stat-label">Total Contacts</div>
+                </div>
+            </div>
+
+            <!-- Companies Table -->
+            <div class="companies-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Email</th>
+                            <th>Contacts</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTableBody">
+                    </tbody>
+                </table>
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"/>
+                        <path d="M3 21h18"/>
+                        <path d="M9 7h6"/>
+                        <path d="M9 11h6"/>
+                        <path d="M9 15h4"/>
+                    </svg>
+                    <p>No companies yet. Click "Add Company" to get started.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Company Modal -->
+    <div class="modal-overlay" id="companyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Company</h2>
+            </div>
+            <form id="companyForm">
+                <div class="modal-body">
+                    <input type="hidden" id="companyId">
+                    
+                    <div class="form-group">
+                        <label>Company Name <span class="required">*</span></label>
+                        <input type="text" id="companyName" placeholder="Lulu Group International" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Admin Email <span class="required">*</span></label>
+                        <input type="email" id="companyEmail" placeholder="admin@company.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password <span class="required">*</span></label>
+                        <div class="password-group">
+                            <input type="text" id="companyPassword" placeholder="Enter password" required>
+                            <button type="button" class="generate-password" onclick="generatePassword()">Generate</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Logo URL</label>
+                        <input type="text" id="companyLogo" placeholder="https://example.com/logo.png">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">Create Company</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal confirm-modal">
+            <div class="modal-body">
+                <div class="confirm-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </div>
+                <h3 class="confirm-title">Delete Company?</h3>
+                <p class="confirm-text">This will also delete all contacts associated with this company. This action cannot be undone.</p>
+                <div class="confirm-buttons">
+                    <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="button" class="btn-delete" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credentials Modal -->
+    <div class="modal-overlay" id="credentialsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Company Created Successfully</h2>
+            </div>
+            <div class="modal-body">
+                <div class="credentials-box">
+                    <div class="credentials-title">Login Credentials</div>
+                    <div class="credential-item">
+                        <span class="credential-label">Email:</span>
+                        <span class="credential-value" id="credEmail"></span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Password:</span>
+                        <span class="credential-value" id="credPassword"></span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="credential-label">Login URL:</span>
+                        <span class="credential-value" id="credUrl"></span>
+                    </div>
+                </div>
+                <button class="copy-btn" onclick="copyCredentials()" style="width: 100%;">Copy Credentials</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-submit" onclick="closeCredentialsModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let companies = [];
+        let deleteCompanyId = null;
+        const sessionId = localStorage.getItem('sessionId');
+
+        // Check authentication
+        if (!sessionId) {
+            window.location.href = '/admin/login';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Verify session
+                const sessionRes = await fetch('/api/auth/session', {
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!sessionRes.ok) {
+                    throw new Error('Session expired');
+                }
+                
+                const session = await sessionRes.json();
+                
+                if (session.role !== 'super_admin') {
+                    throw new Error('Unauthorized');
+                }
+                
+                document.getElementById('userEmail').textContent = session.email;
+                
+                // Load companies
+                await loadCompanies();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                
+            } catch (err) {
+                console.error(err);
+                localStorage.removeItem('sessionId');
+                window.location.href = '/admin/login';
+            }
+            
+            // Form submission
+            document.getElementById('companyForm').addEventListener('submit', saveCompany);
+        });
+
+        async function loadCompanies() {
+            const res = await fetch('/api/companies', {
+                headers: { 'X-Session-ID': sessionId }
+            });
+            
+            companies = await res.json();
+            renderCompanies();
+        }
+
+        function renderCompanies() {
+            const tbody = document.getElementById('companiesTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Update stats
+            document.getElementById('totalCompanies').textContent = companies.length;
+            const totalContacts = companies.reduce((sum, c) => sum + (c.contactCount || 0), 0);
+            document.getElementById('totalContacts').textContent = totalContacts;
+            
+            if (companies.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            tbody.innerHTML = companies.map(company => `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="company-logo">
+                                ${company.logo 
+                                    ? `<img src="${company.logo}" alt="${company.name}">`
+                                    : `<span class="company-logo-placeholder">${company.name.charAt(0)}</span>`
+                                }
+                            </div>
+                            <span class="company-name">${company.name}</span>
+                        </div>
+                    </td>
+                    <td>${company.email}</td>
+                    <td><span class="contact-count">${company.contactCount || 0} contacts</span></td>
+                    <td>${new Date(company.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn" onclick="editCompany('${company.id}')" title="Edit">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn delete" onclick="confirmDelete('${company.id}')" title="Delete">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Company';
+            document.getElementById('submitBtn').textContent = 'Create Company';
+            document.getElementById('companyForm').reset();
+            document.getElementById('companyId').value = '';
+            document.getElementById('companyModal').classList.add('active');
+        }
+
+        function editCompany(id) {
+            const company = companies.find(c => c.id === id);
+            if (!company) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit Company';
+            document.getElementById('submitBtn').textContent = 'Update Company';
+            document.getElementById('companyId').value = company.id;
+            document.getElementById('companyName').value = company.name;
+            document.getElementById('companyEmail').value = company.email;
+            document.getElementById('companyPassword').value = '';
+            document.getElementById('companyPassword').placeholder = 'Leave blank to keep current';
+            document.getElementById('companyPassword').required = false;
+            document.getElementById('companyLogo').value = company.logo || '';
+            
+            document.getElementById('companyModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('companyModal').classList.remove('active');
+            document.getElementById('companyPassword').required = true;
+            document.getElementById('companyPassword').placeholder = 'Enter password';
+        }
+
+        async function saveCompany(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('companyId').value;
+            const data = {
+                name: document.getElementById('companyName').value.trim(),
+                email: document.getElementById('companyEmail').value.trim(),
+                logo: document.getElementById('companyLogo').value.trim()
+            };
+            
+            const password = document.getElementById('companyPassword').value;
+            if (password) {
+                data.password = password;
+            }
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `/api/companies/${id}` : '/api/companies';
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-ID': sessionId
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to save');
+                }
+                
+                const result = await res.json();
+                
+                closeModal();
+                await loadCompanies();
+                
+                // Show credentials for new company
+                if (!id && password) {
+                    showCredentials(data.email, password);
+                }
+                
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = id ? 'Update Company' : 'Create Company';
+            }
+        }
+
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('companyPassword').value = password;
+        }
+
+        function showCredentials(email, password) {
+            document.getElementById('credEmail').textContent = email;
+            document.getElementById('credPassword').textContent = password;
+            document.getElementById('credUrl').textContent = `${window.location.origin}/company/login`;
+            document.getElementById('credentialsModal').classList.add('active');
+        }
+
+        function closeCredentialsModal() {
+            document.getElementById('credentialsModal').classList.remove('active');
+        }
+
+        function copyCredentials() {
+            const email = document.getElementById('credEmail').textContent;
+            const password = document.getElementById('credPassword').textContent;
+            const url = document.getElementById('credUrl').textContent;
+            
+            const text = `Company Login Credentials\n\nEmail: ${email}\nPassword: ${password}\nLogin URL: ${url}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy Credentials';
+                }, 2000);
+            });
+        }
+
+        function confirmDelete(id) {
+            deleteCompanyId = id;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            deleteCompanyId = null;
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+            if (!deleteCompanyId) return;
+            
+            try {
+                const res = await fetch(`/api/companies/${deleteCompanyId}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to delete');
+                }
+                
+                closeDeleteModal();
+                await loadCompanies();
+                
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        async function signOut() {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+            } catch (err) {}
+            
+            localStorage.removeItem('sessionId');
+            localStorage.removeItem('userRole');
+            window.location.href = '/admin/login';
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

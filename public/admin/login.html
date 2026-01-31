@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Login | FeedbackNFC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F0F1A;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: #1A1A2E;
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #A0A0B2;
+            font-size: 0.95rem;
+        }
+
+        /* Steps */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #6B7280;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        /* OTP Input */
+        .otp-container {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .resend-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .resend-link button {
+            background: none;
+            border: none;
+            color: #8B5CF6;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .resend-link button:hover {
+            text-decoration: underline;
+        }
+
+        .resend-link button:disabled {
+            color: #6B7280;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #A0A0B2;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #8B5CF6;
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            color: #F87171;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ADE80;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .email-display {
+            text-align: center;
+            color: #A0A0B2;
+            margin-bottom: 1rem;
+        }
+
+        .email-display strong {
+            color: #FFFFFF;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="admin-badge">Super Admin</div>
+            <h1>Admin Portal</h1>
+            <p>Sign in to manage companies</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <!-- Step 1: Email -->
+        <div class="step active" id="step1">
+            <form id="emailForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="ml@feedbacknfc.com" required>
+                </div>
+                <button type="submit" class="submit-btn" id="emailBtn">
+                    Send Verification Code
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: OTP -->
+        <div class="step" id="step2">
+            <div class="email-display">
+                Code sent to <strong id="emailDisplay"></strong>
+            </div>
+            <form id="otpForm">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" data-index="0">
+                    <input type="text" class="otp-input" maxlength="1" data-index="1">
+                    <input type="text" class="otp-input" maxlength="1" data-index="2">
+                    <input type="text" class="otp-input" maxlength="1" data-index="3">
+                    <input type="text" class="otp-input" maxlength="1" data-index="4">
+                    <input type="text" class="otp-input" maxlength="1" data-index="5">
+                </div>
+                <button type="submit" class="submit-btn" id="otpBtn">
+                    Verify & Sign In
+                </button>
+            </form>
+            <div class="resend-link">
+                <button type="button" id="resendBtn" disabled>Resend code in <span id="countdown">60</span>s</button>
+            </div>
+        </div>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        let userEmail = '';
+        let countdownInterval = null;
+
+        // Check if already logged in
+        const sessionId = localStorage.getItem('sessionId');
+        if (sessionId) {
+            fetch('/api/auth/session', {
+                headers: { 'X-Session-ID': sessionId }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.role === 'super_admin') {
+                    window.location.href = '/admin/dashboard';
+                }
+            })
+            .catch(() => {});
+        }
+
+        // Email form submission
+        document.getElementById('emailForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const btn = document.getElementById('emailBtn');
+            const errorEl = document.getElementById('errorMessage');
+            const successEl = document.getElementById('successMessage');
+            
+            errorEl.classList.remove('show');
+            successEl.classList.remove('show');
+            
+            btn.innerHTML = '<span class="spinner"></span> Sending...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/auth/request-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to send code');
+                }
+                
+                userEmail = email;
+                document.getElementById('emailDisplay').textContent = email;
+                
+                // Show debug code if returned (for testing)
+                if (data.code) {
+                    successEl.textContent = `Debug: Your code is ${data.code}`;
+                    successEl.classList.add('show');
+                }
+                
+                // Show step 2
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                
+                // Focus first OTP input
+                document.querySelector('.otp-input').focus();
+                
+                // Start countdown
+                startCountdown();
+                
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.add('show');
+            } finally {
+                btn.innerHTML = 'Send Verification Code';
+                btn.disabled = false;
+            }
+        });
+
+        // OTP input handling
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                const value = e.target.value;
+                
+                if (value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                
+                // Auto-submit when all filled
+                const code = [...otpInputs].map(i => i.value).join('');
+                if (code.length === 6) {
+                    document.getElementById('otpForm').dispatchEvent(new Event('submit'));
+                }
+            });
+            
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+            
+            // Handle paste
+            input.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text').slice(0, 6);
+                [...pasteData].forEach((char, i) => {
+                    if (otpInputs[i]) {
+                        otpInputs[i].value = char;
+                    }
+                });
+                if (pasteData.length === 6) {
+                    document.getElementById('otpForm').dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+        // OTP form submission
+        document.getElementById('otpForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const code = [...otpInputs].map(i => i.value).join('');
+            const btn = document.getElementById('otpBtn');
+            const errorEl = document.getElementById('errorMessage');
+            
+            if (code.length !== 6) {
+                errorEl.textContent = 'Please enter the 6-digit code';
+                errorEl.classList.add('show');
+                return;
+            }
+            
+            errorEl.classList.remove('show');
+            btn.innerHTML = '<span class="spinner"></span> Verifying...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/auth/verify-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail, code })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Invalid code');
+                }
+                
+                // Store session
+                localStorage.setItem('sessionId', data.sessionId);
+                localStorage.setItem('userRole', data.role);
+                
+                // Redirect to dashboard
+                window.location.href = '/admin/dashboard';
+                
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.add('show');
+                
+                // Clear OTP inputs
+                otpInputs.forEach(i => i.value = '');
+                otpInputs[0].focus();
+            } finally {
+                btn.innerHTML = 'Verify & Sign In';
+                btn.disabled = false;
+            }
+        });
+
+        // Countdown timer
+        function startCountdown() {
+            let seconds = 60;
+            const resendBtn = document.getElementById('resendBtn');
+            const countdownEl = document.getElementById('countdown');
+            
+            resendBtn.disabled = true;
+            
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            countdownInterval = setInterval(() => {
+                seconds--;
+                countdownEl.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Resend code';
+                }
+            }, 1000);
+        }
+
+        // Resend code
+        document.getElementById('resendBtn').addEventListener('click', async function() {
+            const btn = this;
+            const errorEl = document.getElementById('errorMessage');
+            const successEl = document.getElementById('successMessage');
+            
+            errorEl.classList.remove('show');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/auth/request-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Failed to send code');
+                }
+                
+                successEl.textContent = 'New code sent!';
+                successEl.classList.add('show');
+                
+                // Restart countdown
+                document.getElementById('countdown').textContent = '60';
+                btn.innerHTML = 'Resend code in <span id="countdown">60</span>s';
+                startCountdown();
+                
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'Resend code';
+            }
+        });
+    </script>
+</body>
+</html>

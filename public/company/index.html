@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting... | Company Admin</title>
+    <script>
+        // Check if logged in
+        const sessionId = localStorage.getItem('sessionId');
+        if (sessionId) {
+            fetch('/api/auth/session', {
+                headers: { 'X-Session-ID': sessionId }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.role === 'company_admin') {
+                    window.location.href = '/company/dashboard';
+                } else {
+                    window.location.href = '/company/login';
+                }
+            })
+            .catch(() => {
+                window.location.href = '/company/login';
+            });
+        } else {
+            window.location.href = '/company/login';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>

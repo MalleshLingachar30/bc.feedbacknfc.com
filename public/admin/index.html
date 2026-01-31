@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting... | FeedbackNFC Admin</title>
+    <script>
+        // Check if logged in
+        const sessionId = localStorage.getItem('sessionId');
+        if (sessionId) {
+            fetch('/api/auth/session', {
+                headers: { 'X-Session-ID': sessionId }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.role === 'super_admin') {
+                    window.location.href = '/admin/dashboard';
+                } else {
+                    window.location.href = '/admin/login';
+                }
+            })
+            .catch(() => {
+                window.location.href = '/admin/login';
+            });
+        } else {
+            window.location.href = '/admin/login';
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>

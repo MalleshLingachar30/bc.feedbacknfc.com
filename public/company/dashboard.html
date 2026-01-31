@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Business Cards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F3EF;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .admin-header {
+            background: #FFFFFF;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .company-logo {
+            height: 48px;
+            width: auto;
+        }
+
+        .header-separator {
+            color: #9CA3AF;
+            font-weight: 300;
+            font-size: 1.5rem;
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1A1A2E;
+        }
+
+        .signout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .signout-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .signout-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-count {
+            color: #6B7280;
+            font-size: 0.95rem;
+        }
+
+        .add-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: #22C55E;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .add-btn:hover {
+            background: #16A34A;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .add-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Table */
+        .contacts-table {
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #F9FAFB;
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: #6B7280;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            color: #1A1A2E;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: #F9FAFB;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            background: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6B7280;
+        }
+
+        .action-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .action-btn.delete:hover {
+            background: #FEF2F2;
+            border-color: #FECACA;
+            color: #DC2626;
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #FFFFFF;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1A1A2E;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group label .required {
+            color: #DC2626;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #1A1A2E;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #22C55E;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .form-group input[dir="rtl"] {
+            text-align: right;
+        }
+
+        .input-with-btn {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-with-btn input {
+            flex: 1;
+        }
+
+        .generate-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            color: #6B7280;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .generate-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .generate-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #E5E7EB;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-start;
+        }
+
+        .btn-cancel {
+            padding: 0.875rem 1.5rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .btn-submit {
+            padding: 0.875rem 1.5rem;
+            background: #22C55E;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background: #16A34A;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6B7280;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Delete Modal */
+        .confirm-modal {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-modal .modal-body {
+            padding: 2rem;
+        }
+
+        .confirm-icon {
+            width: 64px;
+            height: 64px;
+            background: #FEF2F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #DC2626;
+        }
+
+        .confirm-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+        }
+
+        .confirm-text {
+            color: #6B7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-delete {
+            padding: 0.875rem 1.5rem;
+            background: #DC2626;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background: #B91C1C;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            color: #6B7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: #22C55E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .contacts-table {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            .modal {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-left">
+            <img src="/logo.png" alt="Logo" class="company-logo" id="companyLogoImg">
+            <span class="header-separator">|</span>
+            <span class="header-title" id="companyNameHeader">Admin</span>
+        </div>
+        <button class="signout-btn" onclick="signOut()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sign Out
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" style="display: none;">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Business Cards</h1>
+                    <p class="contact-count"><span id="contactCount">0</span> contacts</p>
+                </div>
+                <button class="add-btn" onclick="openAddModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Contact
+                </button>
+            </div>
+
+            <div class="contacts-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsTableBody">
+                    </tbody>
+                </table>
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <p>No contacts yet. Click "Add Contact" to get started.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Contact</h2>
+            </div>
+            <form id="contactForm">
+                <div class="modal-body">
+                    <input type="hidden" id="contactId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name (English) <span class="required">*</span></label>
+                            <input type="text" id="nameEn" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Name (Arabic)</label>
+                            <input type="text" id="nameAr" placeholder="جون دو" dir="rtl">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Position (English) <span class="required">*</span></label>
+                            <input type="text" id="positionEn" placeholder="Marketing Manager" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Position (Arabic)</label>
+                            <input type="text" id="positionAr" placeholder="مدير التسويق" dir="rtl">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location <span class="required">*</span></label>
+                        <input type="text" id="location" placeholder="Company Address, City, Country" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone <span class="required">*</span></label>
+                        <div class="input-with-btn">
+                            <input type="tel" id="phone" placeholder="+966 549251252" required>
+                            <button type="button" class="generate-btn" onclick="viewQR()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"/>
+                                    <rect x="14" y="3" width="7" height="7"/>
+                                    <rect x="3" y="14" width="7" height="7"/>
+                                    <rect x="14" y="14" width="7" height="7"/>
+                                </svg>
+                                QR Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="email" placeholder="name@company.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Website</label>
+                        <input type="text" id="website" placeholder="company.com">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">Create Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal confirm-modal">
+            <div class="modal-body">
+                <div class="confirm-icon">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </div>
+                <h3 class="confirm-title">Delete Contact?</h3>
+                <p class="confirm-text">This action cannot be undone.</p>
+                <div class="confirm-buttons">
+                    <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                    <button type="button" class="btn-delete" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let contacts = [];
+        let deleteContactId = null;
+        const sessionId = localStorage.getItem('sessionId');
+        const companyId = localStorage.getItem('companyId');
+
+        // Check authentication
+        if (!sessionId) {
+            window.location.href = '/company/login';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Verify session
+                const sessionRes = await fetch('/api/auth/session', {
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!sessionRes.ok) {
+                    throw new Error('Session expired');
+                }
+                
+                const session = await sessionRes.json();
+                
+                if (session.role !== 'company_admin') {
+                    throw new Error('Unauthorized');
+                }
+                
+                // Update header
+                const companyName = localStorage.getItem('companyName') || 'Admin';
+                document.getElementById('companyNameHeader').textContent = companyName;
+                
+                // Load contacts
+                await loadContacts();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                
+            } catch (err) {
+                console.error(err);
+                localStorage.clear();
+                window.location.href = '/company/login';
+            }
+            
+            // Form submission
+            document.getElementById('contactForm').addEventListener('submit', saveContact);
+        });
+
+        async function loadContacts() {
+            const res = await fetch('/api/contacts', {
+                headers: { 'X-Session-ID': sessionId }
+            });
+            
+            contacts = await res.json();
+            renderContacts();
+        }
+
+        function renderContacts() {
+            const tbody = document.getElementById('contactsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            
+            document.getElementById('contactCount').textContent = contacts.length;
+            
+            if (contacts.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            tbody.innerHTML = contacts.map(contact => `
+                <tr>
+                    <td>${contact.nameEn}</td>
+                    <td>${contact.positionEn}</td>
+                    <td>${contact.email}</td>
+                    <td>${contact.phone}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn" onclick="previewContact('${contact.id}')" title="Preview">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15 3 21 3 21 9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="viewQRCode('${contact.id}')" title="QR Code">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"/>
+                                    <rect x="14" y="3" width="7" height="7"/>
+                                    <rect x="3" y="14" width="7" height="7"/>
+                                    <rect x="14" y="14" width="7" height="7"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" onclick="editContact('${contact.id}')" title="Edit">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn delete" onclick="confirmDelete('${contact.id}')" title="Delete">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = 'Add New Contact';
+            document.getElementById('submitBtn').textContent = 'Create Contact';
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactId').value = '';
+            document.getElementById('contactModal').classList.add('active');
+        }
+
+        function editContact(id) {
+            const contact = contacts.find(c => c.id === id);
+            if (!contact) return;
+            
+            document.getElementById('modalTitle').textContent = 'Edit Contact';
+            document.getElementById('submitBtn').textContent = 'Update Contact';
+            document.getElementById('contactId').value = contact.id;
+            document.getElementById('nameEn').value = contact.nameEn;
+            document.getElementById('nameAr').value = contact.nameAr || '';
+            document.getElementById('positionEn').value = contact.positionEn;
+            document.getElementById('positionAr').value = contact.positionAr || '';
+            document.getElementById('location').value = contact.location;
+            document.getElementById('phone').value = contact.phone;
+            document.getElementById('email').value = contact.email;
+            document.getElementById('website').value = contact.website || '';
+            
+            document.getElementById('contactModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.remove('active');
+        }
+
+        async function saveContact(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('contactId').value;
+            const data = {
+                nameEn: document.getElementById('nameEn').value.trim(),
+                nameAr: document.getElementById('nameAr').value.trim(),
+                positionEn: document.getElementById('positionEn').value.trim(),
+                positionAr: document.getElementById('positionAr').value.trim(),
+                location: document.getElementById('location').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                website: document.getElementById('website').value.trim()
+            };
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `/api/contacts/${id}` : '/api/contacts';
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-ID': sessionId
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to save');
+                }
+                
+                closeModal();
+                await loadContacts();
+                
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = id ? 'Update Contact' : 'Create Contact';
+            }
+        }
+
+        function confirmDelete(id) {
+            deleteContactId = id;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            deleteContactId = null;
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+            if (!deleteContactId) return;
+            
+            try {
+                const res = await fetch(`/api/contacts/${deleteContactId}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to delete');
+                }
+                
+                closeDeleteModal();
+                await loadContacts();
+                
+            } catch (err) {
+                alert(err.message);
+            }
+        });
+
+        function previewContact(id) {
+            window.open(`/c/${id}`, '_blank');
+        }
+
+        function viewQRCode(id) {
+            window.open(`/qr/${id}`, '_blank');
+        }
+
+        function viewQR() {
+            const id = document.getElementById('contactId').value;
+            if (id) {
+                window.open(`/qr/${id}`, '_blank');
+            } else {
+                alert('Please save the contact first to generate QR code');
+            }
+        }
+
+        async function signOut() {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+            } catch (err) {}
+            
+            localStorage.clear();
+            window.location.href = '/company/login';
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

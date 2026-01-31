@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F3EF;
+            min-height: 100vh;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem 2rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #22C55E;
+        }
+
+        .back-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        .qr-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-position {
+            color: #6B7280;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .qr-wrapper {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        #qrCode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #qrCode canvas {
+            border-radius: 12px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .download-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .download-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .url-section {
+            margin-top: 1.5rem;
+        }
+
+        .url-label {
+            color: #9CA3AF;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .url-box {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: #374151;
+            word-break: break-all;
+            margin-bottom: 1rem;
+        }
+
+        .preview-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .preview-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .preview-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            color: #6B7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: #22C55E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .not-found {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .not-found-icon {
+            width: 80px;
+            height: 80px;
+            background: #FEF2F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #DC2626;
+        }
+
+        .not-found h2 {
+            font-size: 1.5rem;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+        }
+
+        .not-found p {
+            color: #6B7280;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem 2rem;
+            }
+            .qr-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/company/dashboard" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back to Contacts
+    </a>
+
+    <div class="container">
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Generating QR code...</p>
+        </div>
+
+        <div class="not-found" id="notFoundState" style="display: none;">
+            <div class="not-found-icon">
+                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h2>Contact Not Found</h2>
+            <p>The contact you're looking for doesn't exist.</p>
+        </div>
+
+        <div class="qr-card" id="qrCard" style="display: none;">
+            <h1 class="contact-name" id="contactName"></h1>
+            <p class="contact-position" id="contactPosition"></p>
+            
+            <div class="qr-wrapper">
+                <div id="qrCode"></div>
+            </div>
+
+            <button class="download-btn" id="downloadBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download QR Code
+            </button>
+
+            <div class="url-section">
+                <p class="url-label">Contact URL:</p>
+                <div class="url-box" id="contactUrl"></div>
+                <a href="#" class="preview-btn" id="previewBtn" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Preview Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script>
+        let currentContact = null;
+        let contactUrl = '';
+        let generatedCanvas = null;
+
+        function getContactId() {
+            const path = window.location.pathname;
+            const match = path.match(/\/qr\/([^\/]+)/);
+            return match ? match[1] : null;
+        }
+
+        function showNotFound() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('notFoundState').style.display = 'block';
+        }
+
+        function showQRCard() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('qrCard').style.display = 'block';
+        }
+
+        function generateStyledQR(text, logoUrl) {
+            return new Promise((resolve, reject) => {
+                // Generate QR code data
+                const qr = qrcode(0, 'H');
+                qr.addData(text);
+                qr.make();
+                
+                const moduleCount = qr.getModuleCount();
+                const size = 320;
+                const dotSize = size / (moduleCount + 8); // Add margin
+                const margin = dotSize * 4;
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // Background
+                ctx.fillStyle = '#F5F0E8';
+                ctx.fillRect(0, 0, size, size);
+                
+                // Draw QR modules as dots
+                const dotRadius = dotSize * 0.45;
+                
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            const x = margin + col * dotSize + dotSize / 2;
+                            const y = margin + row * dotSize + dotSize / 2;
+                            
+                            // Check if in finder pattern area (corners)
+                            const isFinderPattern = 
+                                (row < 7 && col < 7) || // Top-left
+                                (row < 7 && col >= moduleCount - 7) || // Top-right
+                                (row >= moduleCount - 7 && col < 7); // Bottom-left
+                            
+                            if (isFinderPattern) {
+                                ctx.fillStyle = '#22C55E'; // Green
+                            } else {
+                                ctx.fillStyle = '#000000'; // Black
+                            }
+                            
+                            // Draw dot
+                            ctx.beginPath();
+                            ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                }
+                
+                // Draw finder pattern squares (the big squares in corners)
+                drawFinderPattern(ctx, margin, margin, dotSize, 7);
+                drawFinderPattern(ctx, margin + (moduleCount - 7) * dotSize, margin, dotSize, 7);
+                drawFinderPattern(ctx, margin, margin + (moduleCount - 7) * dotSize, dotSize, 7);
+                
+                // Load and draw logo in center
+                const logo = new Image();
+                logo.crossOrigin = 'anonymous';
+                logo.onload = function() {
+                    const logoSize = size * 0.22;
+                    const logoX = (size - logoSize) / 2;
+                    const logoY = (size - logoSize) / 2;
+                    
+                    // White background for logo
+                    ctx.fillStyle = '#FFFFFF';
+                    roundRect(ctx, logoX - 8, logoY - 8, logoSize + 16, logoSize + 16, 10);
+                    ctx.fill();
+                    
+                    // Draw logo
+                    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                    
+                    resolve(canvas);
+                };
+                logo.onerror = function() {
+                    // Try fallback logo
+                    const fallbackLogo = new Image();
+                    fallbackLogo.onload = function() {
+                        const logoSize = size * 0.22;
+                        const logoX = (size - logoSize) / 2;
+                        const logoY = (size - logoSize) / 2;
+                        
+                        ctx.fillStyle = '#FFFFFF';
+                        roundRect(ctx, logoX - 8, logoY - 8, logoSize + 16, logoSize + 16, 10);
+                        ctx.fill();
+                        
+                        ctx.drawImage(fallbackLogo, logoX, logoY, logoSize, logoSize);
+                        resolve(canvas);
+                    };
+                    fallbackLogo.onerror = function() {
+                        // Just show QR without logo
+                        resolve(canvas);
+                    };
+                    fallbackLogo.src = '/logo.png';
+                };
+                logo.src = logoUrl;
+            });
+        }
+
+        function drawFinderPattern(ctx, x, y, dotSize, size) {
+            const green = '#22C55E';
+            
+            // Outer square
+            ctx.fillStyle = green;
+            roundRect(ctx, x, y, dotSize * size, dotSize * size, dotSize * 0.5);
+            ctx.fill();
+            
+            // Inner white
+            ctx.fillStyle = '#F5F0E8';
+            const innerOffset = dotSize;
+            roundRect(ctx, x + innerOffset, y + innerOffset, dotSize * (size - 2), dotSize * (size - 2), dotSize * 0.3);
+            ctx.fill();
+            
+            // Center dot
+            ctx.fillStyle = green;
+            const centerOffset = dotSize * 2;
+            roundRect(ctx, x + centerOffset, y + centerOffset, dotSize * 3, dotSize * 3, dotSize * 0.3);
+            ctx.fill();
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        async function init() {
+            const contactId = getContactId();
+            
+            if (!contactId) {
+                showNotFound();
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/api/contacts/${contactId}`);
+                
+                if (!res.ok) {
+                    throw new Error('Not found');
+                }
+                
+                currentContact = await res.json();
+                
+                document.title = `QR Code - ${currentContact.nameEn}`;
+                contactUrl = `${window.location.origin}/c/${contactId}`;
+                
+                document.getElementById('contactName').textContent = currentContact.nameEn;
+                document.getElementById('contactPosition').textContent = currentContact.positionEn;
+                document.getElementById('contactUrl').textContent = contactUrl;
+                document.getElementById('previewBtn').href = `/c/${contactId}`;
+                
+                // Generate styled QR Code
+                const logoUrl = currentContact.companyLogo || '/logo.png';
+                generatedCanvas = await generateStyledQR(contactUrl, logoUrl);
+                
+                document.getElementById('qrCode').appendChild(generatedCanvas);
+                showQRCard();
+                
+            } catch (err) {
+                console.error('Error:', err);
+                showNotFound();
+            }
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            if (!generatedCanvas || !currentContact) return;
+            
+            const link = document.createElement('a');
+            link.download = `qr-${currentContact.nameEn.toLowerCase().replace(/\s+/g, '-')}.png`;
+            link.href = generatedCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

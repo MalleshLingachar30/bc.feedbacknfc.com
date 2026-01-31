@@ -1,0 +1,18 @@
+{
+  "name": "bc-feedbacknfc",
+  "version": "1.0.0",
+  "description": "Business Cards Management System with NFC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:setup": "node scripts/setup-db.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "resend": "^2.1.0",
+    "uuid": "^9.0.0"
+  }
+}

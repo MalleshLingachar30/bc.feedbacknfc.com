@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F3EF;
+            min-height: 100vh;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem 2rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #22C55E;
+        }
+
+        .back-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 2rem 3rem;
+        }
+
+        /* QR Card */
+        .qr-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-position {
+            color: #6B7280;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* QR Code Container */
+        .qr-container {
+            display: inline-block;
+            position: relative;
+            padding: 1.5rem;
+            background: #F5F3EF;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        #qrCode {
+            display: block;
+        }
+
+        #qrCode canvas {
+            border-radius: 8px;
+        }
+
+        .qr-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .download-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .download-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Contact URL */
+        .url-section {
+            margin-top: 1.5rem;
+        }
+
+        .url-label {
+            color: #9CA3AF;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .url-box {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 0.875rem;
+            color: #374151;
+            word-break: break-all;
+            margin-bottom: 1rem;
+        }
+
+        /* Preview Button */
+        .preview-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .preview-btn:hover {
+            background: #F9FAFB;
+            border-color: #D1D5DB;
+        }
+
+        .preview-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            color: #6B7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: #22C55E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Not Found */
+        .not-found {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .not-found-icon {
+            width: 80px;
+            height: 80px;
+            background: #FEF2F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #DC2626;
+        }
+
+        .not-found h2 {
+            font-size: 1.5rem;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+        }
+
+        .not-found p {
+            color: #6B7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem 2rem;
+            }
+
+            .qr-card {
+                padding: 1.5rem;
+            }
+
+            .qr-container {
+                padding: 1rem;
+            }
+
+            #qrCode canvas {
+                width: 240px !important;
+                height: 240px !important;
+            }
+
+            .qr-logo {
+                width: 48px;
+                height: 48px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="admin.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        Back to Contacts
+    </a>
+
+    <div class="container">
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Generating QR code...</p>
+        </div>
+
+        <!-- Not Found State -->
+        <div class="not-found" id="notFoundState" style="display: none;">
+            <div class="not-found-icon">
+                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h2>Contact Not Found</h2>
+            <p>The contact you're looking for doesn't exist.</p>
+        </div>
+
+        <!-- QR Card -->
+        <div class="qr-card" id="qrCard" style="display: none;">
+            <h1 class="contact-name" id="contactName"></h1>
+            <p class="contact-position" id="contactPosition"></p>
+            
+            <div class="qr-container">
+                <div id="qrCode"></div>
+                <div class="qr-logo">
+                    <img src="logo.png" alt="Logo">
+                </div>
+            </div>
+
+            <button class="download-btn" onclick="downloadQR()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download QR Code
+            </button>
+
+            <div class="url-section">
+                <p class="url-label">Contact URL:</p>
+                <div class="url-box" id="contactUrl"></div>
+                <a href="#" class="preview-btn" id="previewBtn" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                        <polyline points="15 3 21 3 21 9"/>
+                        <line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    Preview Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentContact = null;
+        let contactUrl = '';
+
+        // Get contacts from localStorage or use defaults
+        function getContacts() {
+            const stored = localStorage.getItem('contacts');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return [
+                {
+                    id: 'zeeshan',
+                    nameEn: 'Zeeshan',
+                    nameAr: 'زيشان',
+                    positionEn: 'Marketing Manager',
+                    positionAr: 'مدير التسويق',
+                    location: 'Lulu Group Regional Office, Riyadh , Saudi Arabia',
+                    phone: '+966 549251252',
+                    email: 'zeeshan@sa.lulumea.com',
+                    website: 'luluhypermarket.com'
+                },
+                {
+                    id: 'bipin-raj',
+                    nameEn: 'Bipin Raj',
+                    nameAr: 'بيبين راج',
+                    positionEn: 'Regional Director',
+                    positionAr: 'المدير العام',
+                    location: 'Lulu Group Regional Office, Riyadh, Kingdom of Saudi Arabia',
+                    phone: '+966 56 347 3333',
+                    email: 'Bipin@sa.lulumea.com',
+                    website: 'luluhypermarket.com'
+                }
+            ];
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const contactId = urlParams.get('id');
+            
+            if (!contactId) {
+                showNotFound();
+                return;
+            }
+            
+            const contacts = getContacts();
+            currentContact = contacts.find(c => c.id === contactId);
+            
+            if (!currentContact) {
+                showNotFound();
+                return;
+            }
+            
+            // Update page title
+            document.title = `QR Code - ${currentContact.nameEn}`;
+            
+            // Generate contact URL (using current domain or a default)
+            const baseUrl = window.location.origin;
+            contactUrl = `${baseUrl}/contact.html?id=${contactId}`;
+            
+            // For production, you might want to use a shorter URL
+            // contactUrl = `https://lulu-business-cards.vercel.app/c/${contactId}`;
+            
+            // Populate contact info
+            document.getElementById('contactName').textContent = currentContact.nameEn;
+            document.getElementById('contactPosition').textContent = currentContact.positionEn;
+            document.getElementById('contactUrl').textContent = contactUrl;
+            document.getElementById('previewBtn').href = `contact.html?id=${contactId}`;
+            
+            // Generate QR Code
+            generateQRCode(contactUrl);
+        });
+
+        function showNotFound() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('notFoundState').style.display = 'block';
+        }
+
+        function generateQRCode(url) {
+            const qrContainer = document.getElementById('qrCode');
+            
+            QRCode.toCanvas(url, {
+                width: 280,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#F5F3EF'
+                },
+                errorCorrectionLevel: 'H'
+            }, function(error, canvas) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                
+                qrContainer.appendChild(canvas);
+                
+                // Show QR card
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('qrCard').style.display = 'block';
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrCode canvas');
+            if (!canvas) return;
+            
+            // Create a new canvas with logo
+            const downloadCanvas = document.createElement('canvas');
+            const ctx = downloadCanvas.getContext('2d');
+            const size = 400;
+            const logoSize = 80;
+            
+            downloadCanvas.width = size;
+            downloadCanvas.height = size;
+            
+            // Draw background
+            ctx.fillStyle = '#F5F3EF';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw QR code
+            ctx.drawImage(canvas, 0, 0, size, size);
+            
+            // Draw white background for logo
+            const logoX = (size - logoSize) / 2;
+            const logoY = (size - logoSize) / 2;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.roundRect(logoX - 5, logoY - 5, logoSize + 10, logoSize + 10, 8);
+            ctx.fill();
+            
+            // Load and draw logo
+            const logo = new Image();
+            logo.crossOrigin = 'anonymous';
+            logo.onload = function() {
+                ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                
+                // Download
+                const link = document.createElement('a');
+                link.download = `qr-${currentContact.nameEn.toLowerCase().replace(/\s+/g, '-')}.png`;
+                link.href = downloadCanvas.toDataURL('image/png');
+                link.click();
+            };
+            logo.src = 'logo.png';
+        }
+
+        // Polyfill for roundRect
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                if (width < 2 * radius) radius = width / 2;
+                if (height < 2 * radius) radius = height / 2;
+                this.moveTo(x + radius, y);
+                this.arcTo(x + width, y, x + width, y + height, radius);
+                this.arcTo(x + width, y + height, x, y + height, radius);
+                this.arcTo(x, y + height, x, y, radius);
+                this.arcTo(x, y, x + width, y, radius);
+                this.closePath();
+                return this;
+            };
+        }
+    </script>
+</body>
+</html>

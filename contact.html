@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F3EF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 480px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2rem 1rem;
+        }
+
+        /* Header */
+        .profile-header {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .logo-img {
+            height: 72px;
+            width: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-name-ar {
+            font-size: 1.25rem;
+            color: #6B7280;
+            margin-bottom: 0.75rem;
+            direction: rtl;
+        }
+
+        .profile-position {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #22C55E;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-position-ar {
+            font-size: 0.95rem;
+            color: #6B7280;
+            direction: rtl;
+        }
+
+        /* Info Card */
+        .info-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
+        .info-item:not(:last-child) {
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            background: #ECFDF5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-icon svg {
+            width: 20px;
+            height: 20px;
+            color: #22C55E;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #1A1A2E;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .info-value a {
+            color: #1A1A2E;
+            text-decoration: none;
+        }
+
+        .info-value a:hover {
+            color: #22C55E;
+        }
+
+        /* Save Contact Button */
+        .save-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1.125rem;
+            background: #22C55E;
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 2rem;
+        }
+
+        .save-btn:hover {
+            background: #16A34A;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+        }
+
+        .save-btn:active {
+            transform: translateY(0);
+        }
+
+        .save-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            border-top: 1px dashed #D1D5DB;
+            margin-top: auto;
+        }
+
+        .footer-text {
+            color: #9CA3AF;
+            font-size: 0.875rem;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            color: #6B7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #E5E7EB;
+            border-top-color: #22C55E;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Not Found */
+        .not-found {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .not-found-icon {
+            width: 80px;
+            height: 80px;
+            background: #FEF2F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #DC2626;
+        }
+
+        .not-found h2 {
+            font-size: 1.5rem;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+        }
+
+        .not-found p {
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="loading-spinner"></div>
+            <p>Loading contact...</p>
+        </div>
+
+        <!-- Not Found State -->
+        <div class="not-found" id="notFoundState" style="display: none;">
+            <div class="not-found-icon">
+                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <h2>Contact Not Found</h2>
+            <p>The contact you're looking for doesn't exist.</p>
+        </div>
+
+        <!-- Contact Card -->
+        <div id="contactCard" style="display: none;">
+            <header class="profile-header">
+                <img src="logo.png" alt="Logo" class="logo-img">
+                <h1 class="profile-name" id="profileName"></h1>
+                <p class="profile-name-ar" id="profileNameAr"></p>
+                <p class="profile-position" id="profilePosition"></p>
+                <p class="profile-position-ar" id="profilePositionAr"></p>
+            </header>
+
+            <div class="info-card">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <p class="info-label">Location</p>
+                        <p class="info-value" id="infoLocation"></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <p class="info-label">Phone</p>
+                        <p class="info-value"><a href="#" id="infoPhone"></a></p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <p class="info-label">Email</p>
+                        <p class="info-value"><a href="#" id="infoEmail"></a></p>
+                    </div>
+                </div>
+
+                <div class="info-item" id="websiteItem">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <p class="info-label">Website</p>
+                        <p class="info-value"><a href="#" id="infoWebsite" target="_blank"></a></p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="save-btn" onclick="saveContact()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Save Contact
+            </button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p class="footer-text">Lulu Group International</p>
+    </footer>
+
+    <script>
+        let currentContact = null;
+
+        // Get contacts from localStorage or use defaults
+        function getContacts() {
+            const stored = localStorage.getItem('contacts');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return [
+                {
+                    id: 'zeeshan',
+                    nameEn: 'Zeeshan',
+                    nameAr: 'زيشان',
+                    positionEn: 'Marketing Manager',
+                    positionAr: 'مدير التسويق',
+                    location: 'Lulu Group Regional Office, Riyadh , Saudi Arabia',
+                    phone: '+966 549251252',
+                    email: 'zeeshan@sa.lulumea.com',
+                    website: 'luluhypermarket.com'
+                },
+                {
+                    id: 'bipin-raj',
+                    nameEn: 'Bipin Raj',
+                    nameAr: 'بيبين راج',
+                    positionEn: 'Regional Director',
+                    positionAr: 'المدير العام',
+                    location: 'Lulu Group Regional Office, Riyadh, Kingdom of Saudi Arabia',
+                    phone: '+966 56 347 3333',
+                    email: 'Bipin@sa.lulumea.com',
+                    website: 'luluhypermarket.com'
+                }
+            ];
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const contactId = urlParams.get('id');
+            
+            if (!contactId) {
+                showNotFound();
+                return;
+            }
+            
+            const contacts = getContacts();
+            currentContact = contacts.find(c => c.id === contactId);
+            
+            if (!currentContact) {
+                showNotFound();
+                return;
+            }
+            
+            // Update page title
+            document.title = `${currentContact.nameEn} - Contact Card`;
+            
+            // Populate contact info
+            document.getElementById('profileName').textContent = currentContact.nameEn;
+            document.getElementById('profileNameAr').textContent = currentContact.nameAr || '';
+            document.getElementById('profilePosition').textContent = currentContact.positionEn;
+            document.getElementById('profilePositionAr').textContent = currentContact.positionAr || '';
+            document.getElementById('infoLocation').textContent = currentContact.location;
+            
+            const phoneEl = document.getElementById('infoPhone');
+            phoneEl.textContent = currentContact.phone;
+            phoneEl.href = `tel:${currentContact.phone.replace(/\s/g, '')}`;
+            
+            const emailEl = document.getElementById('infoEmail');
+            emailEl.textContent = currentContact.email;
+            emailEl.href = `mailto:${currentContact.email}`;
+            
+            if (currentContact.website) {
+                const websiteEl = document.getElementById('infoWebsite');
+                websiteEl.textContent = currentContact.website;
+                websiteEl.href = `https://${currentContact.website}`;
+            } else {
+                document.getElementById('websiteItem').style.display = 'none';
+            }
+            
+            // Hide Arabic fields if not provided
+            if (!currentContact.nameAr) {
+                document.getElementById('profileNameAr').style.display = 'none';
+            }
+            if (!currentContact.positionAr) {
+                document.getElementById('profilePositionAr').style.display = 'none';
+            }
+            
+            // Show contact card
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('contactCard').style.display = 'block';
+        });
+
+        function showNotFound() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('notFoundState').style.display = 'block';
+        }
+
+        function saveContact() {
+            if (!currentContact) return;
+            
+            // Generate vCard
+            const vCard = generateVCard(currentContact);
+            
+            // Create download
+            const blob = new Blob([vCard], { type: 'text/vcard;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentContact.nameEn.replace(/\s+/g, '_')}.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function generateVCard(contact) {
+            const lines = [
+                'BEGIN:VCARD',
+                'VERSION:3.0',
+                `FN:${contact.nameEn}`,
+                `N:${contact.nameEn};;;;`
+            ];
+            
+            if (contact.nameAr) {
+                lines.push(`X-PHONETIC-LAST-NAME:${contact.nameAr}`);
+            }
+            
+            lines.push(`TITLE:${contact.positionEn}`);
+            lines.push(`ORG:Lulu Group International`);
+            lines.push(`TEL;TYPE=WORK,VOICE:${contact.phone}`);
+            lines.push(`EMAIL;TYPE=WORK:${contact.email}`);
+            
+            if (contact.location) {
+                lines.push(`ADR;TYPE=WORK:;;${contact.location};;;;`);
+            }
+            
+            if (contact.website) {
+                lines.push(`URL:https://${contact.website}`);
+            }
+            
+            lines.push('END:VCARD');
+            
+            return lines.join('\r\n');
+        }
+    </script>
+</body>
+</html>
