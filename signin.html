@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In | FeedbackNFC TapCard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F3EF;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .signin-card {
+            background: #FFFFFF;
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .signin-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-img {
+            height: 64px;
+            width: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .signin-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+        }
+
+        .signin-header p {
+            color: #6B7280;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #1A1A2E;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #22C55E;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .signin-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #22C55E;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .signin-btn:hover {
+            background: #16A34A;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .signin-btn:active {
+            transform: translateY(0);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #6B7280;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #22C55E;
+        }
+
+        .error-message {
+            background: #FEF2F2;
+            color: #DC2626;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="signin-card">
+        <div class="signin-header">
+            <img src="logo.png" alt="FeedbackNFC" class="logo-img">
+            <h1>Admin Sign In</h1>
+            <p>Sign in to manage business cards</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            Invalid email or password. Please try again.
+        </div>
+
+        <form id="signinForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="admin@company.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="signin-btn">Sign In</button>
+        </form>
+
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const btn = this.querySelector('.signin-btn');
+            const originalText = btn.textContent;
+            
+            // Hide any previous error
+            errorMessage.classList.remove('show');
+            
+            // Show loading state
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+            
+            // Simulate authentication (replace with actual auth logic)
+            setTimeout(() => {
+                // For demo purposes - you can replace this with actual authentication
+                // Example: redirect to dashboard on success
+                if (email && password) {
+                    btn.textContent = 'Success!';
+                    btn.style.background = '#16A34A';
+                    
+                    // Redirect to dashboard (create this page later)
+                    setTimeout(() => {
+                        // window.location.href = 'dashboard.html';
+                        alert('Sign in successful! Dashboard page coming soon.');
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 1000);
+                } else {
+                    errorMessage.classList.add('show');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

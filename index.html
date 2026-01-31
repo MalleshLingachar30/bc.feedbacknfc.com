@@ -105,6 +105,26 @@
             color: var(--text-primary);
         }
 
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-signin {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-signin:hover {
+            color: var(--text-primary);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
         .nav-cta {
             background: var(--gradient-1);
             color: white;
@@ -799,7 +819,7 @@
                 display: none;
             }
 
-            .nav-cta {
+            .nav-buttons {
                 display: none;
             }
 
@@ -875,7 +895,10 @@
                 <li><a href="#pricing">Pricing</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-            <a href="#pricing" class="nav-cta">Get Started</a>
+            <div class="nav-buttons">
+                <a href="signin.html" class="nav-signin">Sign In</a>
+                <a href="#pricing" class="nav-cta">Get Started</a>
+            </div>
             <div class="mobile-menu">
                 <span></span>
                 <span></span>
@@ -1191,17 +1214,35 @@
         // Mobile menu toggle
         const mobileMenu = document.querySelector('.mobile-menu');
         const navLinks = document.querySelector('.nav-links');
+        let mobileMenuOpen = false;
         
         mobileMenu.addEventListener('click', () => {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            navLinks.style.flexDirection = 'column';
-            navLinks.style.position = 'absolute';
-            navLinks.style.top = '100%';
-            navLinks.style.left = '0';
-            navLinks.style.right = '0';
-            navLinks.style.background = 'rgba(15, 15, 26, 0.98)';
-            navLinks.style.padding = '1rem 2rem';
-            navLinks.style.gap = '1rem';
+            mobileMenuOpen = !mobileMenuOpen;
+            
+            if (mobileMenuOpen) {
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.background = 'rgba(15, 15, 26, 0.98)';
+                navLinks.style.padding = '1rem 2rem';
+                navLinks.style.gap = '1rem';
+                
+                // Add Sign In link if not already present
+                if (!document.querySelector('.mobile-signin')) {
+                    const signinLink = document.createElement('li');
+                    signinLink.className = 'mobile-signin';
+                    signinLink.innerHTML = '<a href="signin.html" style="color: #8B5CF6; font-weight: 600;">Sign In</a>';
+                    navLinks.appendChild(signinLink);
+                }
+            } else {
+                navLinks.style.display = 'none';
+                // Remove mobile signin link
+                const mobileSignin = document.querySelector('.mobile-signin');
+                if (mobileSignin) mobileSignin.remove();
+            }
         });
 
         // Card hover effect with mouse tracking
