@@ -190,19 +190,22 @@
     </div>
 
     <script>
-        // Hardcoded credentials for localhost testing
-        const VALID_CREDENTIALS = {
-            email: 'admin@lulu.com',
-            password: 'admin123'
-        };
-
         // Check if already logged in
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        if (isLoggedIn === 'true') {
-            window.location.href = '/company/dashboard.html';
+        const sessionId = localStorage.getItem('companySessionId');
+        if (sessionId) {
+            // Verify session is still valid
+            fetch('/api/auth/session', {
+                headers: { 'X-Session-ID': sessionId }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/company/dashboard';
+                }
+            })
+            .catch(() => {});
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const email = document.getElementById('email').value.trim();
@@ -214,29 +217,41 @@
             btn.innerHTML = '<span class="spinner"></span> Signing in...';
             btn.disabled = true;
             
-            // Simulate authentication delay
-            setTimeout(() => {
-                // Check credentials
-                if (email === VALID_CREDENTIALS.email && password === VALID_CREDENTIALS.password) {
-                    // Store session
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userEmail', email);
-                    localStorage.setItem('companyName', 'Lulu Group');
-                    
-                    btn.innerHTML = 'Success!';
-                    btn.style.background = '#16A34A';
-                    
-                    // Redirect to dashboard
-                    setTimeout(() => {
-                        window.location.href = '/company/dashboard.html';
-                    }, 1000);
-                } else {
-                    errorEl.textContent = 'Invalid credentials. Use: admin@lulu.com / admin123';
-                    errorEl.classList.add('show');
-                    btn.innerHTML = 'Sign In';
-                    btn.disabled = false;
+            try {
+                const res = await fetch('/api/auth/company-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Invalid credentials');
                 }
-            }, 1000);
+                
+                // Store session
+                localStorage.setItem('companySessionId', data.sessionId);
+                localStorage.setItem('companyId', data.company.id);
+                localStorage.setItem('companyName', data.company.name);
+                localStorage.setItem('userEmail', email);
+                
+                btn.innerHTML = 'Success!';
+                btn.style.background = '#16A34A';
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '/company/dashboard';
+                }, 500);
+                
+            } catch (err) {
+                errorEl.textContent = err.message || 'Login failed. Please try again.';
+                errorEl.classList.add('show');
+                btn.innerHTML = 'Sign In';
+                btn.disabled = false;
+            }
         });
     </script>
 </body>

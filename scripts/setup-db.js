@@ -20,10 +20,21 @@ async function setupDatabase() {
                 email VARCHAR(255) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 logo TEXT,
+                card_front TEXT,
+                card_back TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
         console.log('✅ Created companies table');
+        
+        // Add card_front and card_back columns if they don't exist (for existing databases)
+        try {
+            await sql`ALTER TABLE companies ADD COLUMN IF NOT EXISTS card_front TEXT`;
+            await sql`ALTER TABLE companies ADD COLUMN IF NOT EXISTS card_back TEXT`;
+            console.log('✅ Added card exterior columns');
+        } catch (e) {
+            // Columns might already exist
+        }
 
         // Create contacts table
         await sql`

@@ -405,6 +405,140 @@
             color: #FFFFFF;
         }
 
+        /* Logo Upload Styles */
+        .logo-upload-area {
+            border: 2px dashed rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .logo-upload-area:hover {
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .logo-upload-area.drag-over {
+            border-color: #8B5CF6;
+            background: rgba(139, 92, 246, 0.15);
+        }
+
+        .logo-upload-area.has-logo {
+            border-style: solid;
+            border-color: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.75rem;
+            color: #8B5CF6;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            color: #A0A0B2;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            color: #6B7280;
+            font-size: 0.8rem;
+        }
+
+        .logo-preview-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-preview-container.active {
+            display: flex;
+        }
+
+        .logo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+        }
+
+        .logo-filename {
+            color: #A0A0B2;
+            font-size: 0.85rem;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .remove-logo-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 6px;
+            color: #F87171;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .remove-logo-btn:hover {
+            background: rgba(220, 38, 38, 0.2);
+        }
+
+        .upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .upload-placeholder.hidden {
+            display: none;
+        }
+
+        .logo-input {
+            display: none;
+        }
+
+        .upload-progress {
+            display: none;
+            margin-top: 0.75rem;
+        }
+
+        .upload-progress.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: #A0A0B2;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
         .modal-footer {
             padding: 1.5rem 2rem;
             border-top: 1px solid rgba(139, 92, 246, 0.1);
@@ -725,8 +859,34 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Logo URL</label>
-                        <input type="text" id="companyLogo" placeholder="https://example.com/logo.png">
+                        <label>Company Logo</label>
+                        <div class="logo-upload-area" id="logoUploadArea">
+                            <input type="file" id="logoInput" class="logo-input" accept="image/*">
+                            <input type="hidden" id="companyLogo">
+                            
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                                <p class="upload-text">Click to upload or drag and drop</p>
+                                <p class="upload-hint">PNG, JPG, SVG up to 2MB</p>
+                            </div>
+                            
+                            <div class="logo-preview-container" id="logoPreviewContainer">
+                                <img src="" alt="Logo preview" class="logo-preview" id="logoPreview">
+                                <span class="logo-filename" id="logoFilename"></span>
+                                <button type="button" class="remove-logo-btn" onclick="removeLogo(event)">Remove Logo</button>
+                            </div>
+                            
+                            <div class="upload-progress" id="uploadProgress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                                <p class="progress-text" id="progressText">Uploading...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -899,6 +1059,7 @@
             document.getElementById('submitBtn').textContent = 'Create Company';
             document.getElementById('companyForm').reset();
             document.getElementById('companyId').value = '';
+            removeLogo(); // Reset logo upload area
             document.getElementById('companyModal').classList.add('active');
         }
 
@@ -914,7 +1075,9 @@
             document.getElementById('companyPassword').value = '';
             document.getElementById('companyPassword').placeholder = 'Leave blank to keep current';
             document.getElementById('companyPassword').required = false;
-            document.getElementById('companyLogo').value = company.logo || '';
+            
+            // Set logo preview if exists
+            setLogoPreview(company.logo || '');
             
             document.getElementById('companyModal').classList.add('active');
         }
@@ -987,6 +1150,160 @@
                 password += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             document.getElementById('companyPassword').value = password;
+        }
+
+        // Logo Upload Functions
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        const logoInput = document.getElementById('logoInput');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const logoPreviewContainer = document.getElementById('logoPreviewContainer');
+        const logoPreview = document.getElementById('logoPreview');
+        const logoFilename = document.getElementById('logoFilename');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+
+        // Click to upload
+        logoUploadArea.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-logo-btn')) return;
+            logoInput.click();
+        });
+
+        // Handle file selection
+        logoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleLogoFile(file);
+            }
+        });
+
+        // Drag and drop
+        logoUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.add('drag-over');
+        });
+
+        logoUploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.remove('drag-over');
+        });
+
+        logoUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            logoUploadArea.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleLogoFile(file);
+            }
+        });
+
+        async function handleLogoFile(file) {
+            // Validate file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size must be less than 2MB');
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            // Show preview immediately
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                logoPreview.src = e.target.result;
+                logoFilename.textContent = file.name;
+                uploadPlaceholder.classList.add('hidden');
+                logoPreviewContainer.classList.add('active');
+                logoUploadArea.classList.add('has-logo');
+            };
+            reader.readAsDataURL(file);
+
+            // Upload file
+            await uploadLogo(file);
+        }
+
+        async function uploadLogo(file) {
+            uploadProgress.classList.add('active');
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Uploading...';
+
+            const formData = new FormData();
+            formData.append('logo', file);
+
+            try {
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    if (progress <= 90) {
+                        progressFill.style.width = progress + '%';
+                    }
+                }, 100);
+
+                const res = await fetch('/api/upload/logo', {
+                    method: 'POST',
+                    headers: {
+                        'X-Session-ID': sessionId
+                    },
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Upload failed');
+                }
+
+                const result = await res.json();
+                
+                progressFill.style.width = '100%';
+                progressText.textContent = 'Upload complete!';
+                
+                // Store the logo URL
+                document.getElementById('companyLogo').value = result.url;
+
+                setTimeout(() => {
+                    uploadProgress.classList.remove('active');
+                }, 1000);
+
+            } catch (err) {
+                console.error('Upload error:', err);
+                progressText.textContent = 'Upload failed: ' + err.message;
+                progressFill.style.width = '0%';
+                
+                setTimeout(() => {
+                    uploadProgress.classList.remove('active');
+                    removeLogo();
+                }, 2000);
+            }
+        }
+
+        function removeLogo(e) {
+            if (e) e.stopPropagation();
+            logoInput.value = '';
+            document.getElementById('companyLogo').value = '';
+            logoPreview.src = '';
+            logoFilename.textContent = '';
+            uploadPlaceholder.classList.remove('hidden');
+            logoPreviewContainer.classList.remove('active');
+            logoUploadArea.classList.remove('has-logo');
+        }
+
+        function setLogoPreview(url) {
+            if (url) {
+                logoPreview.src = url;
+                logoFilename.textContent = url.split('/').pop();
+                uploadPlaceholder.classList.add('hidden');
+                logoPreviewContainer.classList.add('active');
+                logoUploadArea.classList.add('has-logo');
+                document.getElementById('companyLogo').value = url;
+            } else {
+                removeLogo();
+            }
         }
 
         function showCredentials(email, password) {

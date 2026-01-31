@@ -6,7 +6,7 @@
     <title>Redirecting... | Company Admin</title>
     <script>
         // Check if logged in
-        const sessionId = localStorage.getItem('sessionId');
+        const sessionId = localStorage.getItem('companySessionId');
         if (sessionId) {
             fetch('/api/auth/session', {
                 headers: { 'X-Session-ID': sessionId }

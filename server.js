@@ -1,9 +1,44 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const { neon } = require('@neondatabase/serverless');
 const { Resend } = require('resend');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
+
+// Configure multer for logo uploads
+const logoStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, 'public', 'logos');
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        // Generate unique filename with original extension
+        const ext = path.extname(file.originalname).toLowerCase();
+        const uniqueName = `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`;
+        cb(null, uniqueName);
+    }
+});
+
+const logoUpload = multer({
+    storage: logoStorage,
+    limits: {
+        fileSize: 2 * 1024 * 1024 // 2MB limit
+    },
+    fileFilter: function (req, file, cb) {
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml', 'image/webp'];
+        if (allowedTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only JPEG, PNG, SVG, and WebP are allowed.'));
+        }
+    }
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -150,12 +185,28 @@ app.post('/api/auth/company-login', async (req, res) => {
             return res.status(500).json({ error: 'Database not configured' });
         }
         
+        // Debug: Log login attempt
+        console.log(`\nCompany login attempt: ${email}`);
+        
+        // Case-insensitive email lookup
         const result = await sql`
             SELECT id, name, email FROM companies 
-            WHERE email = ${email} AND password = ${password}
+            WHERE LOWER(email) = LOWER(${email}) AND password = ${password}
         `;
         
         if (result.length === 0) {
+            // Debug: Check if company exists (without password check)
+            const companyCheck = await sql`
+                SELECT id, name, email FROM companies WHERE LOWER(email) = LOWER(${email})
+            `;
+            if (companyCheck.length > 0) {
+                console.log(`Company found but password mismatch for: ${email}`);
+            } else {
+                console.log(`No company found with email: ${email}`);
+                // List all companies for debugging
+                const allCompanies = await sql`SELECT name, email FROM companies`;
+                console.log('Available companies:', allCompanies.map(c => c.email));
+            }
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         
@@ -259,6 +310,219 @@ async function requireAuth(req, res, next) {
         res.status(500).json({ error: 'Server error' });
     }
 }
+
+// ==================== UPLOAD ROUTES ====================
+
+// Upload company logo
+app.post('/api/upload/logo', logoUpload.single('logo'), async (req, res) => {
+    try {
+        // Verify session
+        const sessionId = req.headers['x-session-id'];
+        
+        if (!sessionId || !sql) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
+        const result = await sql`
+            SELECT email, role FROM sessions 
+            WHERE id = ${sessionId} AND expires_at > NOW()
+        `;
+        
+        if (result.length === 0) {
+            return res.status(401).json({ error: 'Session expired' });
+        }
+        
+        if (result[0].role !== 'super_admin') {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+        
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        
+        // Return the public URL for the uploaded logo
+        const logoUrl = `/logos/${req.file.filename}`;
+        
+        console.log(`Logo uploaded: ${req.file.filename}`);
+        
+        res.json({ 
+            success: true, 
+            url: logoUrl,
+            filename: req.file.filename
+        });
+        
+    } catch (error) {
+        console.error('Logo upload error:', error);
+        res.status(500).json({ error: error.message || 'Upload failed' });
+    }
+});
+
+// Upload card exterior (front or back) - for company admins
+app.post('/api/upload/card-exterior', logoUpload.single('image'), async (req, res) => {
+    try {
+        // Verify session
+        const sessionId = req.headers['x-session-id'];
+        const { side } = req.body; // 'front' or 'back'
+        
+        if (!sessionId || !sql) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
+        const result = await sql`
+            SELECT email, role, company_id FROM sessions 
+            WHERE id = ${sessionId} AND expires_at > NOW()
+        `;
+        
+        if (result.length === 0) {
+            return res.status(401).json({ error: 'Session expired' });
+        }
+        
+        // Allow both super_admin and company_admin
+        if (result[0].role !== 'super_admin' && result[0].role !== 'company_admin') {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+        
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        
+        if (!side || (side !== 'front' && side !== 'back')) {
+            return res.status(400).json({ error: 'Invalid side parameter. Use "front" or "back".' });
+        }
+        
+        // Return the public URL for the uploaded image
+        const imageUrl = `/logos/${req.file.filename}`;
+        
+        console.log(`Card ${side} uploaded: ${req.file.filename}`);
+        
+        res.json({ 
+            success: true, 
+            url: imageUrl,
+            side: side,
+            filename: req.file.filename
+        });
+        
+    } catch (error) {
+        console.error('Card exterior upload error:', error);
+        res.status(500).json({ error: error.message || 'Upload failed' });
+    }
+});
+
+// Update company card exteriors and logo
+app.put('/api/companies/:id/card-exteriors', async (req, res) => {
+    try {
+        const sessionId = req.headers['x-session-id'];
+        const { id } = req.params;
+        const { cardFront, cardBack, logo } = req.body;
+        
+        if (!sessionId || !sql) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
+        const sessionResult = await sql`
+            SELECT email, role, company_id FROM sessions 
+            WHERE id = ${sessionId} AND expires_at > NOW()
+        `;
+        
+        if (sessionResult.length === 0) {
+            return res.status(401).json({ error: 'Session expired' });
+        }
+        
+        const session = sessionResult[0];
+        
+        // Company admin can only update their own company
+        if (session.role === 'company_admin' && session.company_id !== id) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+        
+        // Update card exteriors and logo
+        const result = await sql`
+            UPDATE companies 
+            SET card_front = COALESCE(${cardFront}, card_front),
+                card_back = COALESCE(${cardBack}, card_back),
+                logo = COALESCE(${logo}, logo)
+            WHERE id = ${id}
+            RETURNING id, card_front, card_back, logo
+        `;
+        
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Company not found' });
+        }
+        
+        console.log(`Card exteriors updated for company ${id}`);
+        
+        res.json({ 
+            success: true, 
+            cardFront: result[0].card_front,
+            cardBack: result[0].card_back,
+            logo: result[0].logo
+        });
+        
+    } catch (error) {
+        console.error('Update card exteriors error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get company card exteriors (for company dashboard)
+app.get('/api/companies/:id/card-exteriors', async (req, res) => {
+    try {
+        const sessionId = req.headers['x-session-id'];
+        const { id } = req.params;
+        
+        if (!sessionId || !sql) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+        
+        const sessionResult = await sql`
+            SELECT role, company_id FROM sessions 
+            WHERE id = ${sessionId} AND expires_at > NOW()
+        `;
+        
+        if (sessionResult.length === 0) {
+            return res.status(401).json({ error: 'Session expired' });
+        }
+        
+        const session = sessionResult[0];
+        
+        // Company admin can only view their own company
+        if (session.role === 'company_admin' && session.company_id !== id) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+        
+        const result = await sql`
+            SELECT card_front, card_back, logo FROM companies WHERE id = ${id}
+        `;
+        
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Company not found' });
+        }
+        
+        res.json({ 
+            cardFront: result[0].card_front,
+            cardBack: result[0].card_back,
+            logo: result[0].logo
+        });
+        
+    } catch (error) {
+        console.error('Get card exteriors error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Error handler for multer
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({ error: 'File too large. Maximum size is 2MB.' });
+        }
+        return res.status(400).json({ error: err.message });
+    }
+    if (err) {
+        return res.status(400).json({ error: err.message });
+    }
+    next();
+});
 
 // ==================== COMPANY ROUTES ====================
 

@@ -523,6 +523,116 @@
             z-index: 0;
         }
 
+
+        /* When custom template is uploaded - show the uploaded image */
+        .business-card.has-custom-template {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .business-card.has-custom-template .card-background {
+            display: none;
+        }
+
+        .business-card.has-custom-template .card-content {
+            display: none;
+        }
+
+        .business-card.has-custom-template .card-bottom-bars {
+            display: none;
+        }
+
+        /* Contact name badge overlay on custom template */
+        .custom-template-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(34, 197, 94, 0.95);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .business-card.has-custom-template .custom-template-badge {
+            display: block;
+        }
+
+        /* Template info box */
+        .template-info-box {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .template-info-box.active {
+            display: block;
+        }
+
+        .template-info-box p {
+            color: #166534;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .template-info-box strong {
+            color: #15803D;
+        }
+
+        /* Contact data summary */
+        .contact-data-summary {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .contact-data-summary.active {
+            display: block;
+        }
+
+        .contact-data-summary h4 {
+            font-size: 0.85rem;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .contact-data-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .contact-data-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-data-label {
+            color: #6B7280;
+        }
+
+        .contact-data-value {
+            color: #1A1A2E;
+            font-weight: 500;
+            text-align: right;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .card-background::before {
             content: '';
             position: absolute;
@@ -535,6 +645,7 @@
                 linear-gradient(-45deg, transparent 45%, rgba(200, 190, 170, 0.3) 45%, rgba(200, 190, 170, 0.3) 55%, transparent 55%);
             background-size: 20px 20px;
         }
+
 
         .card-content {
             position: relative;
@@ -772,6 +883,172 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Card Design Section */
+        .card-design-section {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1A1A2E;
+        }
+
+        .section-subtitle {
+            color: #6B7280;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .card-uploads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .card-upload-box {
+            border: 2px dashed #E5E7EB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #FAFAFA;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-upload-box:hover {
+            border-color: #22C55E;
+            background: #F0FDF4;
+        }
+
+        .card-upload-box.has-image {
+            border-style: solid;
+            border-color: #22C55E;
+            background: #FFFFFF;
+            padding: 0.5rem;
+        }
+
+        .card-upload-box.drag-over {
+            border-color: #22C55E;
+            background: #F0FDF4;
+        }
+
+        .card-upload-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .card-upload-icon {
+            width: 48px;
+            height: 48px;
+            color: #9CA3AF;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-upload-text {
+            color: #6B7280;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-upload-hint {
+            color: #9CA3AF;
+            font-size: 0.75rem;
+        }
+
+        .card-upload-preview {
+            width: 100%;
+            max-height: 180px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .card-upload-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .card-upload-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .card-upload-btn.change {
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            color: #374151;
+        }
+
+        .card-upload-btn.change:hover {
+            background: #E5E7EB;
+        }
+
+        .card-upload-btn.remove {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #DC2626;
+        }
+
+        .card-upload-btn.remove:hover {
+            background: #FEE2E2;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .save-designs-btn {
+            padding: 0.75rem 1.5rem;
+            background: #22C55E;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .save-designs-btn:hover {
+            background: #16A34A;
+        }
+
+        .save-designs-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .card-uploads-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .main-content {
@@ -829,6 +1106,97 @@
 
         <!-- Dashboard Content -->
         <div id="dashboardContent" style="display: none;">
+            <!-- Card Design Section -->
+            <div class="card-design-section">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Card Design Template</h2>
+                        <p class="section-subtitle">Upload your card design - each contact will have the same design with their unique info</p>
+                    </div>
+                    <button class="save-designs-btn" id="saveDesignsBtn" onclick="saveCardDesigns()" disabled>
+                        Save Designs
+                    </button>
+                </div>
+                
+                <!-- Company Logo Upload -->
+                <div style="margin-bottom: 1.5rem;">
+                    <p class="card-upload-label">Company Logo</p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div class="card-upload-box" id="logoUploadBox" onclick="document.getElementById('logoInput').click()" style="width: 150px; height: 100px; min-height: auto; padding: 1rem;">
+                            <input type="file" id="logoInput" class="upload-input" accept="image/*" onchange="handleLogoUpload(event)">
+                            
+                            <div class="upload-placeholder" id="logoPlaceholder">
+                                <svg class="card-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 32px; height: 32px; margin-bottom: 0.5rem;">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                                <p class="card-upload-text" style="font-size: 0.75rem;">Upload logo</p>
+                            </div>
+                            
+                            <div class="preview-container" id="logoPreviewContainer" style="display: none;">
+                                <img src="" alt="Logo preview" id="logoPreviewImg" style="max-width: 100%; max-height: 70px; object-fit: contain;">
+                            </div>
+                        </div>
+                        <p style="color: #6B7280; font-size: 0.8rem;">Your company logo for business cards</p>
+                    </div>
+                </div>
+
+                <div class="card-uploads-grid">
+                    <!-- Front Card Upload -->
+                    <div>
+                        <p class="card-upload-label">Front Side</p>
+                        <div class="card-upload-box" id="frontUploadBox" onclick="document.getElementById('frontInput').click()">
+                            <input type="file" id="frontInput" class="upload-input" accept="image/*" onchange="handleCardUpload(event, 'front')">
+                            
+                            <div class="upload-placeholder" id="frontPlaceholder">
+                                <svg class="card-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                                <p class="card-upload-text">Upload front side design</p>
+                                <p class="card-upload-hint">Your card template image</p>
+                            </div>
+                            
+                            <div class="preview-container" id="frontPreviewContainer" style="display: none;">
+                                <img src="" alt="Front preview" class="card-upload-preview" id="frontPreview">
+                            </div>
+                        </div>
+                        <div class="card-upload-actions" id="frontActions" style="display: none;">
+                            <button class="card-upload-btn change" onclick="event.stopPropagation(); document.getElementById('frontInput').click()">Change</button>
+                            <button class="card-upload-btn remove" onclick="event.stopPropagation(); removeCardDesign('front')">Remove</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Back Card Upload -->
+                    <div>
+                        <p class="card-upload-label">Back Side</p>
+                        <div class="card-upload-box" id="backUploadBox" onclick="document.getElementById('backInput').click()">
+                            <input type="file" id="backInput" class="upload-input" accept="image/*" onchange="handleCardUpload(event, 'back')">
+                            
+                            <div class="upload-placeholder" id="backPlaceholder">
+                                <svg class="card-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                                    <polyline points="21 15 16 10 5 21"/>
+                                </svg>
+                                <p class="card-upload-text">Upload back side design</p>
+                                <p class="card-upload-hint">Your card template image</p>
+                            </div>
+                            
+                            <div class="preview-container" id="backPreviewContainer" style="display: none;">
+                                <img src="" alt="Back preview" class="card-upload-preview" id="backPreview">
+                            </div>
+                        </div>
+                        <div class="card-upload-actions" id="backActions" style="display: none;">
+                            <button class="card-upload-btn change" onclick="event.stopPropagation(); document.getElementById('backInput').click()">Change</button>
+                            <button class="card-upload-btn remove" onclick="event.stopPropagation(); removeCardDesign('back')">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Business Cards</h1>
@@ -943,11 +1311,15 @@
             <!-- Card Preview Section -->
             <div class="modal-preview-section" id="previewSection">
                 <h3 class="preview-title">Card Preview</h3>
+                <div class="template-info-box" id="customDesignNotice">
+                    <p><strong>Your uploaded card design</strong> - Each contact will have this exact design with their unique name, position, phone & email printed in the same positions</p>
+                </div>
                 
                 <!-- Front Card (English) -->
                 <p class="preview-label">Front (English)</p>
                 <div class="business-card" id="cardFront">
-                    <div class="card-background"></div>
+                    <div class="card-background" id="cardFrontBg"></div>
+                    <div class="custom-template-badge" id="frontBadge">Contact Name</div>
                     <div class="card-content">
                         <div class="card-header">
                             <svg class="nfc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1008,7 +1380,8 @@
                 <!-- Back Card (Arabic) -->
                 <p class="preview-label">Back (Arabic)</p>
                 <div class="business-card arabic" id="cardBack">
-                    <div class="card-background"></div>
+                    <div class="card-background" id="cardBackBg"></div>
+                    <div class="custom-template-badge" id="backBadge">اسم جهة الاتصال</div>
                     <div class="card-content">
                         <div class="card-header">
                             <img src="/logos/lulu.png" alt="Logo" class="card-logo">
@@ -1065,6 +1438,35 @@
                         <div class="card-bar-red"></div>
                     </div>
                 </div>
+
+                <!-- Contact Data Summary -->
+                <div class="contact-data-summary" id="contactDataSummary">
+                    <h4>Contact Information for this Card:</h4>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Name (EN):</span>
+                        <span class="contact-data-value" id="summaryNameEn">-</span>
+                    </div>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Name (AR):</span>
+                        <span class="contact-data-value" id="summaryNameAr">-</span>
+                    </div>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Position:</span>
+                        <span class="contact-data-value" id="summaryPosition">-</span>
+                    </div>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Phone:</span>
+                        <span class="contact-data-value" id="summaryPhone">-</span>
+                    </div>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Email:</span>
+                        <span class="contact-data-value" id="summaryEmail">-</span>
+                    </div>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Location:</span>
+                        <span class="contact-data-value" id="summaryLocation">-</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1093,24 +1495,62 @@
         let contacts = [];
         let deleteContactId = null;
         let isPreviewVisible = false;
+        const sessionId = localStorage.getItem('companySessionId');
+        const companyId = localStorage.getItem('companyId');
+        
+        // Card design state
+        let cardDesigns = {
+            front: null,
+            back: null,
+            logo: null,
+            frontChanged: false,
+            backChanged: false,
+            logoChanged: false
+        };
 
-        // Check authentication (local mode)
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        if (isLoggedIn !== 'true') {
-            window.location.href = '/company/login.html';
+        // Check authentication
+        if (!sessionId) {
+            window.location.href = '/company/login';
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Update header
-            const companyName = localStorage.getItem('companyName') || 'Lulu Group';
-            document.getElementById('companyNameHeader').textContent = companyName;
-            
-            // Load contacts from localStorage
-            loadContacts();
-            
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('dashboardContent').style.display = 'block';
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Verify session with API
+                const sessionRes = await fetch('/api/auth/session', {
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!sessionRes.ok) {
+                    throw new Error('Session expired');
+                }
+                
+                const session = await sessionRes.json();
+                
+                if (session.role !== 'company_admin') {
+                    throw new Error('Unauthorized');
+                }
+                
+                // Update header with company name
+                const companyName = localStorage.getItem('companyName') || 'Company';
+                document.getElementById('companyNameHeader').textContent = companyName;
+                
+                // Load card designs
+                await loadCardDesigns();
+                
+                // Load contacts from API
+                await loadContacts();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+                
+            } catch (err) {
+                console.error(err);
+                localStorage.removeItem('companySessionId');
+                localStorage.removeItem('companyId');
+                localStorage.removeItem('companyName');
+                window.location.href = '/company/login';
+            }
             
             // Form submission
             document.getElementById('contactForm').addEventListener('submit', saveContact);
@@ -1136,6 +1576,8 @@
                 previewSection.classList.add('active');
                 previewBtn.classList.add('active');
                 previewBtnText.textContent = 'Hide Preview';
+                // Apply card backgrounds first, then update preview
+                applyCardBackgrounds();
                 updateCardPreview();
             } else {
                 previewSection.classList.remove('active');
@@ -1181,8 +1623,81 @@
             document.getElementById('previewEmailAr').textContent = email;
             document.getElementById('previewWebsiteAr').textContent = website;
 
-            // Generate QR codes
-            generateQRCodes();
+            // Apply custom card backgrounds if available
+            applyCardBackgrounds();
+
+            // Update contact data summary if custom templates exist
+            updateContactDataSummary();
+
+            // Generate QR codes for all cards (only if not using custom templates)
+            if (!cardDesigns.front && !cardDesigns.back) {
+                generateQRCodes();
+            }
+        }
+
+        function updateContactDataSummary() {
+            const hasCustomDesigns = cardDesigns.front || cardDesigns.back;
+            const summaryEl = document.getElementById('contactDataSummary');
+            
+            if (hasCustomDesigns && summaryEl) {
+                summaryEl.classList.add('active');
+                
+                document.getElementById('summaryNameEn').textContent = document.getElementById('nameEn').value || '-';
+                document.getElementById('summaryNameAr').textContent = document.getElementById('nameAr').value || '-';
+                document.getElementById('summaryPosition').textContent = document.getElementById('positionEn').value || '-';
+                document.getElementById('summaryPhone').textContent = document.getElementById('phone').value || '-';
+                document.getElementById('summaryEmail').textContent = document.getElementById('email').value || '-';
+                document.getElementById('summaryLocation').textContent = document.getElementById('location').value || '-';
+            } else if (summaryEl) {
+                summaryEl.classList.remove('active');
+            }
+        }
+
+        function applyCardBackgrounds() {
+            const frontCard = document.getElementById('cardFront');
+            const backCard = document.getElementById('cardBack');
+            const frontBars = frontCard.querySelector('.card-bottom-bars');
+            const backBars = backCard.querySelector('.card-bottom-bars');
+            const customNotice = document.getElementById('customDesignNotice');
+            const frontBadge = document.getElementById('frontBadge');
+            const backBadge = document.getElementById('backBadge');
+
+            const hasCustomDesigns = cardDesigns.front || cardDesigns.back;
+            
+            // Show/hide the custom design notice
+            if (customNotice) {
+                if (hasCustomDesigns) {
+                    customNotice.classList.add('active');
+                } else {
+                    customNotice.classList.remove('active');
+                }
+            }
+
+            // When custom templates exist, show the uploaded images
+            if (cardDesigns.front) {
+                frontCard.classList.add('has-custom-template');
+                frontCard.style.backgroundImage = `url(${cardDesigns.front})`;
+            } else {
+                frontCard.classList.remove('has-custom-template');
+                frontCard.style.backgroundImage = '';
+                if (frontBars) frontBars.style.display = 'block';
+            }
+
+            if (cardDesigns.back) {
+                backCard.classList.add('has-custom-template');
+                backCard.style.backgroundImage = `url(${cardDesigns.back})`;
+            } else {
+                backCard.classList.remove('has-custom-template');
+                backCard.style.backgroundImage = '';
+                if (backBars) backBars.style.display = 'block';
+            }
+
+            // Update badges with contact name
+            const nameEn = document.getElementById('nameEn')?.value || 'Contact';
+            const nameAr = document.getElementById('nameAr')?.value || nameEn;
+            
+            if (frontBadge) frontBadge.textContent = nameEn;
+            if (backBadge) backBadge.textContent = nameAr || nameEn;
         }
 
         function generateQRCodes() {
@@ -1204,40 +1719,23 @@
             if (imgBack) imgBack.src = qrApiUrl;
         }
 
-        function loadContacts() {
-            // Load contacts from localStorage (local mode)
-            const storedContacts = localStorage.getItem('contacts');
-            if (storedContacts) {
-                contacts = JSON.parse(storedContacts);
-            } else {
-                // Default sample contacts
-                contacts = [
-                    {
-                        id: 'bipin-raj',
-                        nameEn: 'Bipin Raj',
-                        nameAr: 'بيبين راج',
-                        positionEn: 'Regional Director',
-                        positionAr: 'المدير العام',
-                        location: 'Lulu Group Regional Office, Riyadh, Kingdom of Saudi Arabia',
-                        phone: '+966 56 347 3333',
-                        email: 'Bipin@sa.lulumea.com',
-                        website: 'luluhypermarket.com'
-                    },
-                    {
-                        id: 'zeeshan',
-                        nameEn: 'Zeeshan',
-                        nameAr: 'زيشان',
-                        positionEn: 'Marketing Manager',
-                        positionAr: 'مدير التسويق',
-                        location: 'Lulu Group Regional Office, Riyadh, Saudi Arabia',
-                        phone: '+966 549251252',
-                        email: 'zeeshan@sa.lulumea.com',
-                        website: 'luluhypermarket.com'
-                    }
-                ];
-                localStorage.setItem('contacts', JSON.stringify(contacts));
+        async function loadContacts() {
+            try {
+                const res = await fetch('/api/contacts', {
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to load contacts');
+                }
+                
+                contacts = await res.json();
+                renderContacts();
+            } catch (err) {
+                console.error('Error loading contacts:', err);
+                contacts = [];
+                renderContacts();
             }
-            renderContacts();
         }
 
         function renderContacts() {
@@ -1344,7 +1842,7 @@
             document.getElementById('previewBtnText').textContent = 'Generate';
         }
 
-        function saveContact(e) {
+        async function saveContact(e) {
             e.preventDefault();
             
             const id = document.getElementById('contactId').value;
@@ -1363,27 +1861,33 @@
             btn.disabled = true;
             btn.textContent = 'Saving...';
             
-            // Save to localStorage (local mode)
-            setTimeout(() => {
-                if (id) {
-                    // Update existing
-                    const index = contacts.findIndex(c => c.id === id);
-                    if (index > -1) {
-                        contacts[index] = { ...contacts[index], ...data };
-                    }
-                } else {
-                    // Create new
-                    const newId = data.nameEn.toLowerCase().replace(/\s+/g, '-');
-                    contacts.push({ id: newId, ...data });
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const url = id ? `/api/contacts/${id}` : '/api/contacts';
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-ID': sessionId
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to save contact');
                 }
                 
-                localStorage.setItem('contacts', JSON.stringify(contacts));
                 closeModal();
-                loadContacts();
+                await loadContacts();
                 
+            } catch (err) {
+                alert(err.message);
+            } finally {
                 btn.disabled = false;
                 btn.textContent = id ? 'Update Contact' : 'Create Contact';
-            }, 500);
+            }
         }
 
         function confirmDelete(id) {
@@ -1396,31 +1900,49 @@
             deleteContactId = null;
         }
 
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
             if (!deleteContactId) return;
             
-            // Delete from localStorage (local mode)
-            contacts = contacts.filter(c => c.id !== deleteContactId);
-            localStorage.setItem('contacts', JSON.stringify(contacts));
-            
-            closeDeleteModal();
-            loadContacts();
+            try {
+                const res = await fetch(`/api/contacts/${deleteContactId}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to delete contact');
+                }
+                
+                closeDeleteModal();
+                await loadContacts();
+                
+            } catch (err) {
+                alert(err.message);
+                closeDeleteModal();
+            }
         });
 
         function previewContact(id) {
-            window.open(`/contact.html?id=${id}`, '_blank');
+            window.open(`/c/${id}`, '_blank');
         }
 
         function viewQRCode(id) {
             window.open(`/qr/${id}`, '_blank');
         }
 
-        function signOut() {
-            // Clear session (local mode)
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userEmail');
+        async function signOut() {
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+            } catch (err) {}
+            
+            localStorage.removeItem('companySessionId');
+            localStorage.removeItem('companyId');
             localStorage.removeItem('companyName');
-            window.location.href = '/company/login.html';
+            localStorage.removeItem('userEmail');
+            window.location.href = '/company/login';
         }
 
         // Close modals on outside click
@@ -1428,6 +1950,302 @@
             overlay.addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.classList.remove('active');
+                }
+            });
+        });
+
+        // ==================== CARD DESIGN FUNCTIONS ====================
+
+        async function loadCardDesigns() {
+            if (!companyId) return;
+            
+            try {
+                const res = await fetch(`/api/companies/${companyId}/card-exteriors`, {
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    
+                    if (data.cardFront) {
+                        cardDesigns.front = data.cardFront;
+                        showCardPreview('front', data.cardFront);
+                    }
+                    
+                    if (data.cardBack) {
+                        cardDesigns.back = data.cardBack;
+                        showCardPreview('back', data.cardBack);
+                    }
+                    
+                    // Load company logo for card preview
+                    if (data.logo) {
+                        cardDesigns.logo = data.logo;
+                        updateCardLogos(data.logo);
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading card designs:', err);
+            }
+        }
+
+        function updateCardLogos(logoUrl) {
+            // Update all card logos in the preview
+            const cardLogos = document.querySelectorAll('.card-logo');
+            const qrLogos = document.querySelectorAll('.qr-logo-overlay');
+            
+            cardLogos.forEach(logo => {
+                if (logoUrl) {
+                    logo.src = logoUrl;
+                    logo.style.display = 'block';
+                }
+            });
+            
+            qrLogos.forEach(logo => {
+                if (logoUrl) {
+                    logo.src = logoUrl;
+                }
+            });
+            
+            // Update logo preview in the upload section
+            const logoPreviewImg = document.getElementById('logoPreviewImg');
+            const logoPlaceholder = document.getElementById('logoPlaceholder');
+            const logoPreviewContainer = document.getElementById('logoPreviewContainer');
+            const logoUploadBox = document.getElementById('logoUploadBox');
+            
+            if (logoUrl && logoPreviewImg) {
+                logoPreviewImg.src = logoUrl;
+                if (logoPlaceholder) logoPlaceholder.style.display = 'none';
+                if (logoPreviewContainer) logoPreviewContainer.style.display = 'block';
+                if (logoUploadBox) logoUploadBox.classList.add('has-image');
+            }
+        }
+
+        async function handleLogoUpload(event) {
+            event.stopPropagation();
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size must be less than 2MB');
+                return;
+            }
+
+            // Show preview immediately
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const logoPreviewImg = document.getElementById('logoPreviewImg');
+                const logoPlaceholder = document.getElementById('logoPlaceholder');
+                const logoPreviewContainer = document.getElementById('logoPreviewContainer');
+                const logoUploadBox = document.getElementById('logoUploadBox');
+                
+                logoPreviewImg.src = e.target.result;
+                logoPlaceholder.style.display = 'none';
+                logoPreviewContainer.style.display = 'block';
+                logoUploadBox.classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+
+            // Upload file
+            const formData = new FormData();
+            formData.append('logo', file);
+
+            try {
+                const res = await fetch('/api/upload/logo', {
+                    method: 'POST',
+                    headers: {
+                        'X-Session-ID': sessionId
+                    },
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Upload failed');
+                }
+
+                const result = await res.json();
+                
+                // Store the URL and update card logos
+                cardDesigns.logo = result.url;
+                cardDesigns.logoChanged = true;
+                updateCardLogos(result.url);
+                updateSaveButton();
+                
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+            }
+        }
+
+        async function handleCardUpload(event, side) {
+            event.stopPropagation();
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size must be less than 2MB');
+                return;
+            }
+
+            // Show preview immediately
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                showCardPreview(side, e.target.result);
+            };
+            reader.readAsDataURL(file);
+
+            // Upload file
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('side', side);
+
+            try {
+                const res = await fetch('/api/upload/card-exterior', {
+                    method: 'POST',
+                    headers: {
+                        'X-Session-ID': sessionId
+                    },
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Upload failed');
+                }
+
+                const result = await res.json();
+                
+                // Store the URL
+                cardDesigns[side] = result.url;
+                cardDesigns[side + 'Changed'] = true;
+                
+                updateSaveButton();
+                
+            } catch (err) {
+                alert('Upload failed: ' + err.message);
+                removeCardDesign(side);
+            }
+        }
+
+        function showCardPreview(side, src) {
+            const placeholder = document.getElementById(side + 'Placeholder');
+            const previewContainer = document.getElementById(side + 'PreviewContainer');
+            const preview = document.getElementById(side + 'Preview');
+            const actions = document.getElementById(side + 'Actions');
+            const uploadBox = document.getElementById(side + 'UploadBox');
+            
+            placeholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+            preview.src = src;
+            actions.style.display = 'flex';
+            uploadBox.classList.add('has-image');
+        }
+
+        function removeCardDesign(side) {
+            const placeholder = document.getElementById(side + 'Placeholder');
+            const previewContainer = document.getElementById(side + 'PreviewContainer');
+            const preview = document.getElementById(side + 'Preview');
+            const actions = document.getElementById(side + 'Actions');
+            const uploadBox = document.getElementById(side + 'UploadBox');
+            const input = document.getElementById(side + 'Input');
+            
+            placeholder.style.display = 'flex';
+            previewContainer.style.display = 'none';
+            preview.src = '';
+            actions.style.display = 'none';
+            uploadBox.classList.remove('has-image');
+            input.value = '';
+            
+            cardDesigns[side] = null;
+            cardDesigns[side + 'Changed'] = true;
+            
+            updateSaveButton();
+        }
+
+        function updateSaveButton() {
+            const btn = document.getElementById('saveDesignsBtn');
+            btn.disabled = !(cardDesigns.frontChanged || cardDesigns.backChanged || cardDesigns.logoChanged);
+        }
+
+        async function saveCardDesigns() {
+            if (!companyId) return;
+            
+            const btn = document.getElementById('saveDesignsBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            try {
+                const res = await fetch(`/api/companies/${companyId}/card-exteriors`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Session-ID': sessionId
+                    },
+                    body: JSON.stringify({
+                        cardFront: cardDesigns.front,
+                        cardBack: cardDesigns.back,
+                        logo: cardDesigns.logo
+                    })
+                });
+                
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to save');
+                }
+                
+                cardDesigns.frontChanged = false;
+                cardDesigns.backChanged = false;
+                cardDesigns.logoChanged = false;
+                
+                btn.textContent = 'Saved!';
+                setTimeout(() => {
+                    btn.textContent = 'Save Designs';
+                    updateSaveButton();
+                }, 2000);
+                
+            } catch (err) {
+                alert('Failed to save: ' + err.message);
+                btn.textContent = 'Save Designs';
+                btn.disabled = false;
+            }
+        }
+
+        // Drag and drop for card uploads
+        ['front', 'back'].forEach(side => {
+            const box = document.getElementById(side + 'UploadBox');
+            
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.classList.add('drag-over');
+            });
+            
+            box.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                box.classList.remove('drag-over');
+            });
+            
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.classList.remove('drag-over');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    // Create a fake event to reuse the handler
+                    const input = document.getElementById(side + 'Input');
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    input.files = dt.files;
+                    handleCardUpload({ target: input, stopPropagation: () => {} }, side);
                 }
             });
         });
