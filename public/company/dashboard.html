@@ -996,6 +996,286 @@
             background: linear-gradient(90deg, #F59E0B 0%, #F59E0B 50%, #DC2626 50%, #DC2626 100%);
         }
 
+        /* Hide bottom bar for Template 2 cards */
+        .bc-card-t2::after {
+            display: none !important;
+        }
+
+        /* Template Tabs */
+        .template-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            background: #F3F4F6;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .template-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.625rem 0.75rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: #6B7280;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .template-tab:hover {
+            color: #374151;
+        }
+
+        .template-tab.active {
+            background: #FFFFFF;
+            color: #1A1A2E;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-tab-num {
+            width: 20px;
+            height: 20px;
+            background: #E5E7EB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .template-tab.active .template-tab-num {
+            background: #22C55E;
+            color: white;
+        }
+
+        .template-container {
+            display: none;
+        }
+
+        .template-container.active {
+            display: block;
+        }
+
+        /* ========== TEMPLATE 2 STYLES (Masdar Official - CSS Recreation) ========== */
+        .bc-card-t2 {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1.78 / 1;
+            border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            position: relative;
+            background: #FFFFFF;
+        }
+
+        /* Template 2 Bottom Bar - Hidden completely */
+        .bc-card-t2 .t2-bottom-bar,
+        .bc-front-t2 .t2-bottom-bar {
+            display: none !important;
+        }
+
+        /* ===== FRONT CARD ===== */
+        .bc-front-t2 {
+            display: flex;
+            position: relative;
+        }
+
+        /* Left section - Logo area */
+        .t2-logo-section {
+            width: 42%;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .t2-logo-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .t2-logo-icon {
+            width: 75px;
+            height: 65px;
+            object-fit: contain;
+            margin-bottom: 3px;
+        }
+
+        .t2-brand-text {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+            margin-bottom: 0px;
+        }
+
+        .t2-brand-en {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1E3A5F;
+            letter-spacing: 0.2px;
+        }
+
+        .t2-brand-ar {
+            font-size: 10px;
+            font-weight: 600;
+            color: #1E3A5F;
+            direction: rtl;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+
+        .t2-tagline-row {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 6px;
+            color: #6B7280;
+            margin-top: 1px;
+        }
+
+        .t2-tagline-en {
+            letter-spacing: 0.1px;
+        }
+
+        .t2-tagline-ar {
+            direction: rtl;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+
+        /* Right section - Employee info */
+        .t2-info-section {
+            flex: 1;
+            padding: 14px 16px 14px 0;
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+
+        .t2-person-info {
+            margin-bottom: 6px;
+        }
+
+        .t2-name-ar {
+            font-size: 10px;
+            font-weight: 500;
+            color: #1E3A5F;
+            direction: rtl;
+            text-align: right;
+            margin-bottom: 0;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+            line-height: 1.4;
+        }
+
+        .t2-name-en {
+            font-size: 12px;
+            font-weight: 400;
+            color: #1E3A5F;
+            text-align: right;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+
+        .t2-title-ar {
+            font-size: 8px;
+            color: #718096;
+            direction: rtl;
+            text-align: right;
+            margin-bottom: 0;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+
+        .t2-title-en {
+            font-size: 8px;
+            color: #718096;
+            text-align: right;
+        }
+
+        .t2-contact-details {
+            margin-top: auto;
+        }
+
+        .t2-contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 9px;
+            margin-bottom: 1px;
+            gap: 5px;
+        }
+
+        .t2-contact-row.email-row {
+            margin-bottom: 2px;
+        }
+
+        .t2-contact-row.email-row .t2-value {
+            font-size: 9px;
+        }
+
+        .t2-label-en {
+            color: #1E3A5F;
+            font-weight: 600;
+            font-size: 8px;
+            text-transform: uppercase;
+            min-width: 22px;
+        }
+
+        .t2-label-ar {
+            color: #C9A227;
+            font-weight: 500;
+            font-size: 8px;
+            direction: rtl;
+            min-width: 22px;
+            text-align: left;
+            font-family: 'Tahoma', 'Arial', sans-serif;
+        }
+
+        .t2-value {
+            color: #1E3A5F;
+            font-weight: 400;
+            font-size: 9px;
+        }
+
+        /* ===== BACK CARD (Image-based) ===== */
+        .bc-back-t2 {
+            position: relative;
+            background-image: url('/logos/masdar-template-back.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Hide bottom bar on back - image has it */
+        .bc-back-t2 .t2-bottom-bar {
+            display: none;
+        }
+
+        /* QR code positioned inside the designated box on the template */
+        .t2-qr-box {
+            position: absolute;
+            bottom: 14%;
+            left: 56%;
+            width: 46px;
+            height: 46px;
+            background: transparent;
+            padding: 1px;
+        }
+
+        .t2-qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         .card-background::before {
             content: '';
             position: absolute;
@@ -1755,65 +2035,137 @@
             <div class="modal-preview-section" id="previewSection">
                 <h3 class="preview-title">Card Preview</h3>
                 
-                <!-- Front Card -->
-                <p class="preview-label">Front</p>
-                <div class="bc-card bc-front" id="cardFront">
-                    <div class="bc-left">
-                        <div class="bc-logo-block">
-                            <img class="bc-logo-icon" id="bcLogoIcon" src="/logos/masdar-logo-colored.png" alt="Logo">
-                            <div class="bc-logo-text">
-                                <span class="bc-logo-tagline">Building Materials</span>
-                                <span class="bc-logo-tagline-ar">لمواد البناء</span>
+                <!-- Template Selector Tabs -->
+                <div class="template-tabs">
+                    <button class="template-tab active" onclick="switchTemplate(1)" id="templateTab1">
+                        <span class="template-tab-num">1</span>
+                        Template 1
+                    </button>
+                    <button class="template-tab" onclick="switchTemplate(2)" id="templateTab2">
+                        <span class="template-tab-num">2</span>
+                        Template 2 (Masdar)
+                    </button>
+                </div>
+                
+                <!-- ========== TEMPLATE 1 (Current - with QR) ========== -->
+                <div class="template-container active" id="template1">
+                    <!-- Front Card -->
+                    <p class="preview-label">Front</p>
+                    <div class="bc-card bc-front" id="cardFront">
+                        <div class="bc-left">
+                            <div class="bc-logo-block">
+                                <img class="bc-logo-icon" id="bcLogoIcon" src="/logos/masdar-logo-colored.png" alt="Logo">
+                                <div class="bc-logo-text">
+                                    <span class="bc-logo-tagline">Building Materials</span>
+                                    <span class="bc-logo-tagline-ar">لمواد البناء</span>
+                                </div>
+                            </div>
+                            <div class="bc-qr">
+                                <img id="bcQrCode" src="" alt="QR Code">
                             </div>
                         </div>
-                        <div class="bc-qr">
-                            <img id="bcQrCode" src="" alt="QR Code">
+                        <div class="bc-right">
+                            <div class="bc-name-ar" id="bcNameAr">الاسم</div>
+                            <div class="bc-name-en" id="bcNameEn">Name</div>
+                            <div class="bc-position-ar" id="bcPositionAr">المنصب</div>
+                            <div class="bc-position-en" id="bcPositionEn">Position</div>
+                            <div class="bc-contact-info">
+                                <div class="bc-info-row">
+                                    <span class="bc-value" id="bcEmail">email@company.com</span>
+                                </div>
+                                <div class="bc-info-row">
+                                    <span class="bc-label">Mob</span>
+                                    <span class="bc-value" id="bcMobile">+966 00 000 0000</span>
+                                    <span class="bc-label-ar">جوال</span>
+                                </div>
+                                <div class="bc-info-row">
+                                    <span class="bc-label">Tel</span>
+                                    <span class="bc-value" id="bcTel">+966 00 000 0000</span>
+                                    <span class="bc-label-ar">هاتف</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="bc-right">
-                        <div class="bc-name-ar" id="bcNameAr">الاسم</div>
-                        <div class="bc-name-en" id="bcNameEn">Name</div>
-                        <div class="bc-position-ar" id="bcPositionAr">المنصب</div>
-                        <div class="bc-position-en" id="bcPositionEn">Position</div>
-                        <div class="bc-contact-info">
-                            <div class="bc-info-row">
-                                <span class="bc-value" id="bcEmail">email@company.com</span>
-                            </div>
-                            <div class="bc-info-row">
-                                <span class="bc-label">Mob</span>
-                                <span class="bc-value" id="bcMobile">+966 00 000 0000</span>
-                                <span class="bc-label-ar">جوال</span>
-                            </div>
-                            <div class="bc-info-row">
-                                <span class="bc-label">Tel</span>
-                                <span class="bc-value" id="bcTel">+966 00 000 0000</span>
-                                <span class="bc-label-ar">هاتف</span>
+                    
+                    <!-- Back Card -->
+                    <p class="preview-label">Back</p>
+                    <div class="bc-card bc-back" id="cardBack">
+                        <div class="bc-back-left">
+                            <div class="bc-logo-block">
+                                <img class="bc-logo-icon" id="bcLogoIconBack" src="/logos/masdar-logo-colored.png" alt="Logo">
+                                <div class="bc-logo-text">
+                                    <span class="bc-logo-tagline">Building Materials</span>
+                                    <span class="bc-logo-tagline-ar">لمواد البناء</span>
+                                </div>
                             </div>
                         </div>
+                        <div class="bc-back-right">
+                            <div class="bc-company-name-ar" id="bcCompanyAr">شركة مصدر لمواد البناء</div>
+                            <div class="bc-company-name-en" id="bcCompanyEn">Masdar Building Materials</div>
+                            <div class="bc-address" id="bcAddress">P.O. Box 40444, Riyadh 11499</div>
+                            <div class="bc-address-ar" id="bcAddressAr">ص.ب ٤٠٤٤٤، الرياض ١١٤٩٩</div>
+                            <div class="bc-country-ar">المملكة العربية السعودية</div>
+                            <div class="bc-country-en">Kingdom of Saudi Arabia</div>
+                        </div>
+                        <div class="bc-website" id="bcWebsite">www.mbm.com.sa</div>
                     </div>
                 </div>
                 
-                <!-- Back Card -->
-                <p class="preview-label">Back</p>
-                <div class="bc-card bc-back" id="cardBack">
-                    <div class="bc-back-left">
-                        <div class="bc-logo-block">
-                            <img class="bc-logo-icon" id="bcLogoIconBack" src="/logos/masdar-logo-colored.png" alt="Logo">
-                            <div class="bc-logo-text">
-                                <span class="bc-logo-tagline">Building Materials</span>
-                                <span class="bc-logo-tagline-ar">لمواد البناء</span>
+                <!-- ========== TEMPLATE 2 (Masdar Official - CSS Recreation) ========== -->
+                <div class="template-container" id="template2">
+                    <!-- Front Card - Masdar Official Template -->
+                    <p class="preview-label">Front (Official Masdar Template)</p>
+                    <div class="bc-card bc-card-t2 bc-front-t2" id="cardFrontT2">
+                        <!-- Left: Logo section -->
+                        <div class="t2-logo-section">
+                            <div class="t2-logo-wrapper">
+                                <img class="t2-logo-icon" src="/logos/masdar-logo-colored.png" alt="Masdar">
+                                <div class="t2-brand-text">
+                                    <span class="t2-brand-en">masdar</span>
+                                    <span class="t2-brand-ar">مصدر</span>
+                                </div>
+                                <div class="t2-tagline-row">
+                                    <span class="t2-tagline-en">Building Materials</span>
+                                    <span class="t2-tagline-ar">لمواد البناء</span>
+                                </div>
                             </div>
                         </div>
+                        
+                        <!-- Right: Employee info -->
+                        <div class="t2-info-section">
+                            <div class="t2-person-info">
+                                <div class="t2-name-ar" id="t2NameAr">الاسم بالعربي</div>
+                                <div class="t2-name-en" id="t2NameEn">Employee Name</div>
+                                <div class="t2-title-ar" id="t2TitleAr">المنصب</div>
+                                <div class="t2-title-en" id="t2TitleEn">Position</div>
+                            </div>
+                            <div class="t2-contact-details">
+                                <div class="t2-contact-row email-row">
+                                    <span class="t2-value" id="t2Email">email@mbm.com.sa</span>
+                                </div>
+                                <div class="t2-contact-row">
+                                    <span class="t2-label-en">Mob</span>
+                                    <span class="t2-value" id="t2Mobile">+966 00 000 0000</span>
+                                    <span class="t2-label-ar">جوال</span>
+                                </div>
+                                <div class="t2-contact-row">
+                                    <span class="t2-label-en">Tel</span>
+                                    <span class="t2-value" id="t2Tel">+966 00 000 0000</span>
+                                    <span class="t2-label-ar">هاتف</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="t2-bottom-bar"></div>
                     </div>
-                    <div class="bc-back-right">
-                        <div class="bc-company-name-ar" id="bcCompanyAr">شركة مصدر لمواد البناء</div>
-                        <div class="bc-company-name-en" id="bcCompanyEn">Masdar Building Materials</div>
-                        <div class="bc-address" id="bcAddress">P.O. Box 40444, Riyadh 11499</div>
-                        <div class="bc-address-ar" id="bcAddressAr">ص.ب ٤٠٤٤٤، الرياض ١١٤٩٩</div>
-                        <div class="bc-country-ar">المملكة العربية السعودية</div>
-                        <div class="bc-country-en">Kingdom of Saudi Arabia</div>
+                    
+                    <!-- Back Card - Masdar Official Template (Image-based) -->
+                    <p class="preview-label">Back (Official Masdar Template)</p>
+                    <div class="bc-card bc-card-t2 bc-back-t2" id="cardBackT2">
+                        <!-- Only QR Code is dynamic - rest is in background image -->
+                        <div class="t2-qr-box">
+                            <img id="t2QrCode" src="" alt="QR Code">
+                        </div>
                     </div>
-                    <div class="bc-website" id="bcWebsite">www.mbm.com.sa</div>
                 </div>
             </div>
         </div>
@@ -1847,6 +2199,7 @@
         let deleteLeadId = null;
         let isPreviewVisible = false;
         let currentTab = 'contacts';
+        let currentTemplate = 1; // Track which template is active (1 or 2)
         const sessionId = localStorage.getItem('companySessionId');
         const companyId = localStorage.getItem('companyId');
         
@@ -1855,6 +2208,19 @@
             back: '/logos/1769888527646-a4f9e1cd.jpg'
         };
         const forceMasdarTemplate = true;
+
+        // Template switching function
+        function switchTemplate(templateNum) {
+            currentTemplate = templateNum;
+            
+            // Update tab buttons
+            document.getElementById('templateTab1').classList.toggle('active', templateNum === 1);
+            document.getElementById('templateTab2').classList.toggle('active', templateNum === 2);
+            
+            // Update template containers
+            document.getElementById('template1').classList.toggle('active', templateNum === 1);
+            document.getElementById('template2').classList.toggle('active', templateNum === 2);
+        }
 
         // Card design state
         let cardDesigns = {
@@ -1961,7 +2327,9 @@
             const mobile = document.getElementById('phone').value || '+966 00 000 0000';
             const telephone = document.getElementById('telephone').value || '+966 00 000 0000';
             const location = document.getElementById('location').value || 'City, Country';
+            const website = document.getElementById('website').value || 'www.masdar.co';
             
+            // ========== UPDATE TEMPLATE 1 ==========
             // Update front card
             document.getElementById('bcNameEn').textContent = nameEn;
             document.getElementById('bcNameAr').textContent = nameAr;
@@ -1981,9 +2349,28 @@
             // Update website
             const websiteEl = document.getElementById('bcWebsite');
             if (websiteEl) {
-                const website = document.getElementById('website').value || 'www.mbm.com.sa';
                 websiteEl.textContent = website.replace(/^https?:\/\//i, '');
             }
+            
+            // ========== UPDATE TEMPLATE 2 (Masdar Official) ==========
+            // Update front card - Template 2
+            const t2NameEn = document.getElementById('t2NameEn');
+            const t2NameAr = document.getElementById('t2NameAr');
+            const t2TitleEn = document.getElementById('t2TitleEn');
+            const t2TitleAr = document.getElementById('t2TitleAr');
+            const t2Email = document.getElementById('t2Email');
+            const t2Mobile = document.getElementById('t2Mobile');
+            const t2Tel = document.getElementById('t2Tel');
+            const t2Website = document.getElementById('t2Website');
+            
+            if (t2NameEn) t2NameEn.textContent = nameEn;
+            if (t2NameAr) t2NameAr.textContent = nameAr;
+            if (t2TitleEn) t2TitleEn.textContent = positionEn;
+            if (t2TitleAr) t2TitleAr.textContent = positionAr;
+            if (t2Email) t2Email.textContent = email;
+            if (t2Mobile) t2Mobile.textContent = mobile;
+            if (t2Tel) t2Tel.textContent = telephone;
+            if (t2Website) t2Website.textContent = website.replace(/^https?:\/\//i, '');
             
             // Generate QR code
             generateBusinessCardQR();
@@ -1998,9 +2385,16 @@
             const logoUrl = cardDesigns.logo || '/logos/masdar-logo-colored.png';
             
             generateStyledQR(contactUrl, logoUrl).then(canvas => {
+                // Update Template 1 QR code
                 const qrImg = document.getElementById('bcQrCode');
                 if (qrImg) {
                     qrImg.src = canvas.toDataURL('image/png');
+                }
+                
+                // Update Template 2 QR code
+                const t2QrImg = document.getElementById('t2QrCode');
+                if (t2QrImg) {
+                    t2QrImg.src = canvas.toDataURL('image/png');
                 }
             });
         }
