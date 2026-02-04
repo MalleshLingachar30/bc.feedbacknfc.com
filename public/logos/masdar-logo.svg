@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60">
+  <!-- Masdar Building Materials Logo - Geometric M Shape -->
+  <!-- Gray chevron (back left) -->
+  <polygon points="10,5 30,30 10,55 0,30" fill="#6B7280"/>
+  <!-- Red chevron (center) -->
+  <polygon points="22,5 42,30 22,55 12,30" fill="#DC2626"/>
+  <!-- Blue chevron (front right) -->
+  <polygon points="34,5 54,30 34,55 24,30" fill="#3B82F6"/>
+</svg>

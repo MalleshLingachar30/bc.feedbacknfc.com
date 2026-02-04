@@ -559,8 +559,9 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
+        /* Hide badge on custom templates - show clean card only */
         .business-card.has-custom-template .custom-template-badge {
-            display: block;
+            display: none;
         }
 
         /* Masdar template (default) */
@@ -602,8 +603,10 @@
             display: block;
         }
 
-        .business-card.has-custom-template .masdar-overlay {
-            display: none;
+        /* Custom template overrides masdar template - hide all overlays */
+        .business-card.has-custom-template .masdar-overlay,
+        .business-card.masdar-template.has-custom-template .masdar-overlay {
+            display: none !important;
         }
 
         .masdar-back-overlay {
@@ -618,8 +621,10 @@
             display: block;
         }
 
-        .business-card.has-custom-template .masdar-back-overlay {
-            display: none;
+        /* Custom template overrides masdar template - hide all overlays */
+        .business-card.has-custom-template .masdar-back-overlay,
+        .business-card.masdar-template.has-custom-template .masdar-back-overlay {
+            display: none !important;
         }
 
         .masdar-back-website {
@@ -743,50 +748,245 @@
             color: #15803D;
         }
 
-        /* Contact data summary */
-        .contact-data-summary {
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            display: none;
+        /* Business Card Styles */
+        .bc-card {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1.75 / 1;
+            background: linear-gradient(135deg, #FAFAFA 0%, #F5F5F5 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            position: relative;
         }
 
-        .contact-data-summary.active {
-            display: block;
-        }
-
-        .contact-data-summary h4 {
-            font-size: 0.85rem;
-            color: #374151;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-
-        .contact-data-item {
+        /* Front Card */
+        .bc-front {
             display: flex;
+        }
+
+        .bc-left {
+            width: 38%;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: space-between;
-            font-size: 0.8rem;
-            padding: 0.25rem 0;
-            border-bottom: 1px solid #F3F4F6;
+            border-right: 1px solid #E5E7EB;
         }
 
-        .contact-data-item:last-child {
-            border-bottom: none;
+        .bc-logo-block {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .contact-data-label {
+        .bc-logo-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .bc-logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bc-logo-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #374151;
+            line-height: 1.1;
+        }
+
+        .bc-logo-name-ar {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            direction: rtl;
+            line-height: 1.1;
+        }
+
+        .bc-logo-tagline {
+            font-size: 7px;
+            color: #6B7280;
+            line-height: 1.2;
+        }
+
+        .bc-logo-tagline-ar {
+            font-size: 7px;
+            color: #6B7280;
+            direction: rtl;
+            line-height: 1.2;
+        }
+
+        .bc-qr {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 6px;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .bc-qr img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .bc-right {
+            flex: 1;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bc-name-ar {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1F2937;
+            direction: rtl;
+            text-align: right;
+            margin-bottom: 2px;
+        }
+
+        .bc-name-en {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            text-align: right;
+            margin-bottom: 6px;
+        }
+
+        .bc-position-ar {
+            font-size: 10px;
+            color: #6B7280;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .bc-position-en {
+            font-size: 10px;
+            color: #6B7280;
+            text-align: right;
+            margin-bottom: 12px;
+        }
+
+        .bc-contact-info {
+            margin-top: auto;
+        }
+
+        .bc-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 9px;
+            margin-bottom: 4px;
+            gap: 6px;
+        }
+
+        .bc-info-row .bc-label {
+            color: #9CA3AF;
+            min-width: 25px;
+        }
+
+        .bc-info-row .bc-value {
+            flex: 1;
+            color: #374151;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .bc-info-row .bc-label-ar {
+            color: #9CA3AF;
+            min-width: 25px;
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* Back Card */
+        .bc-back {
+            display: flex;
+        }
+
+        .bc-back-left {
+            width: 38%;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #E5E7EB;
+        }
+
+        .bc-back-right {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: right;
+        }
+
+        .bc-company-name-ar {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1F2937;
+            direction: rtl;
+            margin-bottom: 2px;
+        }
+
+        .bc-company-name-en {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+
+        .bc-address {
+            font-size: 9px;
+            color: #6B7280;
+            margin-bottom: 2px;
+        }
+
+        .bc-address-ar {
+            font-size: 9px;
+            color: #6B7280;
+            direction: rtl;
+            margin-bottom: 8px;
+        }
+
+        .bc-country-ar {
+            font-size: 10px;
+            color: #374151;
+            direction: rtl;
+            font-weight: 500;
+        }
+
+        .bc-country-en {
+            font-size: 10px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .bc-website {
+            position: absolute;
+            bottom: 14px;
+            left: 16px;
+            font-size: 9px;
             color: #6B7280;
         }
 
-        .contact-data-value {
-            color: #1A1A2E;
-            font-weight: 500;
-            text-align: right;
-            max-width: 60%;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        /* Color accent bar at bottom - Yellow and Red like Masdar */
+        .bc-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #F59E0B 0%, #F59E0B 50%, #DC2626 50%, #DC2626 100%);
         }
 
         .card-background::before {
@@ -1382,194 +1582,70 @@
             <!-- Card Preview Section -->
             <div class="modal-preview-section" id="previewSection">
                 <h3 class="preview-title">Card Preview</h3>
-                <div class="template-info-box" id="customDesignNotice">
-                    <p><strong>Your uploaded card design</strong> - Each contact will have this exact design with their unique name, position, mobile, telephone & email printed in the same positions</p>
+                
+                <!-- Front Card -->
+                <p class="preview-label">Front</p>
+                <div class="bc-card bc-front" id="cardFront">
+                    <div class="bc-left">
+                        <div class="bc-logo-block">
+                            <img class="bc-logo-icon" id="bcLogoIcon" src="/logos/masdar-logo.svg" alt="Logo">
+                            <div class="bc-logo-text">
+                                <span class="bc-logo-name">masdar</span>
+                                <span class="bc-logo-name-ar">مصدر</span>
+                                <span class="bc-logo-tagline">Building Materials</span>
+                                <span class="bc-logo-tagline-ar">لمواد البناء</span>
+                            </div>
+                        </div>
+                        <div class="bc-qr">
+                            <img id="bcQrCode" src="" alt="QR Code">
+                        </div>
+                    </div>
+                    <div class="bc-right">
+                        <div class="bc-name-ar" id="bcNameAr">الاسم</div>
+                        <div class="bc-name-en" id="bcNameEn">Name</div>
+                        <div class="bc-position-ar" id="bcPositionAr">المنصب</div>
+                        <div class="bc-position-en" id="bcPositionEn">Position</div>
+                        <div class="bc-contact-info">
+                            <div class="bc-info-row">
+                                <span class="bc-value" id="bcEmail">email@company.com</span>
+                            </div>
+                            <div class="bc-info-row">
+                                <span class="bc-label">Mob</span>
+                                <span class="bc-value" id="bcMobile">+966 00 000 0000</span>
+                                <span class="bc-label-ar">جوال</span>
+                            </div>
+                            <div class="bc-info-row">
+                                <span class="bc-label">Tel</span>
+                                <span class="bc-value" id="bcTel">+966 00 000 0000</span>
+                                <span class="bc-label-ar">هاتف</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <!-- Front Card (English) -->
-                <p class="preview-label">Front (English)</p>
-                <div class="business-card masdar-template masdar-template-front" id="cardFront">
-                    <div class="card-background" id="cardFrontBg"></div>
-                    <div class="custom-template-badge" id="frontBadge">Contact Name</div>
-                    <div class="masdar-overlay">
-                        <div class="masdar-front-clear"></div>
-                        <div class="masdar-front-text">
-                            <div class="masdar-name-ar" id="masdarNameAr">الاسم</div>
-                            <div class="masdar-name-en" id="masdarNameEn">Name</div>
-                            <div class="masdar-title-ar" id="masdarPositionAr">المنصب</div>
-                            <div class="masdar-title-en" id="masdarPositionEn">Position</div>
-                        </div>
-                        <div class="masdar-front-lines">
-                            <div class="masdar-line">
-                                <span class="label-en">Email</span>
-                                <span class="value" id="masdarEmail">Email</span>
-                                <span class="label-ar">البريد</span>
-                            </div>
-                            <div class="masdar-line">
-                                <span class="label-en">Mob</span>
-                                <span class="value" id="masdarMobile">Phone</span>
-                                <span class="label-ar">جوال</span>
-                            </div>
-                            <div class="masdar-line">
-                                <span class="label-en">Tel</span>
-                                <span class="value" id="masdarTel">-</span>
-                                <span class="label-ar">هاتف</span>
+                <!-- Back Card -->
+                <p class="preview-label">Back</p>
+                <div class="bc-card bc-back" id="cardBack">
+                    <div class="bc-back-left">
+                        <div class="bc-logo-block">
+                            <img class="bc-logo-icon" id="bcLogoIconBack" src="/logos/masdar-logo.svg" alt="Logo">
+                            <div class="bc-logo-text">
+                                <span class="bc-logo-name">masdar</span>
+                                <span class="bc-logo-name-ar">مصدر</span>
+                                <span class="bc-logo-tagline">Building Materials</span>
+                                <span class="bc-logo-tagline-ar">لمواد البناء</span>
                             </div>
                         </div>
                     </div>
-                    <div class="card-content">
-                        <div class="card-header">
-                            <svg class="nfc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 4L12 12L20 20"/>
-                            </svg>
-                            <img src="/logos/lulu.png" alt="Logo" class="card-logo">
-                        </div>
-                        <div class="card-main">
-                            <div class="card-info">
-                                <div class="card-name" id="previewNameEn">Name</div>
-                                <div class="card-position" id="previewPositionEn">POSITION</div>
-                                <div class="card-location-short" id="previewLocationShort">Location</div>
-                                <div class="card-details">
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                            <circle cx="12" cy="10" r="3"/>
-                                        </svg>
-                                        <span id="previewLocationFull">Full Address</span>
-                                    </div>
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                        </svg>
-                                        <span id="previewPhone">Phone</span>
-                                    </div>
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                            <polyline points="22,6 12,13 2,6"/>
-                                        </svg>
-                                        <span id="previewEmail">Email</span>
-                                    </div>
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"/>
-                                            <line x1="2" y1="12" x2="22" y2="12"/>
-                                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                                        </svg>
-                                        <span id="previewWebsite">Website</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-qr-section">
-                                <div class="card-qr">
-                                    <img id="qrImageFront" class="qr-image" src="" alt="QR Code">
-                                    <img src="/logos/lulu.png" alt="Logo" class="qr-logo-overlay">
-                                </div>
-                            </div>
-                        </div>
+                    <div class="bc-back-right">
+                        <div class="bc-company-name-ar" id="bcCompanyAr">شركة مصدر لمواد البناء</div>
+                        <div class="bc-company-name-en" id="bcCompanyEn">Masdar Building Materials</div>
+                        <div class="bc-address" id="bcAddress">P.O. Box 40444, Riyadh 11499</div>
+                        <div class="bc-address-ar" id="bcAddressAr">ص.ب ٤٠٤٤٤، الرياض ١١٤٩٩</div>
+                        <div class="bc-country-ar">المملكة العربية السعودية</div>
+                        <div class="bc-country-en">Kingdom of Saudi Arabia</div>
                     </div>
-                    <div class="card-bottom-bars">
-                        <div class="card-bar-yellow"></div>
-                        <div class="card-bar-red"></div>
-                    </div>
-                </div>
-
-                <!-- Back Card (Arabic) -->
-                <p class="preview-label">Back (Arabic)</p>
-                <div class="business-card arabic masdar-template masdar-template-back" id="cardBack">
-                    <div class="card-background" id="cardBackBg"></div>
-                    <div class="custom-template-badge" id="backBadge">اسم جهة الاتصال</div>
-                    <div class="masdar-back-overlay">
-                        <div class="masdar-back-website" id="masdarWebsiteBack"></div>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-header">
-                            <img src="/logos/lulu.png" alt="Logo" class="card-logo">
-                            <svg class="nfc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4L12 12L4 20"/>
-                            </svg>
-                        </div>
-                        <div class="card-main">
-                            <div class="card-info">
-                                <div class="card-name" id="previewNameAr">الاسم</div>
-                                <div class="card-position" id="previewPositionAr">المنصب</div>
-                                <div class="card-location-short" id="previewLocationShortAr">المملكة العربية السعودية</div>
-                                <div class="card-details">
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                            <circle cx="12" cy="10" r="3"/>
-                                        </svg>
-                                        <span id="previewLocationAr">المملكة العربية السعودية</span>
-                                    </div>
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                        </svg>
-                                        <span>تليفون: <span id="previewPhoneAr">Phone</span></span>
-                                    </div>
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                            <polyline points="22,6 12,13 2,6"/>
-                                        </svg>
-                                        <span id="previewEmailAr">Email</span>
-                                    </div>
-                                    <div class="card-detail-row">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"/>
-                                            <line x1="2" y1="12" x2="22" y2="12"/>
-                                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                                        </svg>
-                                        <span id="previewWebsiteAr">Website</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-qr-section">
-                                <div class="card-qr">
-                                    <img id="qrImageBack" class="qr-image" src="" alt="QR Code">
-                                    <img src="/logos/lulu.png" alt="Logo" class="qr-logo-overlay">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-bottom-bars">
-                        <div class="card-bar-yellow"></div>
-                        <div class="card-bar-red"></div>
-                    </div>
-                </div>
-
-                <!-- Contact Data Summary -->
-                <div class="contact-data-summary" id="contactDataSummary">
-                    <h4>Contact Information for this Card:</h4>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Name (EN):</span>
-                        <span class="contact-data-value" id="summaryNameEn">-</span>
-                    </div>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Name (AR):</span>
-                        <span class="contact-data-value" id="summaryNameAr">-</span>
-                    </div>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Position:</span>
-                        <span class="contact-data-value" id="summaryPosition">-</span>
-                    </div>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Mobile:</span>
-                        <span class="contact-data-value" id="summaryPhone">-</span>
-                    </div>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Telephone:</span>
-                        <span class="contact-data-value" id="summaryTelephone">-</span>
-                    </div>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Email:</span>
-                        <span class="contact-data-value" id="summaryEmail">-</span>
-                    </div>
-                    <div class="contact-data-item">
-                        <span class="contact-data-label">Location:</span>
-                        <span class="contact-data-value" id="summaryLocation">-</span>
-                    </div>
+                    <div class="bc-website" id="bcWebsite">www.mbm.com.sa</div>
                 </div>
             </div>
         </div>
@@ -1686,9 +1762,8 @@
                 previewSection.classList.add('active');
                 previewBtn.classList.add('active');
                 previewBtnText.textContent = 'Hide Preview';
-                // Apply card backgrounds first, then update preview
-                applyCardBackgrounds();
-                updateCardPreview();
+                // Update business card preview
+                updateBusinessCard();
             } else {
                 previewSection.classList.remove('active');
                 previewBtn.classList.remove('active');
@@ -1699,136 +1774,63 @@
         function updateCardPreview() {
             if (!isPreviewVisible) return;
 
+            // Update business card with current form data
+            updateBusinessCard();
+        }
+
+        function updateBusinessCard() {
+            // Get form values
             const nameEn = document.getElementById('nameEn').value || 'Name';
             const nameAr = document.getElementById('nameAr').value || 'الاسم';
             const positionEn = document.getElementById('positionEn').value || 'Position';
             const positionAr = document.getElementById('positionAr').value || 'المنصب';
-            const location = document.getElementById('location').value || 'Location';
-            const phone = document.getElementById('phone').value || 'Phone';
-            const telephone = document.getElementById('telephone').value || 'Telephone';
-            const email = document.getElementById('email').value || 'Email';
-            const website = document.getElementById('website').value || '';
-            const websiteDisplay = website || 'Website';
-
-            // Extract short location (city, country)
-            const locationParts = location.split(',');
-            let shortLocation = location;
-            if (locationParts.length >= 2) {
-                shortLocation = locationParts.slice(-2).map(s => s.trim()).join(', ');
+            const email = document.getElementById('email').value || 'email@company.com';
+            const mobile = document.getElementById('phone').value || '+966 00 000 0000';
+            const telephone = document.getElementById('telephone').value || '+966 00 000 0000';
+            const location = document.getElementById('location').value || 'City, Country';
+            
+            // Update front card
+            document.getElementById('bcNameEn').textContent = nameEn;
+            document.getElementById('bcNameAr').textContent = nameAr;
+            document.getElementById('bcPositionEn').textContent = positionEn;
+            document.getElementById('bcPositionAr').textContent = positionAr;
+            document.getElementById('bcEmail').textContent = email;
+            document.getElementById('bcMobile').textContent = mobile;
+            document.getElementById('bcTel').textContent = telephone;
+            
+            // Update back card - using Masdar info as default
+            const companyName = localStorage.getItem('companyName') || 'Masdar Building Materials';
+            document.getElementById('bcCompanyEn').textContent = 'Masdar Building Materials';
+            document.getElementById('bcCompanyAr').textContent = 'شركة مصدر لمواد البناء';
+            document.getElementById('bcAddress').textContent = 'P.O. Box 40444, Riyadh 11499';
+            document.getElementById('bcAddressAr').textContent = 'ص.ب ٤٠٤٤٤، الرياض ١١٤٩٩';
+            
+            // Update website
+            const websiteEl = document.getElementById('bcWebsite');
+            if (websiteEl) {
+                const website = document.getElementById('website').value || 'www.mbm.com.sa';
+                websiteEl.textContent = website.replace(/^https?:\/\//i, '');
             }
-
-            // Update English card (Front)
-            document.getElementById('previewNameEn').textContent = nameEn;
-            document.getElementById('previewPositionEn').textContent = positionEn.toUpperCase();
-            document.getElementById('previewLocationShort').textContent = shortLocation;
-            document.getElementById('previewLocationFull').textContent = location;
-            document.getElementById('previewPhone').textContent = phone;
-            document.getElementById('previewEmail').textContent = email;
-            document.getElementById('previewWebsite').textContent = websiteDisplay;
-
-            // Update Arabic card (Back)
-            document.getElementById('previewNameAr').textContent = nameAr || nameEn;
-            document.getElementById('previewPositionAr').textContent = positionAr || positionEn;
-            document.getElementById('previewLocationShortAr').textContent = 'المملكة العربية السعودية';
-            document.getElementById('previewLocationAr').textContent = 'المملكة العربية السعودية';
-            document.getElementById('previewPhoneAr').textContent = phone;
-            document.getElementById('previewEmailAr').textContent = email;
-            document.getElementById('previewWebsiteAr').textContent = websiteDisplay;
-
-            // Update Masdar template overlays (if active)
-            updateMasdarPreview({
-                nameEn,
-                nameAr,
-                positionEn,
-                positionAr,
-                phone,
-                telephone,
-                email,
-                website: websiteDisplay
-            });
-
-            // Apply custom card backgrounds if available
-            applyCardBackgrounds();
-
-            // Update contact data summary if custom templates exist
-            updateContactDataSummary();
-
-            // Generate QR codes for all cards (only if not using custom templates)
-            if (!cardDesigns.front && !cardDesigns.back) {
-                generateQRCodes();
-            }
+            
+            // Generate QR code
+            generateBusinessCardQR();
         }
 
-        function updateContactDataSummary() {
-            const useCustomFront = !forceMasdarTemplate && cardDesigns.front;
-            const useCustomBack = !forceMasdarTemplate && cardDesigns.back;
-            const hasCustomDesigns = useCustomFront || useCustomBack;
-            const summaryEl = document.getElementById('contactDataSummary');
+        function generateBusinessCardQR() {
+            const contactId = document.getElementById('contactId').value;
+            const nameEn = document.getElementById('nameEn').value;
+            const id = contactId || (nameEn ? nameEn.toLowerCase().replace(/\s+/g, '-') : 'preview');
             
-            if (hasCustomDesigns && summaryEl) {
-                summaryEl.classList.add('active');
-                
-                document.getElementById('summaryNameEn').textContent = document.getElementById('nameEn').value || '-';
-                document.getElementById('summaryNameAr').textContent = document.getElementById('nameAr').value || '-';
-                document.getElementById('summaryPosition').textContent = document.getElementById('positionEn').value || '-';
-                document.getElementById('summaryPhone').textContent = document.getElementById('phone').value || '-';
-                document.getElementById('summaryTelephone').textContent = document.getElementById('telephone').value || '-';
-                document.getElementById('summaryEmail').textContent = document.getElementById('email').value || '-';
-                document.getElementById('summaryLocation').textContent = document.getElementById('location').value || '-';
-            } else if (summaryEl) {
-                summaryEl.classList.remove('active');
-            }
+            const contactUrl = `${window.location.origin}/c/${id}`;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(contactUrl)}&color=22C55E&bgcolor=FFFFFF&margin=2&ecc=H`;
+            
+            const qrImg = document.getElementById('bcQrCode');
+            if (qrImg) qrImg.src = qrApiUrl;
         }
 
         function applyCardBackgrounds() {
-            const frontCard = document.getElementById('cardFront');
-            const backCard = document.getElementById('cardBack');
-            const frontBars = frontCard.querySelector('.card-bottom-bars');
-            const backBars = backCard.querySelector('.card-bottom-bars');
-            const customNotice = document.getElementById('customDesignNotice');
-            const frontBadge = document.getElementById('frontBadge');
-            const backBadge = document.getElementById('backBadge');
-
-            const hasCustomDesigns = cardDesigns.front || cardDesigns.back;
-            
-            // Show/hide the custom design notice
-            if (customNotice) {
-                if (hasCustomDesigns) {
-                    customNotice.classList.add('active');
-                } else {
-                    customNotice.classList.remove('active');
-                }
-            }
-
-            // When custom templates exist, show the uploaded images
-            if (useCustomFront) {
-                frontCard.classList.add('has-custom-template');
-                frontCard.style.backgroundImage = `url(${cardDesigns.front})`;
-            } else {
-                frontCard.classList.remove('has-custom-template');
-                frontCard.style.backgroundImage = `url(${masdarTemplate.front})`;
-                if (frontBars && !frontCard.classList.contains('masdar-template')) {
-                    frontBars.style.display = 'block';
-                }
-            }
-
-            if (useCustomBack) {
-                backCard.classList.add('has-custom-template');
-                backCard.style.backgroundImage = `url(${cardDesigns.back})`;
-            } else {
-                backCard.classList.remove('has-custom-template');
-                backCard.style.backgroundImage = `url(${masdarTemplate.back})`;
-                if (backBars && !backCard.classList.contains('masdar-template')) {
-                    backBars.style.display = 'block';
-                }
-            }
-
-            // Update badges with contact name
-            const nameEn = document.getElementById('nameEn')?.value || 'Contact';
-            const nameAr = document.getElementById('nameAr')?.value || nameEn;
-            
-            if (frontBadge) frontBadge.textContent = nameEn;
-            if (backBadge) backBadge.textContent = nameAr || nameEn;
+            // Simply update the business card with current form data
+            updateBusinessCard();
         }
 
         function updateMasdarPreview({ nameEn, nameAr, positionEn, positionAr, phone, telephone, email, website }) {
@@ -1876,6 +1878,113 @@
             
             const imgBack = document.getElementById('qrImageBack');
             if (imgBack) imgBack.src = qrApiUrl;
+        }
+
+        async function downloadForPrint() {
+            const btn = document.getElementById('downloadPrintBtn');
+            const originalText = btn.innerHTML;
+            
+            // Check if custom card design exists
+            if (!cardDesigns.front) {
+                alert('Please upload a card design first');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="spinner" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-dashoffset="32">
+                        <animate attributeName="stroke-dashoffset" values="32;0" dur="1s" repeatCount="indefinite"/>
+                    </circle>
+                </svg>
+                Generating...
+            `;
+            
+            try {
+                const nameEn = document.getElementById('nameEn').value || 'contact';
+                
+                // Download the card image directly (clean, no overlay)
+                const link = document.createElement('a');
+                const fileName = `business-card-${nameEn.replace(/\s+/g, '-').toLowerCase()}-front.png`;
+                
+                // Fetch the image and convert to blob for download
+                const response = await fetch(cardDesigns.front);
+                const blob = await response.blob();
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+                URL.revokeObjectURL(link.href);
+                
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Downloaded!
+                `;
+                
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error downloading card:', error);
+                alert('Error downloading card. Please try again.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function exportEmployeeData() {
+            const nameEn = document.getElementById('nameEn').value || '-';
+            const nameAr = document.getElementById('nameAr').value || '-';
+            const positionEn = document.getElementById('positionEn').value || '-';
+            const positionAr = document.getElementById('positionAr').value || '-';
+            const email = document.getElementById('email').value || '-';
+            const phone = document.getElementById('phone').value || '-';
+            const telephone = document.getElementById('telephone').value || '-';
+            const location = document.getElementById('location').value || '-';
+            
+            // Create formatted text for printer
+            const dataText = `EMPLOYEE DATA FOR BUSINESS CARD PRINTING
+========================================
+
+Name (English): ${nameEn}
+Name (Arabic): ${nameAr}
+
+Position (English): ${positionEn}
+Position (Arabic): ${positionAr}
+
+Email: ${email}
+Mobile: ${phone}
+Telephone: ${telephone}
+
+Location: ${location}
+
+========================================
+Generated on: ${new Date().toLocaleDateString()}
+`;
+            
+            // Create and download text file
+            const blob = new Blob([dataText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `employee-data-${nameEn.replace(/\s+/g, '-').toLowerCase() || 'contact'}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            
+            // Show success feedback
+            const btn = document.getElementById('downloadDataBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Exported!
+            `;
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
         }
 
         async function loadContacts() {
