@@ -865,6 +865,138 @@ app.delete('/api/contacts/:id', requireAuth, async (req, res) => {
     }
 });
 
+// ==================== LEAD ROUTES ====================
+
+// Create lead (public - when customer taps and provides consent)
+app.post('/api/leads', async (req, res) => {
+    try {
+        if (!sql) {
+            return res.status(500).json({ error: 'Database not configured' });
+        }
+        
+        const { contactId, customerName, customerEmail, customerPhone, customerCompany, notes } = req.body;
+        
+        if (!contactId || !customerName) {
+            return res.status(400).json({ error: 'Contact ID and customer name are required' });
+        }
+        
+        // Get the company ID from the contact
+        const contactResult = await sql`
+            SELECT company_id FROM contacts WHERE id = ${contactId}
+        `;
+        
+        if (contactResult.length === 0) {
+            return res.status(404).json({ error: 'Contact not found' });
+        }
+        
+        const companyId = contactResult[0].company_id;
+        
+        // Create the lead
+        const result = await sql`
+            INSERT INTO leads (contact_id, company_id, customer_name, customer_email, customer_phone, customer_company, notes, consented_at)
+            VALUES (${contactId}, ${companyId}, ${customerName}, ${customerEmail || null}, ${customerPhone || null}, ${customerCompany || null}, ${notes || null}, NOW())
+            RETURNING id, customer_name, customer_email, customer_phone, customer_company, created_at
+        `;
+        
+        const lead = result[0];
+        console.log(`Lead captured: ${customerName} for contact ${contactId}`);
+        
+        res.json({ 
+            success: true,
+            lead: {
+                id: lead.id,
+                customerName: lead.customer_name,
+                customerEmail: lead.customer_email,
+                customerPhone: lead.customer_phone,
+                customerCompany: lead.customer_company,
+                createdAt: lead.created_at
+            }
+        });
+    } catch (error) {
+        console.error('Create lead error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get leads (filtered by company for company admin)
+app.get('/api/leads', requireAuth, async (req, res) => {
+    try {
+        let leads;
+        
+        if (req.session.role === 'company_admin') {
+            leads = await sql`
+                SELECT l.*, c.name_en as contact_name 
+                FROM leads l
+                LEFT JOIN contacts c ON c.id = l.contact_id
+                WHERE l.company_id = ${req.session.companyId}
+                ORDER BY l.created_at DESC
+            `;
+        } else if (req.query.companyId) {
+            leads = await sql`
+                SELECT l.*, c.name_en as contact_name 
+                FROM leads l
+                LEFT JOIN contacts c ON c.id = l.contact_id
+                WHERE l.company_id = ${req.query.companyId}
+                ORDER BY l.created_at DESC
+            `;
+        } else {
+            leads = await sql`
+                SELECT l.*, c.name_en as contact_name, comp.name as company_name
+                FROM leads l
+                LEFT JOIN contacts c ON c.id = l.contact_id
+                LEFT JOIN companies comp ON comp.id = l.company_id
+                ORDER BY l.created_at DESC
+            `;
+        }
+        
+        res.json(leads.map(l => ({
+            id: l.id,
+            contactId: l.contact_id,
+            contactName: l.contact_name,
+            companyId: l.company_id,
+            companyName: l.company_name,
+            customerName: l.customer_name,
+            customerEmail: l.customer_email,
+            customerPhone: l.customer_phone,
+            customerCompany: l.customer_company,
+            notes: l.notes,
+            consentedAt: l.consented_at,
+            createdAt: l.created_at
+        })));
+    } catch (error) {
+        console.error('Get leads error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Delete lead
+app.delete('/api/leads/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Check permission for company admin
+        if (req.session.role === 'company_admin') {
+            const check = await sql`
+                SELECT company_id FROM leads WHERE id = ${id}
+            `;
+            if (check.length === 0 || check[0].company_id !== req.session.companyId) {
+                return res.status(403).json({ error: 'Forbidden' });
+            }
+        }
+        
+        const result = await sql`DELETE FROM leads WHERE id = ${id} RETURNING id`;
+        
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Lead not found' });
+        }
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Delete lead error:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // ==================== PAGE ROUTES ====================
 
 // Super Admin

@@ -87,9 +87,28 @@ async function setupDatabase() {
         `;
         console.log('✅ Created auth_codes table');
 
+        // Create leads table for customer lead capture
+        await sql`
+            CREATE TABLE IF NOT EXISTS leads (
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                contact_id VARCHAR(255) REFERENCES contacts(id) ON DELETE CASCADE,
+                company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
+                customer_name VARCHAR(255) NOT NULL,
+                customer_email VARCHAR(255),
+                customer_phone VARCHAR(50),
+                customer_company VARCHAR(255),
+                notes TEXT,
+                consented_at TIMESTAMP NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `;
+        console.log('✅ Created leads table');
+
         // Create index for faster lookups
         await sql`CREATE INDEX IF NOT EXISTS idx_contacts_company ON contacts(company_id)`;
         await sql`CREATE INDEX IF NOT EXISTS idx_sessions_expires ON sessions(expires_at)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_leads_company ON leads(company_id)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_leads_contact ON leads(contact_id)`;
         
         console.log('✅ Created indexes');
 

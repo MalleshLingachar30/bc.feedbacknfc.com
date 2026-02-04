@@ -1412,6 +1412,97 @@
             }
         }
 
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #FFFFFF;
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: #6B7280;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: #F9FAFB;
+            color: #374151;
+        }
+
+        .tab-btn.active {
+            background: #22C55E;
+            color: white;
+        }
+
+        .tab-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .tab-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.125rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .tab-btn:not(.active) .tab-badge {
+            background: #E5E7EB;
+            color: #6B7280;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Leads Table */
+        .leads-table {
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .lead-row td:first-child {
+            font-weight: 600;
+        }
+
+        .lead-meta {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+            margin-top: 0.25rem;
+        }
+
+        .lead-contact-badge {
+            display: inline-block;
+            background: #F0FDF4;
+            color: #16A34A;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .main-content {
@@ -1437,6 +1528,16 @@
 
             .modal {
                 margin: 1rem;
+            }
+
+            .tab-nav {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1;
+                justify-content: center;
+                min-width: 120px;
             }
         }
     </style>
@@ -1469,21 +1570,47 @@
 
         <!-- Dashboard Content -->
         <div id="dashboardContent" style="display: none;">
-            <div class="page-header">
-                <div>
-                    <h1 class="page-title">Business Cards</h1>
-                    <p class="contact-count"><span id="contactCount">0</span> contacts</p>
-                </div>
-                <button class="add-btn" onclick="openAddModal()">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('contacts')" id="contactsTabBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="5" x2="12" y2="19"/>
-                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
                     </svg>
-                    Add Contact
+                    Business Cards
+                    <span class="tab-badge" id="contactsTabBadge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('leads')" id="leadsTabBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    Leads
+                    <span class="tab-badge" id="leadsTabBadge">0</span>
                 </button>
             </div>
 
-            <div class="contacts-table">
+            <!-- Contacts Tab -->
+            <div class="tab-content active" id="contactsTab">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Business Cards</h1>
+                        <p class="contact-count"><span id="contactCount">0</span> contacts</p>
+                    </div>
+                    <button class="add-btn" onclick="openAddModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Add Contact
+                    </button>
+                </div>
+
+                <div class="contacts-table">
                 <table>
                     <thead>
                         <tr>
@@ -1506,6 +1633,44 @@
                         <line x1="3" y1="10" x2="21" y2="10"/>
                     </svg>
                     <p>No contacts yet. Click "Add Contact" to get started.</p>
+                </div>
+            </div>
+            </div>
+
+            <!-- Leads Tab -->
+            <div class="tab-content" id="leadsTab">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Leads</h1>
+                        <p class="contact-count"><span id="leadCount">0</span> potential customers</p>
+                    </div>
+                </div>
+
+                <div class="leads-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>From Contact</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsTableBody">
+                        </tbody>
+                    </table>
+                    <div class="empty-state" id="leadsEmptyState" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <p>No leads yet. Leads appear when customers tap your cards and share their info.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1677,8 +1842,11 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script>
         let contacts = [];
+        let leads = [];
         let deleteContactId = null;
+        let deleteLeadId = null;
         let isPreviewVisible = false;
+        let currentTab = 'contacts';
         const sessionId = localStorage.getItem('companySessionId');
         const companyId = localStorage.getItem('companyId');
         
@@ -1728,8 +1896,9 @@
                 // Load card designs
                 await loadCardDesigns();
                 
-                // Load contacts from API
+                // Load contacts and leads from API
                 await loadContacts();
+                await loadLeads();
                 
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'block';
@@ -1948,6 +2117,160 @@
             updateBusinessCard();
         }
 
+        // ==================== TAB FUNCTIONS ====================
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tab + 'TabBtn').classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+        }
+
+        // ==================== LEADS FUNCTIONS ====================
+        
+        async function loadLeads() {
+            try {
+                const res = await fetch('/api/leads', {
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to load leads');
+                }
+                
+                leads = await res.json();
+                renderLeads();
+                updateLeadsBadge();
+            } catch (err) {
+                console.error('Error loading leads:', err);
+                leads = [];
+                renderLeads();
+            }
+        }
+
+        function renderLeads() {
+            const tbody = document.getElementById('leadsTableBody');
+            const emptyState = document.getElementById('leadsEmptyState');
+            
+            document.getElementById('leadCount').textContent = leads.length;
+            
+            if (leads.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            tbody.innerHTML = leads.map(lead => `
+                <tr class="lead-row">
+                    <td>
+                        <strong>${lead.customerName}</strong>
+                    </td>
+                    <td>${lead.customerEmail || '-'}</td>
+                    <td>${lead.customerPhone || '-'}</td>
+                    <td>${lead.customerCompany || '-'}</td>
+                    <td>
+                        <span class="lead-contact-badge">${lead.contactName || '-'}</span>
+                    </td>
+                    <td>
+                        <div>${formatDate(lead.createdAt)}</div>
+                        <div class="lead-meta">${formatTime(lead.createdAt)}</div>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button class="action-btn delete" onclick="confirmDeleteLead('${lead.id}')" title="Delete">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"/>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateLeadsBadge() {
+            document.getElementById('leadsTabBadge').textContent = leads.length;
+            document.getElementById('contactsTabBadge').textContent = contacts.length;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function confirmDeleteLead(id) {
+            deleteLeadId = id;
+            document.getElementById('deleteModal').classList.add('active');
+            // Update the delete modal to handle both contacts and leads
+            document.getElementById('confirmDeleteBtn').onclick = async function() {
+                if (deleteLeadId) {
+                    await deleteLead();
+                } else if (deleteContactId) {
+                    await deleteContactConfirm();
+                }
+            };
+        }
+
+        async function deleteLead() {
+            if (!deleteLeadId) return;
+            
+            try {
+                const res = await fetch(`/api/leads/${deleteLeadId}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to delete lead');
+                }
+                
+                closeDeleteModal();
+                deleteLeadId = null;
+                await loadLeads();
+                
+            } catch (err) {
+                alert(err.message);
+                closeDeleteModal();
+                deleteLeadId = null;
+            }
+        }
+
+        async function deleteContactConfirm() {
+            if (!deleteContactId) return;
+            
+            try {
+                const res = await fetch(`/api/contacts/${deleteContactId}`, {
+                    method: 'DELETE',
+                    headers: { 'X-Session-ID': sessionId }
+                });
+                
+                if (!res.ok) {
+                    throw new Error('Failed to delete contact');
+                }
+                
+                closeDeleteModal();
+                deleteContactId = null;
+                await loadContacts();
+                
+            } catch (err) {
+                alert(err.message);
+                closeDeleteModal();
+                deleteContactId = null;
+            }
+        }
+
         function updateMasdarPreview({ nameEn, nameAr, positionEn, positionAr, phone, telephone, email, website }) {
             const setText = (id, value, fallback) => {
                 const el = document.getElementById(id);
@@ -2126,6 +2449,7 @@ Generated on: ${new Date().toLocaleDateString()}
             const emptyState = document.getElementById('emptyState');
             
             document.getElementById('contactCount').textContent = contacts.length;
+            document.getElementById('contactsTabBadge').textContent = contacts.length;
             
             if (contacts.length === 0) {
                 tbody.innerHTML = '';
@@ -2280,35 +2604,19 @@ Generated on: ${new Date().toLocaleDateString()}
 
         function confirmDelete(id) {
             deleteContactId = id;
+            deleteLeadId = null;
             document.getElementById('deleteModal').classList.add('active');
+            // Update the delete modal handler
+            document.getElementById('confirmDeleteBtn').onclick = async function() {
+                await deleteContactConfirm();
+            };
         }
 
         function closeDeleteModal() {
             document.getElementById('deleteModal').classList.remove('active');
             deleteContactId = null;
+            deleteLeadId = null;
         }
-
-        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
-            if (!deleteContactId) return;
-            
-            try {
-                const res = await fetch(`/api/contacts/${deleteContactId}`, {
-                    method: 'DELETE',
-                    headers: { 'X-Session-ID': sessionId }
-                });
-                
-                if (!res.ok) {
-                    throw new Error('Failed to delete contact');
-                }
-                
-                closeDeleteModal();
-                await loadContacts();
-                
-            } catch (err) {
-                alert(err.message);
-                closeDeleteModal();
-            }
-        });
 
         function previewContact(id) {
             window.open(`/c/${id}`, '_blank');

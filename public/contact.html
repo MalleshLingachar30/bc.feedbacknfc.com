@@ -231,6 +231,260 @@
         .not-found p {
             color: #6B7280;
         }
+
+        /* Lead Capture Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .lead-modal {
+            background: #FFFFFF;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+            color: white;
+        }
+
+        .modal-header-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .modal-header-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .lead-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .lead-form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .lead-form-group label .required {
+            color: #DC2626;
+        }
+
+        .lead-form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #1A1A2E;
+            transition: all 0.2s ease;
+        }
+
+        .lead-form-group input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .lead-form-group input:focus {
+            outline: none;
+            border-color: #22C55E;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+            background: #FFFFFF;
+        }
+
+        .lead-form-group input.error {
+            border-color: #DC2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .field-hint {
+            font-size: 0.75rem;
+            color: #6B7280;
+            margin-top: 0.35rem;
+            margin-bottom: 0;
+        }
+
+        .field-hint.error {
+            color: #DC2626;
+        }
+
+        .consent-text {
+            font-size: 0.8rem;
+            color: #6B7280;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+
+        .consent-text strong {
+            color: #374151;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn.skip {
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            color: #6B7280;
+        }
+
+        .modal-btn.skip:hover {
+            background: #E5E7EB;
+        }
+
+        .modal-btn.submit {
+            background: #22C55E;
+            border: none;
+            color: white;
+        }
+
+        .modal-btn.submit:hover {
+            background: #16A34A;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .modal-btn.submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Success State */
+        .lead-success {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            display: none;
+        }
+
+        .lead-success.active {
+            display: block;
+        }
+
+        .lead-success-icon {
+            width: 64px;
+            height: 64px;
+            background: #ECFDF5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: #22C55E;
+        }
+
+        .lead-success h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 0.5rem;
+        }
+
+        .lead-success p {
+            color: #6B7280;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .lead-success .close-btn {
+            background: #22C55E;
+            border: none;
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lead-success .close-btn:hover {
+            background: #16A34A;
+        }
+
+        .lead-form {
+            display: block;
+        }
+
+        .lead-form.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -345,14 +599,167 @@
         <p class="footer-text" id="footerText">Business Card</p>
     </footer>
 
+    <!-- Lead Capture Modal -->
+    <div class="modal-overlay" id="leadModal">
+        <div class="lead-modal">
+            <div class="modal-header">
+                <div class="modal-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <h2>Stay Connected!</h2>
+                <p>Share your info so we can stay in touch</p>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Lead Form -->
+                <form id="leadForm" class="lead-form">
+                    <div class="lead-form-group">
+                        <label>Your Name <span class="required">*</span></label>
+                        <input type="text" id="leadName" name="name" autocomplete="name" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div class="lead-form-group">
+                        <label>Email Address <span class="required">*</span></label>
+                        <input type="email" id="leadEmail" name="email" autocomplete="email" placeholder="john@example.com">
+                        <p class="field-hint" id="contactHint">Please provide email or phone number</p>
+                    </div>
+                    
+                    <div class="lead-form-group">
+                        <label>Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="leadPhone" name="phone" autocomplete="tel" placeholder="+971 50 123 4567">
+                    </div>
+                    
+                    <div class="lead-form-group">
+                        <label>Company (Optional)</label>
+                        <input type="text" id="leadCompany" name="organization" autocomplete="organization" placeholder="Your Company">
+                    </div>
+                    
+                    <p class="consent-text">
+                        By submitting, you consent to share your contact information with <strong id="consentCompanyName">this company</strong>. 
+                        Your data will only be used for business communications.
+                    </p>
+                    
+                    <div class="modal-buttons">
+                        <button type="button" class="modal-btn skip" onclick="closeLeadModal()">Skip</button>
+                        <button type="submit" class="modal-btn submit" id="leadSubmitBtn">Share Info</button>
+                    </div>
+                </form>
+                
+                <!-- Success State -->
+                <div class="lead-success" id="leadSuccess">
+                    <div class="lead-success-icon">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </div>
+                    <h3>Thank You!</h3>
+                    <p>Your information has been shared successfully. We'll be in touch soon!</p>
+                    <button type="button" class="close-btn" onclick="closeLeadModal()">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentContact = null;
+        const LEAD_MODAL_KEY = 'leadModalShown_';
+        const LEAD_DATA_KEY = 'leadUserData';
 
         // Get contact ID from URL
         function getContactId() {
             const path = window.location.pathname;
             const match = path.match(/\/c\/([^\/]+)/);
             return match ? match[1] : null;
+        }
+
+        // Check if lead modal should be shown
+        function shouldShowLeadModal(contactId) {
+            const shown = sessionStorage.getItem(LEAD_MODAL_KEY + contactId);
+            return !shown;
+        }
+
+        // Mark lead modal as shown for this session
+        function markLeadModalShown(contactId) {
+            sessionStorage.setItem(LEAD_MODAL_KEY + contactId, 'true');
+        }
+
+        // Save user data for returning visitors
+        function saveUserData(data) {
+            try {
+                localStorage.setItem(LEAD_DATA_KEY, JSON.stringify(data));
+            } catch (e) {
+                console.log('Could not save user data');
+            }
+        }
+
+        // Load saved user data for returning visitors
+        function loadUserData() {
+            try {
+                const saved = localStorage.getItem(LEAD_DATA_KEY);
+                return saved ? JSON.parse(saved) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Pre-fill form with saved data
+        function prefillForm() {
+            const userData = loadUserData();
+            if (userData) {
+                if (userData.name) document.getElementById('leadName').value = userData.name;
+                if (userData.email) document.getElementById('leadEmail').value = userData.email;
+                if (userData.phone) document.getElementById('leadPhone').value = userData.phone;
+                if (userData.company) document.getElementById('leadCompany').value = userData.company;
+            }
+        }
+
+        // Validate email or phone is provided
+        function validateContactMethod() {
+            const email = document.getElementById('leadEmail').value.trim();
+            const phone = document.getElementById('leadPhone').value.trim();
+            const hint = document.getElementById('contactHint');
+            const emailInput = document.getElementById('leadEmail');
+            const phoneInput = document.getElementById('leadPhone');
+            
+            if (!email && !phone) {
+                hint.textContent = 'Please provide at least email or phone number';
+                hint.classList.add('error');
+                emailInput.classList.add('error');
+                phoneInput.classList.add('error');
+                return false;
+            }
+            
+            hint.textContent = '';
+            hint.classList.remove('error');
+            emailInput.classList.remove('error');
+            phoneInput.classList.remove('error');
+            return true;
+        }
+
+        // Show lead modal
+        function showLeadModal() {
+            if (!currentContact) return;
+            
+            // Update company name in consent text
+            const companyName = currentContact.companyName || 'this company';
+            document.getElementById('consentCompanyName').textContent = companyName;
+            
+            // Pre-fill form with saved data
+            prefillForm();
+            
+            // Show modal
+            document.getElementById('leadModal').classList.add('active');
+        }
+
+        // Close lead modal
+        function closeLeadModal() {
+            document.getElementById('leadModal').classList.remove('active');
+            if (currentContact) {
+                markLeadModalShown(currentContact.id);
+            }
         }
 
         // Initialize
@@ -431,8 +838,92 @@
                 document.getElementById('loadingState').style.display = 'none';
                 document.getElementById('contactCard').style.display = 'block';
                 
+                // Show lead capture modal after a short delay (only once per session)
+                if (shouldShowLeadModal(contactId)) {
+                    setTimeout(() => {
+                        showLeadModal();
+                    }, 1500);
+                }
+                
             } catch (err) {
                 showNotFound();
+            }
+        });
+
+        // Clear validation errors on input
+        document.getElementById('leadEmail').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('leadPhone').classList.remove('error');
+            document.getElementById('contactHint').classList.remove('error');
+            document.getElementById('contactHint').textContent = 'Please provide email or phone number';
+        });
+        
+        document.getElementById('leadPhone').addEventListener('input', function() {
+            this.classList.remove('error');
+            document.getElementById('leadEmail').classList.remove('error');
+            document.getElementById('contactHint').classList.remove('error');
+            document.getElementById('contactHint').textContent = 'Please provide email or phone number';
+        });
+
+        // Lead form submission
+        document.getElementById('leadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate at least email or phone is provided
+            if (!validateContactMethod()) {
+                return;
+            }
+            
+            const btn = document.getElementById('leadSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sharing...';
+            
+            const customerName = document.getElementById('leadName').value.trim();
+            const customerEmail = document.getElementById('leadEmail').value.trim() || null;
+            const customerPhone = document.getElementById('leadPhone').value.trim() || null;
+            const customerCompany = document.getElementById('leadCompany').value.trim() || null;
+            
+            const leadData = {
+                contactId: currentContact.id,
+                customerName,
+                customerEmail,
+                customerPhone,
+                customerCompany
+            };
+            
+            try {
+                const res = await fetch('/api/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(leadData)
+                });
+                
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to submit');
+                }
+                
+                // Save user data for future visits (returning visitor feature)
+                saveUserData({
+                    name: customerName,
+                    email: customerEmail,
+                    phone: customerPhone,
+                    company: customerCompany
+                });
+                
+                // Show success state
+                document.getElementById('leadForm').classList.add('hidden');
+                document.getElementById('leadSuccess').classList.add('active');
+                
+                // Mark as shown
+                markLeadModalShown(currentContact.id);
+                
+            } catch (err) {
+                alert('Failed to submit: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = 'Share Info';
             }
         });
 
@@ -499,6 +990,13 @@
             
             return lines.join('\r\n');
         }
+
+        // Close modal on background click
+        document.getElementById('leadModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLeadModal();
+            }
+        });
     </script>
 </body>
 </html>
