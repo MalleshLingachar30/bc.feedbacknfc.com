@@ -778,19 +778,26 @@
 
         .bc-logo-block {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 0;
+            text-align: center;
+        }
+
+        .bc-logo-text {
+            margin-top: -2px;
         }
 
         .bc-logo-icon {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             object-fit: contain;
         }
 
         .bc-logo-text {
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
 
         .bc-logo-name {
@@ -822,8 +829,8 @@
         }
 
         .bc-qr {
-            width: 70px;
-            height: 70px;
+            width: 90px;
+            height: 90px;
             background: white;
             border-radius: 6px;
             padding: 4px;
@@ -1588,10 +1595,8 @@
                 <div class="bc-card bc-front" id="cardFront">
                     <div class="bc-left">
                         <div class="bc-logo-block">
-                            <img class="bc-logo-icon" id="bcLogoIcon" src="/logos/masdar-logo.svg" alt="Logo">
+                            <img class="bc-logo-icon" id="bcLogoIcon" src="/logos/masdar-logo-colored.png" alt="Logo">
                             <div class="bc-logo-text">
-                                <span class="bc-logo-name">masdar</span>
-                                <span class="bc-logo-name-ar">مصدر</span>
                                 <span class="bc-logo-tagline">Building Materials</span>
                                 <span class="bc-logo-tagline-ar">لمواد البناء</span>
                             </div>
@@ -1628,10 +1633,8 @@
                 <div class="bc-card bc-back" id="cardBack">
                     <div class="bc-back-left">
                         <div class="bc-logo-block">
-                            <img class="bc-logo-icon" id="bcLogoIconBack" src="/logos/masdar-logo.svg" alt="Logo">
+                            <img class="bc-logo-icon" id="bcLogoIconBack" src="/logos/masdar-logo-colored.png" alt="Logo">
                             <div class="bc-logo-text">
-                                <span class="bc-logo-name">masdar</span>
-                                <span class="bc-logo-name-ar">مصدر</span>
                                 <span class="bc-logo-tagline">Building Materials</span>
                                 <span class="bc-logo-tagline-ar">لمواد البناء</span>
                             </div>
@@ -1671,6 +1674,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script>
         let contacts = [];
         let deleteContactId = null;
@@ -1822,10 +1826,121 @@
             const id = contactId || (nameEn ? nameEn.toLowerCase().replace(/\s+/g, '-') : 'preview');
             
             const contactUrl = `${window.location.origin}/c/${id}`;
-            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(contactUrl)}&color=22C55E&bgcolor=FFFFFF&margin=2&ecc=H`;
+            const logoUrl = cardDesigns.logo || '/logos/masdar-logo-colored.png';
             
-            const qrImg = document.getElementById('bcQrCode');
-            if (qrImg) qrImg.src = qrApiUrl;
+            generateStyledQR(contactUrl, logoUrl).then(canvas => {
+                const qrImg = document.getElementById('bcQrCode');
+                if (qrImg) {
+                    qrImg.src = canvas.toDataURL('image/png');
+                }
+            });
+        }
+
+        function generateStyledQR(text, logoUrl) {
+            return new Promise((resolve, reject) => {
+                // Generate QR code data
+                const qr = qrcode(0, 'H');
+                qr.addData(text);
+                qr.make();
+                
+                const moduleCount = qr.getModuleCount();
+                const size = 150;
+                const dotSize = size / (moduleCount + 8);
+                const margin = dotSize * 4;
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // Background
+                ctx.fillStyle = '#F5F0E8';
+                ctx.fillRect(0, 0, size, size);
+                
+                // Draw QR modules as dots
+                const dotRadius = dotSize * 0.45;
+                
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            const x = margin + col * dotSize + dotSize / 2;
+                            const y = margin + row * dotSize + dotSize / 2;
+                            
+                            const isFinderPattern = 
+                                (row < 7 && col < 7) ||
+                                (row < 7 && col >= moduleCount - 7) ||
+                                (row >= moduleCount - 7 && col < 7);
+                            
+                            if (isFinderPattern) {
+                                ctx.fillStyle = '#22C55E';
+                            } else {
+                                ctx.fillStyle = '#000000';
+                            }
+                            
+                            ctx.beginPath();
+                            ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                }
+                
+                // Draw finder pattern squares
+                drawFinderPattern(ctx, margin, margin, dotSize, 7);
+                drawFinderPattern(ctx, margin + (moduleCount - 7) * dotSize, margin, dotSize, 7);
+                drawFinderPattern(ctx, margin, margin + (moduleCount - 7) * dotSize, dotSize, 7);
+                
+                // Load and draw logo in center
+                const logo = new Image();
+                logo.crossOrigin = 'anonymous';
+                logo.onload = function() {
+                    const logoSize = size * 0.22;
+                    const logoX = (size - logoSize) / 2;
+                    const logoY = (size - logoSize) / 2;
+                    
+                    ctx.fillStyle = '#FFFFFF';
+                    roundRect(ctx, logoX - 4, logoY - 4, logoSize + 8, logoSize + 8, 5);
+                    ctx.fill();
+                    
+                    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                    resolve(canvas);
+                };
+                logo.onerror = function() {
+                    resolve(canvas);
+                };
+                logo.src = logoUrl;
+            });
+        }
+
+        function drawFinderPattern(ctx, x, y, dotSize, size) {
+            const green = '#22C55E';
+            
+            ctx.fillStyle = green;
+            roundRect(ctx, x, y, dotSize * size, dotSize * size, dotSize * 0.5);
+            ctx.fill();
+            
+            ctx.fillStyle = '#F5F0E8';
+            const innerOffset = dotSize;
+            roundRect(ctx, x + innerOffset, y + innerOffset, dotSize * (size - 2), dotSize * (size - 2), dotSize * 0.3);
+            ctx.fill();
+            
+            ctx.fillStyle = green;
+            const centerOffset = dotSize * 2;
+            roundRect(ctx, x + centerOffset, y + centerOffset, dotSize * 3, dotSize * 3, dotSize * 0.3);
+            ctx.fill();
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
         }
 
         function applyCardBackgrounds() {
