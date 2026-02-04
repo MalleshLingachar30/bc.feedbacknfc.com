@@ -563,6 +563,162 @@
             display: block;
         }
 
+        /* Masdar template (default) */
+        .business-card.masdar-template {
+            background-color: #FFFFFF;
+            background-repeat: no-repeat;
+            background-size: 118%;
+            background-position: 50% 50%;
+        }
+
+        .business-card.masdar-template-front {
+            background-image: url('/logos/1769888523110-4758ed1e.jpg');
+            background-size: 108%;
+            background-position: 52% 50%;
+        }
+
+        .business-card.masdar-template-back {
+            background-image: url('/logos/1769888527646-a4f9e1cd.jpg');
+            background-size: 120%;
+            background-position: 50% 40%;
+        }
+
+        .business-card.masdar-template .card-background,
+        .business-card.masdar-template .card-content,
+        .business-card.masdar-template .card-bottom-bars {
+            display: none;
+        }
+
+        .masdar-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: none;
+            color: #1F2937;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .business-card.masdar-template .masdar-overlay {
+            display: block;
+        }
+
+        .business-card.has-custom-template .masdar-overlay {
+            display: none;
+        }
+
+        .masdar-back-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: none;
+            pointer-events: none;
+        }
+
+        .business-card.masdar-template .masdar-back-overlay {
+            display: block;
+        }
+
+        .business-card.has-custom-template .masdar-back-overlay {
+            display: none;
+        }
+
+        .masdar-back-website {
+            position: absolute;
+            left: 16px;
+            bottom: 16px;
+            font-size: 10px;
+            font-weight: 500;
+            color: #E5E7EB;
+            text-transform: lowercase;
+            letter-spacing: 0.3px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .masdar-front-clear {
+            display: none;
+        }
+
+        .masdar-front-text {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            left: auto;
+            width: 195px;
+            text-align: left;
+        }
+
+        .masdar-name-ar {
+            font-size: 11px;
+            font-weight: 500;
+            text-align: right;
+            direction: rtl;
+            line-height: 1.3;
+            color: #374151;
+        }
+
+        .masdar-name-en {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 1px;
+            line-height: 1.3;
+            color: #1F2937;
+        }
+
+        .masdar-title-ar {
+            font-size: 10px;
+            margin-top: 4px;
+            text-align: right;
+            direction: rtl;
+            line-height: 1.3;
+            color: #6B7280;
+        }
+
+        .masdar-title-en {
+            font-size: 11px;
+            font-weight: 500;
+            margin-top: 1px;
+            line-height: 1.3;
+            color: #374151;
+        }
+
+        .masdar-front-lines {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            width: 195px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            font-size: 10px;
+        }
+
+        .masdar-line {
+            display: grid;
+            grid-template-columns: 32px 1fr 32px;
+            column-gap: 4px;
+            align-items: center;
+        }
+
+        .masdar-line .label-en,
+        .masdar-line .label-ar {
+            font-weight: 600;
+            color: #374151;
+            font-size: 9px;
+        }
+
+        .masdar-line .label-ar {
+            text-align: right;
+            direction: rtl;
+        }
+
+        .masdar-line .value {
+            font-weight: 500;
+            color: #1F2937;
+            word-break: break-word;
+            font-size: 10px;
+        }
+
         /* Template info box */
         .template-info-box {
             background: #F0FDF4;
@@ -1106,97 +1262,6 @@
 
         <!-- Dashboard Content -->
         <div id="dashboardContent" style="display: none;">
-            <!-- Card Design Section -->
-            <div class="card-design-section">
-                <div class="section-header">
-                    <div>
-                        <h2 class="section-title">Card Design Template</h2>
-                        <p class="section-subtitle">Upload your card design - each contact will have the same design with their unique info</p>
-                    </div>
-                    <button class="save-designs-btn" id="saveDesignsBtn" onclick="saveCardDesigns()" disabled>
-                        Save Designs
-                    </button>
-                </div>
-                
-                <!-- Company Logo Upload -->
-                <div style="margin-bottom: 1.5rem;">
-                    <p class="card-upload-label">Company Logo</p>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="card-upload-box" id="logoUploadBox" onclick="document.getElementById('logoInput').click()" style="width: 150px; height: 100px; min-height: auto; padding: 1rem;">
-                            <input type="file" id="logoInput" class="upload-input" accept="image/*" onchange="handleLogoUpload(event)">
-                            
-                            <div class="upload-placeholder" id="logoPlaceholder">
-                                <svg class="card-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width: 32px; height: 32px; margin-bottom: 0.5rem;">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <p class="card-upload-text" style="font-size: 0.75rem;">Upload logo</p>
-                            </div>
-                            
-                            <div class="preview-container" id="logoPreviewContainer" style="display: none;">
-                                <img src="" alt="Logo preview" id="logoPreviewImg" style="max-width: 100%; max-height: 70px; object-fit: contain;">
-                            </div>
-                        </div>
-                        <p style="color: #6B7280; font-size: 0.8rem;">Your company logo for business cards</p>
-                    </div>
-                </div>
-
-                <div class="card-uploads-grid">
-                    <!-- Front Card Upload -->
-                    <div>
-                        <p class="card-upload-label">Front Side</p>
-                        <div class="card-upload-box" id="frontUploadBox" onclick="document.getElementById('frontInput').click()">
-                            <input type="file" id="frontInput" class="upload-input" accept="image/*" onchange="handleCardUpload(event, 'front')">
-                            
-                            <div class="upload-placeholder" id="frontPlaceholder">
-                                <svg class="card-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <p class="card-upload-text">Upload front side design</p>
-                                <p class="card-upload-hint">Your card template image</p>
-                            </div>
-                            
-                            <div class="preview-container" id="frontPreviewContainer" style="display: none;">
-                                <img src="" alt="Front preview" class="card-upload-preview" id="frontPreview">
-                            </div>
-                        </div>
-                        <div class="card-upload-actions" id="frontActions" style="display: none;">
-                            <button class="card-upload-btn change" onclick="event.stopPropagation(); document.getElementById('frontInput').click()">Change</button>
-                            <button class="card-upload-btn remove" onclick="event.stopPropagation(); removeCardDesign('front')">Remove</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Back Card Upload -->
-                    <div>
-                        <p class="card-upload-label">Back Side</p>
-                        <div class="card-upload-box" id="backUploadBox" onclick="document.getElementById('backInput').click()">
-                            <input type="file" id="backInput" class="upload-input" accept="image/*" onchange="handleCardUpload(event, 'back')">
-                            
-                            <div class="upload-placeholder" id="backPlaceholder">
-                                <svg class="card-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                    <circle cx="8.5" cy="8.5" r="1.5"/>
-                                    <polyline points="21 15 16 10 5 21"/>
-                                </svg>
-                                <p class="card-upload-text">Upload back side design</p>
-                                <p class="card-upload-hint">Your card template image</p>
-                            </div>
-                            
-                            <div class="preview-container" id="backPreviewContainer" style="display: none;">
-                                <img src="" alt="Back preview" class="card-upload-preview" id="backPreview">
-                            </div>
-                        </div>
-                        <div class="card-upload-actions" id="backActions" style="display: none;">
-                            <button class="card-upload-btn change" onclick="event.stopPropagation(); document.getElementById('backInput').click()">Change</button>
-                            <button class="card-upload-btn remove" onclick="event.stopPropagation(); removeCardDesign('back')">Remove</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="page-header">
                 <div>
                     <h1 class="page-title">Business Cards</h1>
@@ -1218,7 +1283,8 @@
                             <th>Name</th>
                             <th>Position</th>
                             <th>Email</th>
-                            <th>Phone</th>
+                            <th>Mobile</th>
+                            <th>Telephone</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -1278,9 +1344,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Phone <span class="required">*</span></label>
+                            <label>Mobile <span class="required">*</span></label>
                             <div class="input-with-btn">
-                                <input type="tel" id="phone" placeholder="+966 549251252" required>
+                                <input type="tel" id="phone" placeholder="+966 56 190 1818" required>
                                 <button type="button" class="generate-btn" id="previewBtn" onclick="togglePreview()">
                                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -1289,6 +1355,11 @@
                                     <span id="previewBtnText">Generate</span>
                                 </button>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Telephone</label>
+                            <input type="tel" id="telephone" placeholder="+966 11 829 3344">
                         </div>
 
                         <div class="form-group">
@@ -1312,14 +1383,40 @@
             <div class="modal-preview-section" id="previewSection">
                 <h3 class="preview-title">Card Preview</h3>
                 <div class="template-info-box" id="customDesignNotice">
-                    <p><strong>Your uploaded card design</strong> - Each contact will have this exact design with their unique name, position, phone & email printed in the same positions</p>
+                    <p><strong>Your uploaded card design</strong> - Each contact will have this exact design with their unique name, position, mobile, telephone & email printed in the same positions</p>
                 </div>
                 
                 <!-- Front Card (English) -->
                 <p class="preview-label">Front (English)</p>
-                <div class="business-card" id="cardFront">
+                <div class="business-card masdar-template masdar-template-front" id="cardFront">
                     <div class="card-background" id="cardFrontBg"></div>
                     <div class="custom-template-badge" id="frontBadge">Contact Name</div>
+                    <div class="masdar-overlay">
+                        <div class="masdar-front-clear"></div>
+                        <div class="masdar-front-text">
+                            <div class="masdar-name-ar" id="masdarNameAr">الاسم</div>
+                            <div class="masdar-name-en" id="masdarNameEn">Name</div>
+                            <div class="masdar-title-ar" id="masdarPositionAr">المنصب</div>
+                            <div class="masdar-title-en" id="masdarPositionEn">Position</div>
+                        </div>
+                        <div class="masdar-front-lines">
+                            <div class="masdar-line">
+                                <span class="label-en">Email</span>
+                                <span class="value" id="masdarEmail">Email</span>
+                                <span class="label-ar">البريد</span>
+                            </div>
+                            <div class="masdar-line">
+                                <span class="label-en">Mob</span>
+                                <span class="value" id="masdarMobile">Phone</span>
+                                <span class="label-ar">جوال</span>
+                            </div>
+                            <div class="masdar-line">
+                                <span class="label-en">Tel</span>
+                                <span class="value" id="masdarTel">-</span>
+                                <span class="label-ar">هاتف</span>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-content">
                         <div class="card-header">
                             <svg class="nfc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1379,9 +1476,12 @@
 
                 <!-- Back Card (Arabic) -->
                 <p class="preview-label">Back (Arabic)</p>
-                <div class="business-card arabic" id="cardBack">
+                <div class="business-card arabic masdar-template masdar-template-back" id="cardBack">
                     <div class="card-background" id="cardBackBg"></div>
                     <div class="custom-template-badge" id="backBadge">اسم جهة الاتصال</div>
+                    <div class="masdar-back-overlay">
+                        <div class="masdar-back-website" id="masdarWebsiteBack"></div>
+                    </div>
                     <div class="card-content">
                         <div class="card-header">
                             <img src="/logos/lulu.png" alt="Logo" class="card-logo">
@@ -1455,8 +1555,12 @@
                         <span class="contact-data-value" id="summaryPosition">-</span>
                     </div>
                     <div class="contact-data-item">
-                        <span class="contact-data-label">Phone:</span>
+                        <span class="contact-data-label">Mobile:</span>
                         <span class="contact-data-value" id="summaryPhone">-</span>
+                    </div>
+                    <div class="contact-data-item">
+                        <span class="contact-data-label">Telephone:</span>
+                        <span class="contact-data-value" id="summaryTelephone">-</span>
                     </div>
                     <div class="contact-data-item">
                         <span class="contact-data-label">Email:</span>
@@ -1498,6 +1602,12 @@
         const sessionId = localStorage.getItem('companySessionId');
         const companyId = localStorage.getItem('companyId');
         
+        const masdarTemplate = {
+            front: '/logos/1769888523110-4758ed1e.jpg',
+            back: '/logos/1769888527646-a4f9e1cd.jpg'
+        };
+        const forceMasdarTemplate = true;
+
         // Card design state
         let cardDesigns = {
             front: null,
@@ -1556,7 +1666,7 @@
             document.getElementById('contactForm').addEventListener('submit', saveContact);
 
             // Live preview updates
-            const formInputs = ['nameEn', 'nameAr', 'positionEn', 'positionAr', 'location', 'phone', 'email', 'website'];
+            const formInputs = ['nameEn', 'nameAr', 'positionEn', 'positionAr', 'location', 'phone', 'telephone', 'email', 'website'];
             formInputs.forEach(inputId => {
                 const input = document.getElementById(inputId);
                 if (input) {
@@ -1595,8 +1705,10 @@
             const positionAr = document.getElementById('positionAr').value || 'المنصب';
             const location = document.getElementById('location').value || 'Location';
             const phone = document.getElementById('phone').value || 'Phone';
+            const telephone = document.getElementById('telephone').value || 'Telephone';
             const email = document.getElementById('email').value || 'Email';
-            const website = document.getElementById('website').value || 'Website';
+            const website = document.getElementById('website').value || '';
+            const websiteDisplay = website || 'Website';
 
             // Extract short location (city, country)
             const locationParts = location.split(',');
@@ -1612,7 +1724,7 @@
             document.getElementById('previewLocationFull').textContent = location;
             document.getElementById('previewPhone').textContent = phone;
             document.getElementById('previewEmail').textContent = email;
-            document.getElementById('previewWebsite').textContent = website;
+            document.getElementById('previewWebsite').textContent = websiteDisplay;
 
             // Update Arabic card (Back)
             document.getElementById('previewNameAr').textContent = nameAr || nameEn;
@@ -1621,7 +1733,19 @@
             document.getElementById('previewLocationAr').textContent = 'المملكة العربية السعودية';
             document.getElementById('previewPhoneAr').textContent = phone;
             document.getElementById('previewEmailAr').textContent = email;
-            document.getElementById('previewWebsiteAr').textContent = website;
+            document.getElementById('previewWebsiteAr').textContent = websiteDisplay;
+
+            // Update Masdar template overlays (if active)
+            updateMasdarPreview({
+                nameEn,
+                nameAr,
+                positionEn,
+                positionAr,
+                phone,
+                telephone,
+                email,
+                website: websiteDisplay
+            });
 
             // Apply custom card backgrounds if available
             applyCardBackgrounds();
@@ -1636,7 +1760,9 @@
         }
 
         function updateContactDataSummary() {
-            const hasCustomDesigns = cardDesigns.front || cardDesigns.back;
+            const useCustomFront = !forceMasdarTemplate && cardDesigns.front;
+            const useCustomBack = !forceMasdarTemplate && cardDesigns.back;
+            const hasCustomDesigns = useCustomFront || useCustomBack;
             const summaryEl = document.getElementById('contactDataSummary');
             
             if (hasCustomDesigns && summaryEl) {
@@ -1646,6 +1772,7 @@
                 document.getElementById('summaryNameAr').textContent = document.getElementById('nameAr').value || '-';
                 document.getElementById('summaryPosition').textContent = document.getElementById('positionEn').value || '-';
                 document.getElementById('summaryPhone').textContent = document.getElementById('phone').value || '-';
+                document.getElementById('summaryTelephone').textContent = document.getElementById('telephone').value || '-';
                 document.getElementById('summaryEmail').textContent = document.getElementById('email').value || '-';
                 document.getElementById('summaryLocation').textContent = document.getElementById('location').value || '-';
             } else if (summaryEl) {
@@ -1674,22 +1801,26 @@
             }
 
             // When custom templates exist, show the uploaded images
-            if (cardDesigns.front) {
+            if (useCustomFront) {
                 frontCard.classList.add('has-custom-template');
                 frontCard.style.backgroundImage = `url(${cardDesigns.front})`;
             } else {
                 frontCard.classList.remove('has-custom-template');
-                frontCard.style.backgroundImage = '';
-                if (frontBars) frontBars.style.display = 'block';
+                frontCard.style.backgroundImage = `url(${masdarTemplate.front})`;
+                if (frontBars && !frontCard.classList.contains('masdar-template')) {
+                    frontBars.style.display = 'block';
+                }
             }
 
-            if (cardDesigns.back) {
+            if (useCustomBack) {
                 backCard.classList.add('has-custom-template');
                 backCard.style.backgroundImage = `url(${cardDesigns.back})`;
             } else {
                 backCard.classList.remove('has-custom-template');
-                backCard.style.backgroundImage = '';
-                if (backBars) backBars.style.display = 'block';
+                backCard.style.backgroundImage = `url(${masdarTemplate.back})`;
+                if (backBars && !backCard.classList.contains('masdar-template')) {
+                    backBars.style.display = 'block';
+                }
             }
 
             // Update badges with contact name
@@ -1698,6 +1829,34 @@
             
             if (frontBadge) frontBadge.textContent = nameEn;
             if (backBadge) backBadge.textContent = nameAr || nameEn;
+        }
+
+        function updateMasdarPreview({ nameEn, nameAr, positionEn, positionAr, phone, telephone, email, website }) {
+            const setText = (id, value, fallback) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const text = (value || '').trim();
+                el.textContent = text || fallback;
+            };
+
+            setText('masdarNameAr', nameAr || nameEn, 'الاسم');
+            setText('masdarNameEn', nameEn, 'Name');
+            setText('masdarPositionAr', positionAr || positionEn, 'المنصب');
+            setText('masdarPositionEn', positionEn, 'Position');
+            setText('masdarEmail', email, 'Email');
+            setText('masdarMobile', phone, 'Phone');
+            setText('masdarTel', telephone, '-');
+
+            const websiteEl = document.getElementById('masdarWebsiteBack');
+            if (websiteEl) {
+                const rawWebsite = (website || '').trim();
+                if (rawWebsite) {
+                    websiteEl.textContent = rawWebsite.replace(/^https?:\/\//i, '');
+                    websiteEl.style.display = 'block';
+                } else {
+                    websiteEl.style.display = 'none';
+                }
+            }
         }
 
         function generateQRCodes() {
@@ -1757,6 +1916,7 @@
                     <td>${contact.positionEn}</td>
                     <td>${contact.email}</td>
                     <td>${contact.phone}</td>
+                    <td>${contact.telephone || '-'}</td>
                     <td>
                         <div class="actions">
                             <button class="action-btn" onclick="previewContact('${contact.id}')" title="Preview">
@@ -1820,6 +1980,7 @@
             document.getElementById('positionAr').value = contact.positionAr || '';
             document.getElementById('location').value = contact.location;
             document.getElementById('phone').value = contact.phone;
+            document.getElementById('telephone').value = contact.telephone || '';
             document.getElementById('email').value = contact.email;
             document.getElementById('website').value = contact.website || '';
             
@@ -1846,15 +2007,18 @@
             e.preventDefault();
             
             const id = document.getElementById('contactId').value;
+            const websiteValue = document.getElementById('website').value.trim();
+            const nameValue = document.getElementById('nameEn').value.trim();
             const data = {
-                nameEn: document.getElementById('nameEn').value.trim(),
+                nameEn: nameValue,
                 nameAr: document.getElementById('nameAr').value.trim(),
                 positionEn: document.getElementById('positionEn').value.trim(),
                 positionAr: document.getElementById('positionAr').value.trim(),
                 location: document.getElementById('location').value.trim(),
                 phone: document.getElementById('phone').value.trim(),
+                telephone: document.getElementById('telephone').value.trim(),
                 email: document.getElementById('email').value.trim(),
-                website: document.getElementById('website').value.trim()
+                website: websiteValue
             };
             
             const btn = document.getElementById('submitBtn');

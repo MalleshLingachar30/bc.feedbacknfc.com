@@ -47,12 +47,21 @@ async function setupDatabase() {
                 position_ar VARCHAR(255),
                 location TEXT,
                 phone VARCHAR(50) NOT NULL,
+                telephone VARCHAR(50),
                 email VARCHAR(255) NOT NULL,
                 website VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
         console.log('✅ Created contacts table');
+
+        // Add telephone column if it doesn't exist (for existing databases)
+        try {
+            await sql`ALTER TABLE contacts ADD COLUMN IF NOT EXISTS telephone VARCHAR(50)`;
+            console.log('✅ Added contacts telephone column');
+        } catch (e) {
+            // Column might already exist
+        }
 
         // Create sessions table
         await sql`

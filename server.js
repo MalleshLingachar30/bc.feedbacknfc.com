@@ -689,6 +689,7 @@ app.get('/api/contacts', requireAuth, async (req, res) => {
             positionAr: c.position_ar,
             location: c.location,
             phone: c.phone,
+            telephone: c.telephone,
             email: c.email,
             website: c.website,
             createdAt: c.created_at
@@ -727,6 +728,7 @@ app.get('/api/contacts/:id', async (req, res) => {
             positionAr: c.position_ar,
             location: c.location,
             phone: c.phone,
+            telephone: c.telephone,
             email: c.email,
             website: c.website,
             companyName: c.company_name,
@@ -749,12 +751,12 @@ app.post('/api/contacts', requireAuth, async (req, res) => {
             return res.status(400).json({ error: 'Company ID required' });
         }
         
-        const { nameEn, nameAr, positionEn, positionAr, location, phone, email, website } = req.body;
+        const { nameEn, nameAr, positionEn, positionAr, location, phone, telephone, email, website } = req.body;
         const id = req.body.id || nameEn.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
         
         const result = await sql`
-            INSERT INTO contacts (id, company_id, name_en, name_ar, position_en, position_ar, location, phone, email, website)
-            VALUES (${id}, ${companyId}, ${nameEn}, ${nameAr || ''}, ${positionEn}, ${positionAr || ''}, ${location}, ${phone}, ${email}, ${website || ''})
+            INSERT INTO contacts (id, company_id, name_en, name_ar, position_en, position_ar, location, phone, telephone, email, website)
+            VALUES (${id}, ${companyId}, ${nameEn}, ${nameAr || ''}, ${positionEn}, ${positionAr || ''}, ${location}, ${phone}, ${telephone || ''}, ${email}, ${website || ''})
             RETURNING *
         `;
         
@@ -769,6 +771,7 @@ app.post('/api/contacts', requireAuth, async (req, res) => {
             positionAr: c.position_ar,
             location: c.location,
             phone: c.phone,
+            telephone: c.telephone,
             email: c.email,
             website: c.website
         });
@@ -793,7 +796,7 @@ app.put('/api/contacts/:id', requireAuth, async (req, res) => {
             }
         }
         
-        const { nameEn, nameAr, positionEn, positionAr, location, phone, email, website } = req.body;
+        const { nameEn, nameAr, positionEn, positionAr, location, phone, telephone, email, website } = req.body;
         
         const result = await sql`
             UPDATE contacts 
@@ -803,6 +806,7 @@ app.put('/api/contacts/:id', requireAuth, async (req, res) => {
                 position_ar = COALESCE(${positionAr}, position_ar),
                 location = COALESCE(${location}, location),
                 phone = COALESCE(${phone}, phone),
+                telephone = COALESCE(${telephone}, telephone),
                 email = COALESCE(${email}, email),
                 website = COALESCE(${website}, website)
             WHERE id = ${id}
@@ -823,6 +827,7 @@ app.put('/api/contacts/:id', requireAuth, async (req, res) => {
             positionAr: c.position_ar,
             location: c.location,
             phone: c.phone,
+            telephone: c.telephone,
             email: c.email,
             website: c.website
         });

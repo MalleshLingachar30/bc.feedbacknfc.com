@@ -289,8 +289,20 @@
                         </svg>
                     </div>
                     <div class="info-content">
-                        <p class="info-label">Phone</p>
+                        <p class="info-label">Mobile</p>
                         <p class="info-value"><a href="#" id="infoPhone"></a></p>
+                    </div>
+                </div>
+
+                <div class="info-item" id="telephoneItem">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <p class="info-label">Telephone</p>
+                        <p class="info-value"><a href="#" id="infoTelephone"></a></p>
                     </div>
                 </div>
 
@@ -403,6 +415,14 @@
             const phoneEl = document.getElementById('infoPhone');
             phoneEl.textContent = currentContact.phone;
             phoneEl.href = `tel:${currentContact.phone.replace(/\s/g, '')}`;
+
+            if (currentContact.telephone) {
+                const telephoneEl = document.getElementById('infoTelephone');
+                telephoneEl.textContent = currentContact.telephone;
+                telephoneEl.href = `tel:${currentContact.telephone.replace(/\s/g, '')}`;
+            } else {
+                document.getElementById('telephoneItem').style.display = 'none';
+            }
             
             const emailEl = document.getElementById('infoEmail');
             emailEl.textContent = currentContact.email;
@@ -467,7 +487,10 @@
             
             lines.push(`TITLE:${contact.positionEn}`);
             lines.push(`ORG:Lulu Group International`);
-            lines.push(`TEL;TYPE=WORK,VOICE:${contact.phone}`);
+            lines.push(`TEL;TYPE=CELL:${contact.phone}`);
+            if (contact.telephone) {
+                lines.push(`TEL;TYPE=WORK,VOICE:${contact.telephone}`);
+            }
             lines.push(`EMAIL;TYPE=WORK:${contact.email}`);
             
             if (contact.location) {
