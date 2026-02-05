@@ -4063,6 +4063,12 @@ Generated on: ${new Date().toLocaleDateString()}
         ['front', 'back'].forEach(side => {
             const box = document.getElementById(side + 'UploadBox');
             
+            // Skip if element doesn't exist
+            if (!box) {
+                console.log('Upload box not found for:', side);
+                return;
+            }
+            
             box.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 box.classList.add('drag-over');
