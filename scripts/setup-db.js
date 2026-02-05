@@ -22,6 +22,7 @@ async function setupDatabase() {
                 logo TEXT,
                 card_front TEXT,
                 card_back TEXT,
+                subscription_tier VARCHAR(20) DEFAULT 'basic',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
@@ -34,6 +35,15 @@ async function setupDatabase() {
             console.log('✅ Added card exterior columns');
         } catch (e) {
             // Columns might already exist
+        }
+
+        // Add subscription_tier column if it doesn't exist (for existing databases)
+        // Values: 'basic' (physical only), 'premium' (physical + digital), 'super' (digital only)
+        try {
+            await sql`ALTER TABLE companies ADD COLUMN IF NOT EXISTS subscription_tier VARCHAR(20) DEFAULT 'basic'`;
+            console.log('✅ Added subscription_tier column');
+        } catch (e) {
+            // Column might already exist
         }
 
         // Create contacts table

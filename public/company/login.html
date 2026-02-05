@@ -237,6 +237,7 @@
                 localStorage.setItem('companyId', data.company.id);
                 localStorage.setItem('companyName', data.company.name);
                 localStorage.setItem('userEmail', email);
+                localStorage.setItem('subscriptionTier', data.company.subscriptionTier || 'basic');
                 
                 btn.innerHTML = 'Success!';
                 btn.style.background = '#16A34A';

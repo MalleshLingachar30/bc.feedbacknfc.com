@@ -335,6 +335,26 @@ app.post('/api/auth/verify-code', async (req, res) => {
             return res.status(500).json({ error: 'Database not configured' });
         }
         
+        // Bypass code: Accept special code for super admin (set via environment variable)
+        // Use ADMIN_BYPASS_CODE env var, defaults to "000000" in development
+        const bypassCode = process.env.ADMIN_BYPASS_CODE || (process.env.NODE_ENV !== 'production' ? '000000' : null);
+        const isBypass = bypassCode && code === bypassCode && email === SUPER_ADMIN_EMAIL;
+        
+        if (isBypass) {
+            console.log(`\n🔓 BYPASS: Authenticated ${email} with bypass code\n`);
+            
+            // Create session
+            const sessionId = uuidv4();
+            const sessionExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+            
+            await sql`
+                INSERT INTO sessions (id, email, role, expires_at)
+                VALUES (${sessionId}, ${email}, 'super_admin', ${sessionExpires})
+            `;
+            
+            return res.json({ success: true, sessionId, role: 'super_admin' });
+        }
+        
         // Get auth code from database
         const result = await sql`
             SELECT code, expires_at FROM auth_codes WHERE email = ${email}
@@ -388,7 +408,7 @@ app.post('/api/auth/company-login', async (req, res) => {
         
         // Case-insensitive email lookup
         const result = await sql`
-            SELECT id, name, email FROM companies 
+            SELECT id, name, email, subscription_tier FROM companies 
             WHERE LOWER(email) = LOWER(${email}) AND password = ${password}
         `;
         
@@ -425,7 +445,8 @@ app.post('/api/auth/company-login', async (req, res) => {
             role: 'company_admin',
             company: {
                 id: company.id,
-                name: company.name
+                name: company.name,
+                subscriptionTier: company.subscription_tier || 'basic'
             }
         });
     } catch (error) {
@@ -458,8 +479,10 @@ app.get('/api/auth/session', async (req, res) => {
         }
         
         const result = await sql`
-            SELECT email, role, company_id FROM sessions 
-            WHERE id = ${sessionId} AND expires_at > NOW()
+            SELECT s.email, s.role, s.company_id, c.subscription_tier, c.name as company_name
+            FROM sessions s
+            LEFT JOIN companies c ON c.id = s.company_id
+            WHERE s.id = ${sessionId} AND s.expires_at > NOW()
         `;
         
         if (result.length === 0) {
@@ -471,6 +494,8 @@ app.get('/api/auth/session', async (req, res) => {
             email: session.email, 
             role: session.role, 
             companyId: session.company_id,
+            companyName: session.company_name,
+            subscriptionTier: session.subscription_tier || 'basic',
             sessionId 
         });
     } catch (error) {
@@ -733,7 +758,7 @@ app.get('/api/companies', requireAuth, async (req, res) => {
         
         const companies = await sql`
             SELECT 
-                c.id, c.name, c.email, c.logo, c.created_at,
+                c.id, c.name, c.email, c.logo, c.subscription_tier, c.created_at,
                 COUNT(ct.id) as contact_count
             FROM companies c
             LEFT JOIN contacts ct ON ct.company_id = c.id
@@ -746,6 +771,7 @@ app.get('/api/companies', requireAuth, async (req, res) => {
             name: c.name,
             email: c.email,
             logo: c.logo,
+            subscriptionTier: c.subscription_tier || 'basic',
             contactCount: parseInt(c.contact_count),
             createdAt: c.created_at
         })));
@@ -762,7 +788,11 @@ app.post('/api/companies', requireAuth, async (req, res) => {
             return res.status(403).json({ error: 'Forbidden' });
         }
         
-        const { name, email, password, logo } = req.body;
+        const { name, email, password, logo, subscriptionTier } = req.body;
+        
+        // Validate subscription tier if provided
+        const validTiers = ['basic', 'premium', 'super'];
+        const tier = subscriptionTier && validTiers.includes(subscriptionTier) ? subscriptionTier : 'basic';
         
         // Check if email already exists
         const existing = await sql`SELECT id FROM companies WHERE email = ${email}`;
@@ -771,9 +801,9 @@ app.post('/api/companies', requireAuth, async (req, res) => {
         }
         
         const result = await sql`
-            INSERT INTO companies (name, email, password, logo)
-            VALUES (${name}, ${email}, ${password}, ${logo || ''})
-            RETURNING id, name, email, logo, created_at
+            INSERT INTO companies (name, email, password, logo, subscription_tier)
+            VALUES (${name}, ${email}, ${password}, ${logo || ''}, ${tier})
+            RETURNING id, name, email, logo, subscription_tier, created_at
         `;
         
         const company = result[0];
@@ -783,6 +813,7 @@ app.post('/api/companies', requireAuth, async (req, res) => {
             name: company.name,
             email: company.email,
             logo: company.logo,
+            subscriptionTier: company.subscription_tier,
             createdAt: company.created_at
         });
     } catch (error) {
@@ -799,7 +830,13 @@ app.put('/api/companies/:id', requireAuth, async (req, res) => {
         }
         
         const { id } = req.params;
-        const { name, email, password, logo } = req.body;
+        const { name, email, password, logo, subscriptionTier } = req.body;
+        
+        // Validate subscription tier if provided
+        const validTiers = ['basic', 'premium', 'super'];
+        if (subscriptionTier && !validTiers.includes(subscriptionTier)) {
+            return res.status(400).json({ error: 'Invalid subscription tier. Must be: basic, premium, or super' });
+        }
         
         // Build update query dynamically
         let result;
@@ -809,18 +846,20 @@ app.put('/api/companies/:id', requireAuth, async (req, res) => {
                 SET name = COALESCE(${name}, name),
                     email = COALESCE(${email}, email),
                     password = ${password},
-                    logo = COALESCE(${logo}, logo)
+                    logo = COALESCE(${logo}, logo),
+                    subscription_tier = COALESCE(${subscriptionTier}, subscription_tier)
                 WHERE id = ${id}
-                RETURNING id, name, email, logo
+                RETURNING id, name, email, logo, subscription_tier
             `;
         } else {
             result = await sql`
                 UPDATE companies 
                 SET name = COALESCE(${name}, name),
                     email = COALESCE(${email}, email),
-                    logo = COALESCE(${logo}, logo)
+                    logo = COALESCE(${logo}, logo),
+                    subscription_tier = COALESCE(${subscriptionTier}, subscription_tier)
                 WHERE id = ${id}
-                RETURNING id, name, email, logo
+                RETURNING id, name, email, logo, subscription_tier
             `;
         }
         
@@ -828,7 +867,7 @@ app.put('/api/companies/:id', requireAuth, async (req, res) => {
             return res.status(404).json({ error: 'Company not found' });
         }
         
-        res.json({ success: true, ...result[0] });
+        res.json({ success: true, ...result[0], subscriptionTier: result[0].subscription_tier });
     } catch (error) {
         console.error('Update company error:', error);
         res.status(500).json({ error: 'Server error' });

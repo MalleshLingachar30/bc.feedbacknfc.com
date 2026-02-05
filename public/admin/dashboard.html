@@ -251,6 +251,106 @@
             font-weight: 500;
         }
 
+        /* Subscription Tier Badge */
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tier-badge.basic {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9CA3AF;
+        }
+
+        .tier-badge.premium {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+            color: #FBBF24;
+        }
+
+        .tier-badge.super {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+            color: #60A5FA;
+        }
+
+        .tier-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Tier Select in Form */
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23A0A0B2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px;
+            padding-right: 2.5rem;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .form-group select option {
+            background: #1A1A2E;
+            color: #FFFFFF;
+            padding: 0.5rem;
+        }
+
+        .tier-description {
+            font-size: 0.8rem;
+            color: #A0A0B2;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .tier-features {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .tier-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: #A0A0B2;
+        }
+
+        .tier-feature.active {
+            color: #4ADE80;
+        }
+
+        .tier-feature.inactive {
+            color: #6B7280;
+            text-decoration: line-through;
+        }
+
+        .tier-feature svg {
+            width: 14px;
+            height: 14px;
+        }
+
         .actions {
             display: flex;
             gap: 0.5rem;
@@ -808,6 +908,7 @@
                         <tr>
                             <th>Company</th>
                             <th>Email</th>
+                            <th>Tier</th>
                             <th>Contacts</th>
                             <th>Created</th>
                             <th>Actions</th>
@@ -855,6 +956,31 @@
                         <div class="password-group">
                             <input type="text" id="companyPassword" placeholder="Enter password" required>
                             <button type="button" class="generate-password" onclick="generatePassword()">Generate</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subscription Tier</label>
+                        <select id="companyTier" onchange="updateTierDescription()">
+                            <option value="basic">Basic - Physical Cards Only</option>
+                            <option value="premium">Premium - Physical + Digital</option>
+                            <option value="super">Super - Digital Only</option>
+                        </select>
+                        <p class="tier-description" id="tierDescription">Physical NFC cards only. Customers can save contact to their wallet when they tap.</p>
+                        <div class="tier-features" id="tierFeatures">
+                            <span class="tier-feature active" id="featurePhysical">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                                Physical Cards
+                            </span>
+                            <span class="tier-feature inactive" id="featureDigital">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"/>
+                                    <line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                                Digital Wallet Pass
+                            </span>
                         </div>
                     </div>
 
@@ -1032,6 +1158,7 @@
                         </div>
                     </td>
                     <td>${company.email}</td>
+                    <td>${getTierBadge(company.subscriptionTier || 'basic')}</td>
                     <td><span class="contact-count">${company.contactCount || 0} contacts</span></td>
                     <td>${new Date(company.createdAt).toLocaleDateString()}</td>
                     <td>
@@ -1054,11 +1181,80 @@
             `).join('');
         }
 
+        function getTierBadge(tier) {
+            const tierConfig = {
+                basic: {
+                    label: 'Basic',
+                    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="16" rx="2"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>`
+                },
+                premium: {
+                    label: 'Premium',
+                    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>`
+                },
+                super: {
+                    label: 'Super',
+                    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>`
+                }
+            };
+            const config = tierConfig[tier] || tierConfig.basic;
+            return `<span class="tier-badge ${tier}">${config.icon}${config.label}</span>`;
+        }
+
+        function updateTierDescription() {
+            const tier = document.getElementById('companyTier').value;
+            const descEl = document.getElementById('tierDescription');
+            const physicalFeature = document.getElementById('featurePhysical');
+            const digitalFeature = document.getElementById('featureDigital');
+            
+            const tierInfo = {
+                basic: {
+                    description: 'Physical NFC cards only. Customers can save contact to their wallet when they tap.',
+                    physical: true,
+                    digital: false
+                },
+                premium: {
+                    description: 'Full access: Physical cards + Card owners can generate their own digital wallet passes.',
+                    physical: true,
+                    digital: true
+                },
+                super: {
+                    description: 'Digital-only experience. Card owners can generate wallet passes without physical cards.',
+                    physical: false,
+                    digital: true
+                }
+            };
+            
+            const info = tierInfo[tier] || tierInfo.basic;
+            descEl.textContent = info.description;
+            
+            // Update physical feature
+            physicalFeature.className = 'tier-feature ' + (info.physical ? 'active' : 'inactive');
+            physicalFeature.innerHTML = info.physical 
+                ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Physical Cards`
+                : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Physical Cards`;
+            
+            // Update digital feature
+            digitalFeature.className = 'tier-feature ' + (info.digital ? 'active' : 'inactive');
+            digitalFeature.innerHTML = info.digital 
+                ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Digital Wallet Pass`
+                : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Digital Wallet Pass`;
+        }
+
         function openAddModal() {
             document.getElementById('modalTitle').textContent = 'Add New Company';
             document.getElementById('submitBtn').textContent = 'Create Company';
             document.getElementById('companyForm').reset();
             document.getElementById('companyId').value = '';
+            document.getElementById('companyTier').value = 'basic';
+            updateTierDescription();
             removeLogo(); // Reset logo upload area
             document.getElementById('companyModal').classList.add('active');
         }
@@ -1075,6 +1271,10 @@
             document.getElementById('companyPassword').value = '';
             document.getElementById('companyPassword').placeholder = 'Leave blank to keep current';
             document.getElementById('companyPassword').required = false;
+            
+            // Set subscription tier
+            document.getElementById('companyTier').value = company.subscriptionTier || 'basic';
+            updateTierDescription();
             
             // Set logo preview if exists
             setLogoPreview(company.logo || '');
@@ -1095,7 +1295,8 @@
             const data = {
                 name: document.getElementById('companyName').value.trim(),
                 email: document.getElementById('companyEmail').value.trim(),
-                logo: document.getElementById('companyLogo').value.trim()
+                logo: document.getElementById('companyLogo').value.trim(),
+                subscriptionTier: document.getElementById('companyTier').value
             };
             
             const password = document.getElementById('companyPassword').value;
