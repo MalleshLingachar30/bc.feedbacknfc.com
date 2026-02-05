@@ -12,9 +12,9 @@ require('dotenv').config();
 
 // Google Wallet Configuration
 const GOOGLE_WALLET_CONFIG = {
-    issuerId: process.env.GOOGLE_WALLET_ISSUER_ID || '',
+    issuerId: (process.env.GOOGLE_WALLET_ISSUER_ID || '').trim(),
     serviceAccountKey: process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_KEY || '',
-    classId: process.env.GOOGLE_WALLET_CLASS_ID || 'BusinessCard', // Class name created in Google Wallet Console
+    classId: (process.env.GOOGLE_WALLET_CLASS_ID || 'BusinessCard').trim(),
     get isConfigured() {
         return !!(this.issuerId && this.serviceAccountKey);
     }
