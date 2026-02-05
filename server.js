@@ -53,22 +53,31 @@ async function generateGoogleWalletJWT(contact, company) {
     try {
         // Parse service account credentials
         let credentials;
-        let keyString = GOOGLE_WALLET_CONFIG.serviceAccountKey;
+        let keyString = GOOGLE_WALLET_CONFIG.serviceAccountKey.trim();
+        
+        // Extract JSON object - find first { and last }
+        const firstBrace = keyString.indexOf('{');
+        const lastBrace = keyString.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            keyString = keyString.substring(firstBrace, lastBrace + 1);
+        }
         
         // Fix common issues with service account key from environment variables
-        // 1. Replace actual newlines with escaped newlines (fixes Vercel env var issue)
+        // Replace actual newlines with escaped newlines (fixes Vercel env var issue)
         keyString = keyString.replace(/\r?\n/g, '\\n');
-        // 2. Replace double-escaped newlines 
+        // Replace double-escaped newlines 
         keyString = keyString.replace(/\\\\n/g, '\\n');
         
         try {
             credentials = JSON.parse(keyString);
         } catch (e) {
             console.error('Failed to parse service account key as JSON:', e.message);
-            console.error('Key starts with:', keyString.substring(0, 100));
+            console.error('Key length:', keyString.length);
+            console.error('Key starts with:', keyString.substring(0, 50));
+            console.error('Key ends with:', keyString.substring(keyString.length - 50));
             // Try reading as file path (for local development)
             try {
-                const keyContent = fs.readFileSync(GOOGLE_WALLET_CONFIG.serviceAccountKey, 'utf8');
+                const keyContent = fs.readFileSync(GOOGLE_WALLET_CONFIG.serviceAccountKey.trim(), 'utf8');
                 credentials = JSON.parse(keyContent);
             } catch (fileError) {
                 throw new Error(`Cannot parse service account key: ${e.message}`);
