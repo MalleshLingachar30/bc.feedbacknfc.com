@@ -5,7 +5,205 @@ const multer = require('multer');
 const { neon } = require('@neondatabase/serverless');
 const { Resend } = require('resend');
 const { v4: uuidv4 } = require('uuid');
+const { SignJWT, importPKCS8 } = require('jose');
 require('dotenv').config();
+
+// ==================== WALLET CONFIGURATION ====================
+
+// Google Wallet Configuration
+const GOOGLE_WALLET_CONFIG = {
+    issuerId: process.env.GOOGLE_WALLET_ISSUER_ID || '',
+    serviceAccountKey: process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_KEY || '',
+    classId: 'BusinessCard', // Class name created in Google Wallet Console
+    get isConfigured() {
+        return !!(this.issuerId && this.serviceAccountKey);
+    }
+};
+
+// Samsung Wallet Configuration
+const SAMSUNG_WALLET_CONFIG = {
+    partnerId: process.env.SAMSUNG_WALLET_PARTNER_ID || '',
+    cardId: process.env.SAMSUNG_WALLET_CARD_ID || '',
+    certificateId: process.env.SAMSUNG_WALLET_CERTIFICATE_ID || '',
+    privateKey: process.env.SAMSUNG_WALLET_PRIVATE_KEY || '',
+    get isConfigured() {
+        return !!(this.partnerId && this.cardId && this.certificateId && this.privateKey);
+    }
+};
+
+// ==================== GOOGLE WALLET HELPERS ====================
+
+/**
+ * Generate a Google Wallet pass JWT for a contact
+ * @param {Object} contact - Contact data
+ * @param {Object} company - Company data
+ * @returns {Promise<string>} - Signed JWT for Add to Google Wallet link
+ */
+async function generateGoogleWalletJWT(contact, company) {
+    if (!GOOGLE_WALLET_CONFIG.isConfigured) {
+        throw new Error('Google Wallet not configured');
+    }
+
+    try {
+        // Parse service account credentials
+        let credentials;
+        try {
+            credentials = JSON.parse(GOOGLE_WALLET_CONFIG.serviceAccountKey);
+        } catch (e) {
+            // Try reading as file path
+            const keyContent = fs.readFileSync(GOOGLE_WALLET_CONFIG.serviceAccountKey, 'utf8');
+            credentials = JSON.parse(keyContent);
+        }
+
+        const issuerId = GOOGLE_WALLET_CONFIG.issuerId;
+        const classId = `${issuerId}.${GOOGLE_WALLET_CONFIG.classId}`;
+        // Create a unique but short object ID
+        const uniqueId = `${contact.id.substring(0, 20)}_${Date.now()}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+        const objectId = `${issuerId}.${uniqueId}`;
+
+        // Minimal pass object structure (as recommended by Google)
+        const passObject = {
+            id: objectId,
+            classId: classId,
+            cardTitle: {
+                defaultValue: {
+                    language: 'en',
+                    value: contact.nameEn
+                }
+            },
+            header: {
+                defaultValue: {
+                    language: 'en',
+                    value: company.name || 'Business Card'
+                }
+            },
+            subheader: {
+                defaultValue: {
+                    language: 'en',
+                    value: contact.positionEn
+                }
+            },
+            textModulesData: [
+                {
+                    id: 'phone',
+                    header: 'Phone',
+                    body: contact.phone
+                },
+                {
+                    id: 'email',
+                    header: 'Email',
+                    body: contact.email
+                }
+            ],
+            hexBackgroundColor: '#22C55E'
+        };
+
+        // JWT claims - minimal structure
+        const claims = {
+            iss: credentials.client_email,
+            aud: 'google',
+            typ: 'savetowallet',
+            origins: ['https://bc.feedbacknfc.com', 'http://localhost:3000'],
+            payload: {
+                genericObjects: [passObject]
+            }
+        };
+
+        // Import private key and sign JWT
+        const privateKey = await importPKCS8(credentials.private_key, 'RS256');
+        const jwt = await new SignJWT(claims)
+            .setProtectedHeader({ alg: 'RS256', typ: 'JWT' })
+            .sign(privateKey);
+
+        return jwt;
+    } catch (error) {
+        console.error('Error generating Google Wallet JWT:', error);
+        throw error;
+    }
+}
+
+// ==================== SAMSUNG WALLET HELPERS ====================
+
+/**
+ * Generate a Samsung Wallet cData token for a contact
+ * @param {Object} contact - Contact data
+ * @param {Object} company - Company data
+ * @returns {Promise<string>} - cData token for Add to Samsung Wallet link
+ */
+async function generateSamsungWalletToken(contact, company) {
+    if (!SAMSUNG_WALLET_CONFIG.isConfigured) {
+        throw new Error('Samsung Wallet not configured');
+    }
+
+    try {
+        const utcTimestamp = Date.now();
+        
+        // Card data payload for Samsung Wallet
+        const cardData = {
+            card: {
+                type: 'IDCARD', // Generic ID card type for business cards
+                subType: 'others',
+                data: [
+                    {
+                        refId: contact.id,
+                        createdAt: utcTimestamp,
+                        updatedAt: utcTimestamp,
+                        language: 'en',
+                        attributes: {
+                            title: contact.nameEn,
+                            subtitle: contact.positionEn,
+                            // ID Card specific fields
+                            idType: 'Business Card',
+                            idNumber: contact.id,
+                            name: contact.nameEn,
+                            // Additional info
+                            data1: company.name || '',
+                            data2: contact.phone,
+                            data3: contact.email,
+                            data4: contact.location || '',
+                            bgColor: '#22C55E',
+                            fontColor: '#FFFFFF'
+                        },
+                        // Action links
+                        appLinkData: {
+                            appLinkType: 'DEEP_LINK',
+                            androidPackageName: '',
+                            appLinkLogo: company.logo ? `${process.env.BASE_URL || 'https://bc.feedbacknfc.com'}${company.logo}` : 'https://bc.feedbacknfc.com/logo.png'
+                        },
+                        // Logo
+                        logoImageUrl: company.logo ? `${process.env.BASE_URL || 'https://bc.feedbacknfc.com'}${company.logo}` : 'https://bc.feedbacknfc.com/logo.png'
+                    }
+                ]
+            }
+        };
+
+        // Create JWS payload
+        const payload = JSON.stringify({
+            partnerId: SAMSUNG_WALLET_CONFIG.partnerId,
+            cardId: SAMSUNG_WALLET_CONFIG.cardId,
+            cardData: cardData,
+            utcTimestamp: utcTimestamp
+        });
+
+        // Import private key for signing
+        const privateKey = await importPKCS8(SAMSUNG_WALLET_CONFIG.privateKey, 'RS256');
+
+        // Create signed JWS token
+        const jws = await new SignJWT(JSON.parse(payload))
+            .setProtectedHeader({
+                alg: 'RS256',
+                typ: 'JWT',
+                kid: SAMSUNG_WALLET_CONFIG.certificateId
+            })
+            .sign(privateKey);
+
+        // The cData token is the JWS
+        return jws;
+    } catch (error) {
+        console.error('Error generating Samsung Wallet token:', error);
+        throw error;
+    }
+}
 
 // Configure multer for logo uploads
 const logoStorage = multer.diskStorage({
@@ -994,6 +1192,153 @@ app.delete('/api/leads/:id', requireAuth, async (req, res) => {
     } catch (error) {
         console.error('Delete lead error:', error);
         res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// ==================== WALLET ROUTES ====================
+
+// Get wallet availability status (public)
+app.get('/api/wallet/status', (req, res) => {
+    res.json({
+        googleWallet: GOOGLE_WALLET_CONFIG.isConfigured,
+        samsungWallet: SAMSUNG_WALLET_CONFIG.isConfigured
+    });
+});
+
+// Generate Google Wallet pass link (public - for contact page)
+app.get('/api/wallet/google/:contactId', async (req, res) => {
+    try {
+        if (!sql) {
+            return res.status(500).json({ error: 'Database not configured' });
+        }
+
+        if (!GOOGLE_WALLET_CONFIG.isConfigured) {
+            return res.status(503).json({ 
+                error: 'Google Wallet not configured',
+                message: 'Google Wallet integration is not yet set up. Please configure GOOGLE_WALLET_ISSUER_ID and GOOGLE_WALLET_SERVICE_ACCOUNT_KEY.'
+            });
+        }
+
+        const { contactId } = req.params;
+
+        // Get contact and company info
+        const result = await sql`
+            SELECT c.*, comp.name as company_name, comp.logo as company_logo
+            FROM contacts c
+            LEFT JOIN companies comp ON comp.id = c.company_id
+            WHERE c.id = ${contactId}
+        `;
+
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Contact not found' });
+        }
+
+        const contactRow = result[0];
+        const contact = {
+            id: contactRow.id,
+            nameEn: contactRow.name_en,
+            nameAr: contactRow.name_ar,
+            positionEn: contactRow.position_en,
+            positionAr: contactRow.position_ar,
+            phone: contactRow.phone,
+            telephone: contactRow.telephone,
+            email: contactRow.email,
+            location: contactRow.location,
+            website: contactRow.website
+        };
+        const company = {
+            name: contactRow.company_name,
+            logo: contactRow.company_logo
+        };
+
+        // Generate JWT
+        const jwt = await generateGoogleWalletJWT(contact, company);
+        const saveUrl = `https://pay.google.com/gp/v/save/${jwt}`;
+
+        console.log(`Google Wallet pass generated for contact: ${contactId}`);
+
+        res.json({
+            success: true,
+            saveUrl: saveUrl,
+            provider: 'google'
+        });
+
+    } catch (error) {
+        console.error('Google Wallet error:', error);
+        res.status(500).json({ 
+            error: 'Failed to generate Google Wallet pass',
+            message: error.message
+        });
+    }
+});
+
+// Generate Samsung Wallet pass link (public - for contact page)
+app.get('/api/wallet/samsung/:contactId', async (req, res) => {
+    try {
+        if (!sql) {
+            return res.status(500).json({ error: 'Database not configured' });
+        }
+
+        if (!SAMSUNG_WALLET_CONFIG.isConfigured) {
+            return res.status(503).json({ 
+                error: 'Samsung Wallet not configured',
+                message: 'Samsung Wallet integration is not yet set up. Please configure Samsung Wallet credentials.'
+            });
+        }
+
+        const { contactId } = req.params;
+
+        // Get contact and company info
+        const result = await sql`
+            SELECT c.*, comp.name as company_name, comp.logo as company_logo
+            FROM contacts c
+            LEFT JOIN companies comp ON comp.id = c.company_id
+            WHERE c.id = ${contactId}
+        `;
+
+        if (result.length === 0) {
+            return res.status(404).json({ error: 'Contact not found' });
+        }
+
+        const contactRow = result[0];
+        const contact = {
+            id: contactRow.id,
+            nameEn: contactRow.name_en,
+            nameAr: contactRow.name_ar,
+            positionEn: contactRow.position_en,
+            positionAr: contactRow.position_ar,
+            phone: contactRow.phone,
+            telephone: contactRow.telephone,
+            email: contactRow.email,
+            location: contactRow.location,
+            website: contactRow.website
+        };
+        const company = {
+            name: contactRow.company_name,
+            logo: contactRow.company_logo
+        };
+
+        // Generate cData token
+        const cDataToken = await generateSamsungWalletToken(contact, company);
+        
+        // Samsung Wallet deep link format
+        // Note: The actual URL format may vary based on Samsung's latest API
+        const saveUrl = `https://swp.samsungwallet.com/atw/v1/${SAMSUNG_WALLET_CONFIG.partnerId}?cdata=${encodeURIComponent(cDataToken)}`;
+
+        console.log(`Samsung Wallet pass generated for contact: ${contactId}`);
+
+        res.json({
+            success: true,
+            saveUrl: saveUrl,
+            provider: 'samsung'
+        });
+
+    } catch (error) {
+        console.error('Samsung Wallet error:', error);
+        res.status(500).json({ 
+            error: 'Failed to generate Samsung Wallet pass',
+            message: error.message
+        });
     }
 });
 

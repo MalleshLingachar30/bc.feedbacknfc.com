@@ -167,6 +167,116 @@
             height: 22px;
         }
 
+        /* Wallet Buttons Container */
+        .wallet-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .wallet-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background: #FFFFFF;
+            color: #374151;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .wallet-btn:hover {
+            border-color: #9CA3AF;
+            background: #F9FAFB;
+            transform: translateY(-1px);
+        }
+
+        .wallet-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wallet-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .wallet-btn.google {
+            border-color: #4285F4;
+            color: #4285F4;
+        }
+
+        .wallet-btn.google:hover {
+            background: #EBF2FF;
+            border-color: #1A73E8;
+        }
+
+        .wallet-btn.samsung {
+            border-color: #1428A0;
+            color: #1428A0;
+        }
+
+        .wallet-btn.samsung:hover {
+            background: #E8EAFF;
+            border-color: #0D1A6B;
+        }
+
+        .wallet-btn .btn-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .wallet-btn.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        .wallet-btn .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .wallet-btn.loading .spinner {
+            display: block;
+        }
+
+        .wallet-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            color: #9CA3AF;
+            font-size: 0.8rem;
+        }
+
+        .wallet-divider::before,
+        .wallet-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #E5E7EB;
+        }
+
+        /* Hide wallet section if not available */
+        .wallet-section.hidden {
+            display: none;
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -592,6 +702,33 @@
                 </svg>
                 Save Contact
             </button>
+
+            <!-- Wallet Buttons Section -->
+            <div class="wallet-section" id="walletSection">
+                <div class="wallet-divider">or add to wallet</div>
+                <div class="wallet-buttons">
+                    <!-- Google Wallet Button -->
+                    <button class="wallet-btn google" id="googleWalletBtn" onclick="addToGoogleWallet()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span class="spinner"></span>
+                        <span class="btn-text">Google Wallet</span>
+                    </button>
+
+                    <!-- Samsung Wallet Button -->
+                    <button class="wallet-btn samsung" id="samsungWalletBtn" onclick="addToSamsungWallet()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                        </svg>
+                        <span class="spinner"></span>
+                        <span class="btn-text">Samsung Wallet</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -665,8 +802,117 @@
 
     <script>
         let currentContact = null;
+        let walletStatus = { googleWallet: false, samsungWallet: false };
         const LEAD_MODAL_KEY = 'leadModalShown_';
         const LEAD_DATA_KEY = 'leadUserData';
+
+        // Check wallet availability
+        async function checkWalletStatus() {
+            try {
+                const res = await fetch('/api/wallet/status');
+                if (res.ok) {
+                    walletStatus = await res.json();
+                    updateWalletButtons();
+                }
+            } catch (err) {
+                console.log('Wallet status check failed:', err);
+                // Hide wallet section if can't check status
+                document.getElementById('walletSection').classList.add('hidden');
+            }
+        }
+
+        // Update wallet button states based on availability
+        function updateWalletButtons() {
+            const googleBtn = document.getElementById('googleWalletBtn');
+            const samsungBtn = document.getElementById('samsungWalletBtn');
+            const walletSection = document.getElementById('walletSection');
+
+            // If neither wallet is configured, hide the entire section
+            if (!walletStatus.googleWallet && !walletStatus.samsungWallet) {
+                walletSection.classList.add('hidden');
+                return;
+            }
+
+            walletSection.classList.remove('hidden');
+
+            // Update individual buttons
+            if (!walletStatus.googleWallet) {
+                googleBtn.disabled = true;
+                googleBtn.title = 'Google Wallet not configured';
+            }
+
+            if (!walletStatus.samsungWallet) {
+                samsungBtn.disabled = true;
+                samsungBtn.title = 'Samsung Wallet not configured';
+            }
+        }
+
+        // Add to Google Wallet
+        async function addToGoogleWallet() {
+            if (!currentContact) return;
+
+            const btn = document.getElementById('googleWalletBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/wallet/google/${currentContact.id}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || data.error || 'Failed to generate pass');
+                }
+
+                // Open Google Wallet save URL
+                window.open(data.saveUrl, '_blank');
+
+            } catch (err) {
+                console.error('Google Wallet error:', err);
+                alert('Could not add to Google Wallet: ' + err.message);
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = !walletStatus.googleWallet;
+            }
+        }
+
+        // Add to Samsung Wallet
+        async function addToSamsungWallet() {
+            if (!currentContact) return;
+
+            const btn = document.getElementById('samsungWalletBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/wallet/samsung/${currentContact.id}`);
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.message || data.error || 'Failed to generate pass');
+                }
+
+                // Open Samsung Wallet save URL
+                window.open(data.saveUrl, '_blank');
+
+            } catch (err) {
+                console.error('Samsung Wallet error:', err);
+                alert('Could not add to Samsung Wallet: ' + err.message);
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = !walletStatus.samsungWallet;
+            }
+        }
+
+        // Detect if user is on Samsung device
+        function isSamsungDevice() {
+            const ua = navigator.userAgent.toLowerCase();
+            return ua.includes('samsung') || ua.includes('sm-');
+        }
+
+        // Detect if user is on Android (for Google Wallet)
+        function isAndroidDevice() {
+            return /android/i.test(navigator.userAgent);
+        }
 
         // Get contact ID from URL
         function getContactId() {
@@ -765,6 +1011,9 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
             const contactId = getContactId();
+            
+            // Check wallet availability
+            checkWalletStatus();
             
             if (!contactId) {
                 showNotFound();
