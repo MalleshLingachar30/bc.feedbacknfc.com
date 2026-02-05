@@ -105,42 +105,51 @@ async function generateGoogleWalletJWT(contact, company) {
         const uniqueId = `${contact.id.substring(0, 20)}_${Date.now()}`.replace(/[^a-zA-Z0-9_-]/g, '_');
         const objectId = `${issuerId}.${uniqueId}`;
 
-        // Minimal pass object structure (as recommended by Google)
+        // Generic Pass object structure (Google Wallet API)
         const passObject = {
             id: objectId,
             classId: classId,
+            state: 'ACTIVE',
+            heroImage: company.logo ? {
+                sourceUri: {
+                    uri: company.logo.startsWith('http') ? company.logo : `https://bc-feedbacknfc-com.vercel.app${company.logo}`
+                }
+            } : undefined,
             cardTitle: {
                 defaultValue: {
                     language: 'en',
-                    value: contact.nameEn
+                    value: contact.name_en || contact.nameEn || 'Business Card'
                 }
             },
             header: {
                 defaultValue: {
                     language: 'en',
-                    value: company.name || 'Business Card'
+                    value: company.name || company.company_name || 'Business Card'
                 }
             },
             subheader: {
                 defaultValue: {
                     language: 'en',
-                    value: contact.positionEn
+                    value: contact.position_en || contact.positionEn || ''
                 }
             },
             textModulesData: [
                 {
                     id: 'phone',
                     header: 'Phone',
-                    body: contact.phone
+                    body: contact.phone || contact.telephone || ''
                 },
                 {
-                    id: 'email',
+                    id: 'email', 
                     header: 'Email',
-                    body: contact.email
+                    body: contact.email || ''
                 }
             ],
             hexBackgroundColor: '#22C55E'
         };
+        
+        // Remove undefined fields
+        if (!passObject.heroImage) delete passObject.heroImage;
 
         // JWT claims - minimal structure
         const claims = {
