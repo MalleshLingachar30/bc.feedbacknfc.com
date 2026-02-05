@@ -150,6 +150,8 @@ async function generateGoogleWalletJWT(contact, company) {
         
         // Remove undefined fields
         if (!passObject.heroImage) delete passObject.heroImage;
+        
+        console.log('Google Wallet pass object:', JSON.stringify(passObject, null, 2));
 
         // JWT claims - minimal structure
         const claims = {
@@ -1367,10 +1369,17 @@ app.get('/api/wallet/google/:contactId', async (req, res) => {
         };
 
         // Generate JWT
+        console.log('Generating Google Wallet pass for:', {
+            contactId,
+            contactName: contact.nameEn,
+            companyName: company.name,
+            hasLogo: !!company.logo
+        });
+        
         const jwt = await generateGoogleWalletJWT(contact, company);
         const saveUrl = `https://pay.google.com/gp/v/save/${jwt}`;
 
-        console.log(`Google Wallet pass generated for contact: ${contactId}`);
+        console.log(`Google Wallet pass generated successfully for contact: ${contactId}`);
 
         res.json({
             success: true,
