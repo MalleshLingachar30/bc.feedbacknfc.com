@@ -41,18 +41,52 @@ const SAMSUNG_WALLET_CONFIG = {
  */
 async function generateGoogleWalletJWT(contact, company) {
     if (!GOOGLE_WALLET_CONFIG.isConfigured) {
+        console.error('Google Wallet config check failed:', {
+            hasIssuerId: !!GOOGLE_WALLET_CONFIG.issuerId,
+            hasServiceKey: !!GOOGLE_WALLET_CONFIG.serviceAccountKey,
+            issuerIdLength: GOOGLE_WALLET_CONFIG.issuerId?.length,
+            serviceKeyLength: GOOGLE_WALLET_CONFIG.serviceAccountKey?.length
+        });
         throw new Error('Google Wallet not configured');
     }
 
     try {
         // Parse service account credentials
         let credentials;
+        let keyString = GOOGLE_WALLET_CONFIG.serviceAccountKey;
+        
+        // Handle escaped newlines in private key (common issue with env vars)
+        if (keyString.includes('\\n')) {
+            keyString = keyString.replace(/\\n/g, '\n');
+        }
+        
         try {
-            credentials = JSON.parse(GOOGLE_WALLET_CONFIG.serviceAccountKey);
+            credentials = JSON.parse(keyString);
         } catch (e) {
-            // Try reading as file path
-            const keyContent = fs.readFileSync(GOOGLE_WALLET_CONFIG.serviceAccountKey, 'utf8');
-            credentials = JSON.parse(keyContent);
+            console.error('Failed to parse service account key as JSON:', e.message);
+            console.error('Key starts with:', keyString.substring(0, 50));
+            // Try reading as file path (for local development)
+            try {
+                const keyContent = fs.readFileSync(keyString, 'utf8');
+                credentials = JSON.parse(keyContent);
+            } catch (fileError) {
+                throw new Error(`Cannot parse service account key: ${e.message}`);
+            }
+        }
+        
+        // Validate credentials have required fields
+        if (!credentials.client_email || !credentials.private_key) {
+            console.error('Service account key missing required fields:', {
+                hasClientEmail: !!credentials.client_email,
+                hasPrivateKey: !!credentials.private_key,
+                keys: Object.keys(credentials)
+            });
+            throw new Error('Service account key missing client_email or private_key');
+        }
+        
+        // Fix private key newlines if needed
+        if (credentials.private_key.includes('\\n')) {
+            credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
         }
 
         const issuerId = GOOGLE_WALLET_CONFIG.issuerId;
