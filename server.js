@@ -1278,6 +1278,29 @@ app.get('/api/wallet/status', (req, res) => {
     });
 });
 
+// Debug endpoint to check wallet configuration (remove in production if sensitive)
+app.get('/api/wallet/debug', (req, res) => {
+    res.json({
+        google: {
+            isConfigured: GOOGLE_WALLET_CONFIG.isConfigured,
+            hasIssuerId: !!GOOGLE_WALLET_CONFIG.issuerId,
+            issuerIdLength: GOOGLE_WALLET_CONFIG.issuerId?.length || 0,
+            hasServiceKey: !!GOOGLE_WALLET_CONFIG.serviceAccountKey,
+            serviceKeyLength: GOOGLE_WALLET_CONFIG.serviceAccountKey?.length || 0,
+            serviceKeyPreview: GOOGLE_WALLET_CONFIG.serviceAccountKey ? 
+                GOOGLE_WALLET_CONFIG.serviceAccountKey.substring(0, 30) + '...' : 'empty'
+        },
+        samsung: {
+            isConfigured: SAMSUNG_WALLET_CONFIG.isConfigured,
+            hasPartnerId: !!SAMSUNG_WALLET_CONFIG.partnerId,
+            hasCardId: !!SAMSUNG_WALLET_CONFIG.cardId
+        },
+        env: {
+            nodeEnv: process.env.NODE_ENV || 'not set'
+        }
+    });
+});
+
 // Generate Google Wallet pass link (public - for contact page)
 app.get('/api/wallet/google/:contactId', async (req, res) => {
     try {
