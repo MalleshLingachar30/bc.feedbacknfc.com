@@ -1321,9 +1321,9 @@ app.get('/api/wallet/samsung/:contactId', async (req, res) => {
         // Generate cData token
         const cDataToken = await generateSamsungWalletToken(contact, company);
         
-        // Samsung Wallet deep link format
-        // Note: The actual URL format may vary based on Samsung's latest API
-        const saveUrl = `https://swp.samsungwallet.com/atw/v1/${SAMSUNG_WALLET_CONFIG.partnerId}?cdata=${encodeURIComponent(cDataToken)}`;
+        // Samsung Wallet deep link format (Data Transmit Link - ATW v3)
+        // Format: https://a.swallet.link/atw/v3/{cardId}#Clip?cdata={cdata}
+        const saveUrl = `https://a.swallet.link/atw/v3/${SAMSUNG_WALLET_CONFIG.cardId}#Clip?cdata=${encodeURIComponent(cDataToken)}`;
 
         console.log(`Samsung Wallet pass generated for contact: ${contactId}`);
 
