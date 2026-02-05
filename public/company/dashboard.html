@@ -3971,11 +3971,17 @@ Generated on: ${new Date().toLocaleDateString()}
             const actions = document.getElementById(side + 'Actions');
             const uploadBox = document.getElementById(side + 'UploadBox');
             
+            // Check if elements exist before accessing them
+            if (!placeholder || !previewContainer || !preview) {
+                console.log('Card preview elements not found for:', side);
+                return;
+            }
+            
             placeholder.style.display = 'none';
             previewContainer.style.display = 'block';
             preview.src = src;
-            actions.style.display = 'flex';
-            uploadBox.classList.add('has-image');
+            if (actions) actions.style.display = 'flex';
+            if (uploadBox) uploadBox.classList.add('has-image');
         }
 
         function removeCardDesign(side) {
@@ -3986,12 +3992,18 @@ Generated on: ${new Date().toLocaleDateString()}
             const uploadBox = document.getElementById(side + 'UploadBox');
             const input = document.getElementById(side + 'Input');
             
+            // Check if elements exist before accessing them
+            if (!placeholder || !previewContainer) {
+                console.log('Card design elements not found for:', side);
+                return;
+            }
+            
             placeholder.style.display = 'flex';
             previewContainer.style.display = 'none';
-            preview.src = '';
-            actions.style.display = 'none';
-            uploadBox.classList.remove('has-image');
-            input.value = '';
+            if (preview) preview.src = '';
+            if (actions) actions.style.display = 'none';
+            if (uploadBox) uploadBox.classList.remove('has-image');
+            if (input) input.value = '';
             
             cardDesigns[side] = null;
             cardDesigns[side + 'Changed'] = true;
