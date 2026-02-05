@@ -761,6 +761,23 @@
             position: relative;
         }
 
+        /* NFC Icon - Top Left of Front Card */
+        .nfc-icon {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 24px;
+            height: 24px;
+            z-index: 10;
+            opacity: 0.7;
+        }
+
+        .nfc-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
         /* Front Card */
         .bc-front {
             display: flex;
@@ -2049,6 +2066,10 @@
                     <!-- Front Card -->
                     <p class="preview-label">Front</p>
                     <div class="bc-card bc-front" id="cardFront">
+                        <!-- NFC Icon -->
+                        <div class="nfc-icon">
+                            <img src="/logos/nfc-icon.png" alt="NFC">
+                        </div>
                         <div class="bc-left">
                             <div class="bc-logo-block">
                                 <img class="bc-logo-icon" id="bcLogoIcon" src="/logos/masdar-logo-colored.png" alt="Logo">
@@ -2113,6 +2134,10 @@
                     <!-- Front Card - Masdar Official Template -->
                     <p class="preview-label">Front (Official Masdar Template)</p>
                     <div class="bc-card bc-card-t2 bc-front-t2" id="cardFrontT2">
+                        <!-- NFC Icon -->
+                        <div class="nfc-icon">
+                            <img src="/logos/nfc-icon.png" alt="NFC">
+                        </div>
                         <!-- Left: Logo section -->
                         <div class="t2-logo-section">
                             <div class="t2-logo-wrapper">
