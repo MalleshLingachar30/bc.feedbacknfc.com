@@ -14,7 +14,7 @@ require('dotenv').config();
 const GOOGLE_WALLET_CONFIG = {
     issuerId: process.env.GOOGLE_WALLET_ISSUER_ID || '',
     serviceAccountKey: process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_KEY || '',
-    classId: 'BusinessCard', // Class name created in Google Wallet Console
+    classId: process.env.GOOGLE_WALLET_CLASS_ID || 'BusinessCard', // Class name created in Google Wallet Console
     get isConfigured() {
         return !!(this.issuerId && this.serviceAccountKey);
     }
@@ -1294,11 +1294,11 @@ app.get('/api/wallet/debug', (req, res) => {
         google: {
             isConfigured: GOOGLE_WALLET_CONFIG.isConfigured,
             hasIssuerId: !!GOOGLE_WALLET_CONFIG.issuerId,
-            issuerIdLength: GOOGLE_WALLET_CONFIG.issuerId?.length || 0,
+            issuerId: GOOGLE_WALLET_CONFIG.issuerId || 'not set',
+            classId: GOOGLE_WALLET_CONFIG.classId,
+            fullClassId: `${GOOGLE_WALLET_CONFIG.issuerId}.${GOOGLE_WALLET_CONFIG.classId}`,
             hasServiceKey: !!GOOGLE_WALLET_CONFIG.serviceAccountKey,
-            serviceKeyLength: GOOGLE_WALLET_CONFIG.serviceAccountKey?.length || 0,
-            serviceKeyPreview: GOOGLE_WALLET_CONFIG.serviceAccountKey ? 
-                GOOGLE_WALLET_CONFIG.serviceAccountKey.substring(0, 30) + '...' : 'empty'
+            serviceKeyLength: GOOGLE_WALLET_CONFIG.serviceAccountKey?.length || 0
         },
         samsung: {
             isConfigured: SAMSUNG_WALLET_CONFIG.isConfigured,
