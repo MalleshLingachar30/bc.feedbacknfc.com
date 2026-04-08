@@ -397,8 +397,9 @@
         }
 
         function drawContainedLogo(ctx, image, x, y, boxSize, padding = 0) {
+            const sourceBounds = getLogoBounds(image);
             const availableSize = Math.max(boxSize - padding * 2, 0);
-            const imageAspectRatio = image.width / image.height;
+            const imageAspectRatio = sourceBounds.width / sourceBounds.height;
 
             let drawWidth = availableSize;
             let drawHeight = availableSize;
@@ -412,7 +413,85 @@
             const drawX = x + (boxSize - drawWidth) / 2;
             const drawY = y + (boxSize - drawHeight) / 2;
 
-            ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+            ctx.drawImage(
+                image,
+                sourceBounds.x,
+                sourceBounds.y,
+                sourceBounds.width,
+                sourceBounds.height,
+                drawX,
+                drawY,
+                drawWidth,
+                drawHeight
+            );
+        }
+
+        function getLogoBounds(image) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = image.width;
+            tempCanvas.height = image.height;
+
+            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+            tempCtx.drawImage(image, 0, 0);
+
+            const { data, width, height } = tempCtx.getImageData(0, 0, image.width, image.height);
+            const colorBounds = createEmptyBounds();
+            const alphaBounds = createEmptyBounds();
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const index = (y * width + x) * 4;
+                    const alpha = data[index + 3];
+
+                    if (alpha <= 16) {
+                        continue;
+                    }
+
+                    expandBounds(alphaBounds, x, y);
+
+                    const red = data[index];
+                    const green = data[index + 1];
+                    const blue = data[index + 2];
+                    const isNearWhite = red > 245 && green > 245 && blue > 245;
+
+                    if (!isNearWhite) {
+                        expandBounds(colorBounds, x, y);
+                    }
+                }
+            }
+
+            return finalizeBounds(colorBounds)
+                || finalizeBounds(alphaBounds)
+                || { x: 0, y: 0, width: image.width, height: image.height };
+        }
+
+        function createEmptyBounds() {
+            return {
+                minX: Infinity,
+                minY: Infinity,
+                maxX: -Infinity,
+                maxY: -Infinity
+            };
+        }
+
+        function expandBounds(bounds, x, y) {
+            bounds.minX = Math.min(bounds.minX, x);
+            bounds.minY = Math.min(bounds.minY, y);
+            bounds.maxX = Math.max(bounds.maxX, x);
+            bounds.maxY = Math.max(bounds.maxY, y);
+        }
+
+        function finalizeBounds(bounds) {
+            if (!Number.isFinite(bounds.minX)) {
+                return null;
+            }
+
+            return {
+                x: bounds.minX,
+                y: bounds.minY,
+                width: bounds.maxX - bounds.minX + 1,
+                height: bounds.maxY - bounds.minY + 1
+            };
         }
 
         function drawFinderPattern(ctx, x, y, dotSize, size) {
