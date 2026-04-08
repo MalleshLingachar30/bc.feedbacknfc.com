@@ -3190,15 +3190,16 @@
                 const logo = new Image();
                 logo.crossOrigin = 'anonymous';
                 logo.onload = function() {
-                    const logoSize = size * 0.22;
+                    const logoSize = size * 0.26;
                     const logoX = (size - logoSize) / 2;
                     const logoY = (size - logoSize) / 2;
+                    const badgePadding = 2;
                     
                     ctx.fillStyle = '#FFFFFF';
-                    roundRect(ctx, logoX - 4, logoY - 4, logoSize + 8, logoSize + 8, 5);
+                    roundRect(ctx, logoX - badgePadding, logoY - badgePadding, logoSize + badgePadding * 2, logoSize + badgePadding * 2, 5);
                     ctx.fill();
                     
-                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 3);
+                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 1);
                     resolve(canvas);
                 };
                 logo.onerror = function() {

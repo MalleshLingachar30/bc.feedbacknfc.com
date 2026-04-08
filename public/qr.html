@@ -358,16 +358,17 @@
                 const logo = new Image();
                 logo.crossOrigin = 'anonymous';
                 logo.onload = function() {
-                    const logoSize = size * 0.22;
+                    const logoSize = size * 0.26;
                     const logoX = (size - logoSize) / 2;
                     const logoY = (size - logoSize) / 2;
+                    const badgePadding = 4;
                     
                     // White background for logo
                     ctx.fillStyle = '#FFFFFF';
-                    roundRect(ctx, logoX - 8, logoY - 8, logoSize + 16, logoSize + 16, 10);
+                    roundRect(ctx, logoX - badgePadding, logoY - badgePadding, logoSize + badgePadding * 2, logoSize + badgePadding * 2, 10);
                     ctx.fill();
                     
-                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 6);
+                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 2);
                     
                     resolve(canvas);
                 };
@@ -375,15 +376,16 @@
                     // Try fallback logo
                     const fallbackLogo = new Image();
                     fallbackLogo.onload = function() {
-                        const logoSize = size * 0.22;
+                        const logoSize = size * 0.26;
                         const logoX = (size - logoSize) / 2;
                         const logoY = (size - logoSize) / 2;
+                        const badgePadding = 4;
                         
                         ctx.fillStyle = '#FFFFFF';
-                        roundRect(ctx, logoX - 8, logoY - 8, logoSize + 16, logoSize + 16, 10);
+                        roundRect(ctx, logoX - badgePadding, logoY - badgePadding, logoSize + badgePadding * 2, logoSize + badgePadding * 2, 10);
                         ctx.fill();
                         
-                        drawContainedLogo(ctx, fallbackLogo, logoX, logoY, logoSize, 6);
+                        drawContainedLogo(ctx, fallbackLogo, logoX, logoY, logoSize, 2);
                         resolve(canvas);
                     };
                     fallbackLogo.onerror = function() {
