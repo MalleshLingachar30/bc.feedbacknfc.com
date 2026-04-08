@@ -79,6 +79,8 @@
         }
 
         #qrCode canvas {
+            width: min(320px, 100%);
+            height: auto;
             border-radius: 12px;
         }
 
@@ -299,7 +301,7 @@
             document.getElementById('qrCard').style.display = 'block';
         }
 
-        function generateStyledQR(text, logoUrl) {
+        function generateStyledQR(text, logoUrl, options = {}) {
             return new Promise((resolve, reject) => {
                 // Generate QR code data
                 const qr = qrcode(0, 'H');
@@ -307,7 +309,7 @@
                 qr.make();
                 
                 const moduleCount = qr.getModuleCount();
-                const size = 320;
+                const size = options.renderSize || 960;
                 const dotSize = size / (moduleCount + 8); // Add margin
                 const margin = dotSize * 4;
                 
@@ -315,9 +317,11 @@
                 canvas.width = size;
                 canvas.height = size;
                 const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
                 
                 // Background
-                ctx.fillStyle = '#F5F0E8';
+                ctx.fillStyle = options.backgroundColor || '#F5F0E8';
                 ctx.fillRect(0, 0, size, size);
                 
                 // Draw QR modules as dots
@@ -358,17 +362,14 @@
                 const logo = new Image();
                 logo.crossOrigin = 'anonymous';
                 logo.onload = function() {
-                    const logoSize = size * 0.26;
+                    const logoSize = size * (options.logoScale || 0.21);
                     const logoX = (size - logoSize) / 2;
                     const logoY = (size - logoSize) / 2;
-                    const badgePadding = 4;
+                    const badgePadding = Math.max(size * 0.012, 8);
                     
-                    // White background for logo
-                    ctx.fillStyle = '#FFFFFF';
-                    roundRect(ctx, logoX - badgePadding, logoY - badgePadding, logoSize + badgePadding * 2, logoSize + badgePadding * 2, 10);
-                    ctx.fill();
+                    drawLogoBadge(ctx, logoX, logoY, logoSize, badgePadding, size * 0.03);
                     
-                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 2);
+                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, Math.max(size * 0.01, 4), options.logoOpacity || 0.88);
                     
                     resolve(canvas);
                 };
@@ -376,16 +377,14 @@
                     // Try fallback logo
                     const fallbackLogo = new Image();
                     fallbackLogo.onload = function() {
-                        const logoSize = size * 0.26;
+                        const logoSize = size * (options.logoScale || 0.21);
                         const logoX = (size - logoSize) / 2;
                         const logoY = (size - logoSize) / 2;
-                        const badgePadding = 4;
+                        const badgePadding = Math.max(size * 0.012, 8);
                         
-                        ctx.fillStyle = '#FFFFFF';
-                        roundRect(ctx, logoX - badgePadding, logoY - badgePadding, logoSize + badgePadding * 2, logoSize + badgePadding * 2, 10);
-                        ctx.fill();
+                        drawLogoBadge(ctx, logoX, logoY, logoSize, badgePadding, size * 0.03);
                         
-                        drawContainedLogo(ctx, fallbackLogo, logoX, logoY, logoSize, 2);
+                        drawContainedLogo(ctx, fallbackLogo, logoX, logoY, logoSize, Math.max(size * 0.01, 4), options.logoOpacity || 0.88);
                         resolve(canvas);
                     };
                     fallbackLogo.onerror = function() {
@@ -398,7 +397,22 @@
             });
         }
 
-        function drawContainedLogo(ctx, image, x, y, boxSize, padding = 0) {
+        function drawLogoBadge(ctx, x, y, boxSize, padding, radius) {
+            ctx.save();
+            ctx.shadowColor = 'rgba(15, 23, 42, 0.08)';
+            ctx.shadowBlur = padding * 2;
+            ctx.shadowOffsetY = Math.max(1, padding * 0.35);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+            roundRect(ctx, x - padding, y - padding, boxSize + padding * 2, boxSize + padding * 2, radius);
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+            ctx.strokeStyle = 'rgba(183, 152, 82, 0.14)';
+            ctx.lineWidth = Math.max(1, padding * 0.18);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawContainedLogo(ctx, image, x, y, boxSize, padding = 0, opacity = 1) {
             const sourceBounds = getLogoBounds(image);
             const availableSize = Math.max(boxSize - padding * 2, 0);
             const imageAspectRatio = sourceBounds.width / sourceBounds.height;
@@ -415,6 +429,8 @@
             const drawX = x + (boxSize - drawWidth) / 2;
             const drawY = y + (boxSize - drawHeight) / 2;
 
+            ctx.save();
+            ctx.globalAlpha = opacity;
             ctx.drawImage(
                 image,
                 sourceBounds.x,
@@ -426,6 +442,7 @@
                 drawWidth,
                 drawHeight
             );
+            ctx.restore();
         }
 
         function getLogoBounds(image) {
@@ -558,7 +575,11 @@
                 
                 // Generate styled QR Code
                 const logoUrl = currentContact.companyLogo || '/logo.png';
-                generatedCanvas = await generateStyledQR(contactUrl, logoUrl);
+                generatedCanvas = await generateStyledQR(contactUrl, logoUrl, {
+                    renderSize: 960,
+                    logoScale: 0.21,
+                    logoOpacity: 0.88
+                });
                 
                 document.getElementById('qrCode').appendChild(generatedCanvas);
                 showQRCard();

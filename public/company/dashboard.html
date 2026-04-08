@@ -2903,41 +2903,14 @@
             btn.disabled = true;
             
             try {
-                // Generate QR code using qrcode-generator library
                 const contactUrl = `${window.location.origin}/c/${contactId}`;
-                const qr = qrcode(0, 'M');
-                qr.addData(contactUrl);
-                qr.make();
-                
-                // Create canvas for high-res QR
-                const canvas = document.createElement('canvas');
-                const size = 400;
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext('2d');
-                
-                // White background
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(0, 0, size, size);
-                
-                // Draw QR code
-                const moduleCount = qr.getModuleCount();
-                const cellSize = (size - 40) / moduleCount;
-                const offset = 20;
-                
-                ctx.fillStyle = '#000000';
-                for (let row = 0; row < moduleCount; row++) {
-                    for (let col = 0; col < moduleCount; col++) {
-                        if (qr.isDark(row, col)) {
-                            ctx.fillRect(
-                                offset + col * cellSize,
-                                offset + row * cellSize,
-                                cellSize,
-                                cellSize
-                            );
-                        }
-                    }
-                }
+                const logoUrl = cardDesigns.logo || '/logos/masdar-logo-colored.png';
+                const canvas = await generateStyledQR(contactUrl, logoUrl, {
+                    renderSize: 1200,
+                    backgroundColor: '#FFFFFF',
+                    logoScale: 0.18,
+                    logoOpacity: 0.84
+                });
                 
                 // Download
                 const link = document.createElement('a');
@@ -3118,7 +3091,11 @@
             const contactUrl = `${window.location.origin}/c/${id}`;
             const logoUrl = cardDesigns.logo || '/logos/masdar-logo-colored.png';
             
-            generateStyledQR(contactUrl, logoUrl).then(canvas => {
+            generateStyledQR(contactUrl, logoUrl, {
+                renderSize: 900,
+                logoScale: 0.2,
+                logoOpacity: 0.88
+            }).then(canvas => {
                 // Update Template 1 QR code
                 const qrImg = document.getElementById('bcQrCode');
                 if (qrImg) {
@@ -3133,7 +3110,7 @@
             });
         }
 
-        function generateStyledQR(text, logoUrl) {
+        function generateStyledQR(text, logoUrl, options = {}) {
             return new Promise((resolve, reject) => {
                 // Generate QR code data
                 const qr = qrcode(0, 'H');
@@ -3141,7 +3118,7 @@
                 qr.make();
                 
                 const moduleCount = qr.getModuleCount();
-                const size = 150;
+                const size = options.renderSize || 900;
                 const dotSize = size / (moduleCount + 8);
                 const margin = dotSize * 4;
                 
@@ -3149,9 +3126,11 @@
                 canvas.width = size;
                 canvas.height = size;
                 const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
                 
                 // Background
-                ctx.fillStyle = '#F5F0E8';
+                ctx.fillStyle = options.backgroundColor || '#F5F0E8';
                 ctx.fillRect(0, 0, size, size);
                 
                 // Draw QR modules as dots
@@ -3190,16 +3169,14 @@
                 const logo = new Image();
                 logo.crossOrigin = 'anonymous';
                 logo.onload = function() {
-                    const logoSize = size * 0.26;
+                    const logoSize = size * (options.logoScale || 0.2);
                     const logoX = (size - logoSize) / 2;
                     const logoY = (size - logoSize) / 2;
-                    const badgePadding = 2;
+                    const badgePadding = Math.max(size * 0.01, 6);
                     
-                    ctx.fillStyle = '#FFFFFF';
-                    roundRect(ctx, logoX - badgePadding, logoY - badgePadding, logoSize + badgePadding * 2, logoSize + badgePadding * 2, 5);
-                    ctx.fill();
+                    drawLogoBadge(ctx, logoX, logoY, logoSize, badgePadding, size * 0.024);
                     
-                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 1);
+                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, Math.max(size * 0.008, 3), options.logoOpacity || 0.88);
                     resolve(canvas);
                 };
                 logo.onerror = function() {
@@ -3209,7 +3186,22 @@
             });
         }
 
-        function drawContainedLogo(ctx, image, x, y, boxSize, padding = 0) {
+        function drawLogoBadge(ctx, x, y, boxSize, padding, radius) {
+            ctx.save();
+            ctx.shadowColor = 'rgba(15, 23, 42, 0.08)';
+            ctx.shadowBlur = padding * 1.8;
+            ctx.shadowOffsetY = Math.max(1, padding * 0.35);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+            roundRect(ctx, x - padding, y - padding, boxSize + padding * 2, boxSize + padding * 2, radius);
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+            ctx.strokeStyle = 'rgba(183, 152, 82, 0.14)';
+            ctx.lineWidth = Math.max(1, padding * 0.18);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawContainedLogo(ctx, image, x, y, boxSize, padding = 0, opacity = 1) {
             const sourceBounds = getLogoBounds(image);
             const availableSize = Math.max(boxSize - padding * 2, 0);
             const imageAspectRatio = sourceBounds.width / sourceBounds.height;
@@ -3226,6 +3218,8 @@
             const drawX = x + (boxSize - drawWidth) / 2;
             const drawY = y + (boxSize - drawHeight) / 2;
 
+            ctx.save();
+            ctx.globalAlpha = opacity;
             ctx.drawImage(
                 image,
                 sourceBounds.x,
@@ -3237,6 +3231,7 @@
                 drawWidth,
                 drawHeight
             );
+            ctx.restore();
         }
 
         function getLogoBounds(image) {
