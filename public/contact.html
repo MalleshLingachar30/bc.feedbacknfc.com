@@ -22,6 +22,10 @@
             flex-direction: column;
         }
 
+        body.modal-open {
+            overflow: hidden;
+        }
+
         .container {
             flex: 1;
             display: flex;
@@ -356,6 +360,8 @@
             justify-content: center;
             padding: 1rem;
             backdrop-filter: blur(4px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
         }
 
         .modal-overlay.active {
@@ -364,12 +370,15 @@
 
         .lead-modal {
             background: #FFFFFF;
-            border-radius: 20px;
+            border-radius: 24px;
             width: 100%;
             max-width: 400px;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             animation: modalSlideIn 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            max-height: min(88vh, 720px);
         }
 
         @keyframes modalSlideIn {
@@ -388,6 +397,35 @@
             text-align: center;
             background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
             color: white;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.9rem;
+            right: 0.9rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
+        }
+
+        .modal-close svg {
+            width: 18px;
+            height: 18px;
         }
 
         .modal-header-icon {
@@ -419,6 +457,9 @@
 
         .modal-body {
             padding: 1.5rem;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
         }
 
         .lead-form-group {
@@ -493,6 +534,11 @@
         .modal-buttons {
             display: flex;
             gap: 0.75rem;
+            position: sticky;
+            bottom: 0;
+            padding-top: 0.9rem;
+            padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px));
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 22%, #FFFFFF 100%);
         }
 
         .modal-btn {
@@ -594,6 +640,105 @@
 
         .lead-form.hidden {
             display: none;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.25rem 0.9rem 2rem;
+            }
+
+            .profile-header {
+                padding: 1.5rem 0.5rem;
+            }
+
+            .modal-overlay {
+                align-items: flex-end;
+                padding: 0;
+                background: rgba(15, 23, 42, 0.42);
+            }
+
+            .lead-modal {
+                max-width: none;
+                max-height: min(92vh, 100svh - 12px);
+                border-radius: 24px 24px 0 0;
+                margin-top: auto;
+                box-shadow: 0 -18px 48px rgba(15, 23, 42, 0.24);
+            }
+
+            .modal-header {
+                padding: 1.15rem 1.15rem 1rem;
+            }
+
+            .modal-header::before {
+                content: '';
+                width: 52px;
+                height: 5px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.42);
+                position: absolute;
+                top: 0.6rem;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .modal-header-icon {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 0.75rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.45rem;
+                line-height: 1.15;
+            }
+
+            .modal-header p {
+                font-size: 0.92rem;
+                max-width: 24ch;
+                margin: 0 auto;
+            }
+
+            .modal-body {
+                padding: 1rem 1rem calc(0.9rem + env(safe-area-inset-bottom, 0px));
+            }
+
+            .lead-form-group {
+                margin-bottom: 0.85rem;
+            }
+
+            .lead-form-group input {
+                padding: 0.95rem 1rem;
+                font-size: 16px;
+                border-radius: 12px;
+            }
+
+            .consent-text {
+                margin-bottom: 0.5rem;
+                font-size: 0.82rem;
+            }
+
+            .modal-buttons {
+                gap: 0.65rem;
+                padding-top: 0.75rem;
+                padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+            }
+
+            .modal-btn {
+                min-height: 52px;
+                border-radius: 14px;
+                font-size: 0.98rem;
+            }
+
+            .lead-success {
+                padding: 1.5rem 0 0.5rem;
+            }
+
+            .lead-success .close-btn {
+                width: 100%;
+                min-height: 52px;
+                border-radius: 14px;
+                margin-top: 0.25rem;
+            }
         }
     </style>
 </head>
@@ -740,6 +885,12 @@
     <div class="modal-overlay" id="leadModal">
         <div class="lead-modal">
             <div class="modal-header">
+                <button type="button" class="modal-close" onclick="closeLeadModal()" aria-label="Close form">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6 6 18"/>
+                        <path d="m6 6 12 12"/>
+                    </svg>
+                </button>
                 <div class="modal-header-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -759,13 +910,13 @@
                     </div>
                     
                     <div class="lead-form-group">
-                        <label>Email Address <span class="required">*</span></label>
+                        <label>Email Address</label>
                         <input type="email" id="leadEmail" name="email" autocomplete="email" placeholder="john@example.com">
                         <p class="field-hint" id="contactHint">Please provide email or phone number</p>
                     </div>
                     
                     <div class="lead-form-group">
-                        <label>Phone Number <span class="required">*</span></label>
+                        <label>Phone Number</label>
                         <input type="tel" id="leadPhone" name="phone" autocomplete="tel" placeholder="+971 50 123 4567">
                     </div>
                     
@@ -998,11 +1149,13 @@
             
             // Show modal
             document.getElementById('leadModal').classList.add('active');
+            document.body.classList.add('modal-open');
         }
 
         // Close lead modal
         function closeLeadModal() {
             document.getElementById('leadModal').classList.remove('active');
+            document.body.classList.remove('modal-open');
             if (currentContact) {
                 markLeadModalShown(currentContact.id);
             }
@@ -1165,6 +1318,7 @@
                 // Show success state
                 document.getElementById('leadForm').classList.add('hidden');
                 document.getElementById('leadSuccess').classList.add('active');
+                document.body.classList.add('modal-open');
                 
                 // Mark as shown
                 markLeadModalShown(currentContact.id);
