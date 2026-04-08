@@ -367,8 +367,7 @@
                     roundRect(ctx, logoX - 8, logoY - 8, logoSize + 16, logoSize + 16, 10);
                     ctx.fill();
                     
-                    // Draw logo
-                    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+                    drawContainedLogo(ctx, logo, logoX, logoY, logoSize, 6);
                     
                     resolve(canvas);
                 };
@@ -384,7 +383,7 @@
                         roundRect(ctx, logoX - 8, logoY - 8, logoSize + 16, logoSize + 16, 10);
                         ctx.fill();
                         
-                        ctx.drawImage(fallbackLogo, logoX, logoY, logoSize, logoSize);
+                        drawContainedLogo(ctx, fallbackLogo, logoX, logoY, logoSize, 6);
                         resolve(canvas);
                     };
                     fallbackLogo.onerror = function() {
@@ -395,6 +394,25 @@
                 };
                 logo.src = logoUrl;
             });
+        }
+
+        function drawContainedLogo(ctx, image, x, y, boxSize, padding = 0) {
+            const availableSize = Math.max(boxSize - padding * 2, 0);
+            const imageAspectRatio = image.width / image.height;
+
+            let drawWidth = availableSize;
+            let drawHeight = availableSize;
+
+            if (imageAspectRatio > 1) {
+                drawHeight = availableSize / imageAspectRatio;
+            } else {
+                drawWidth = availableSize * imageAspectRatio;
+            }
+
+            const drawX = x + (boxSize - drawWidth) / 2;
+            const drawY = y + (boxSize - drawHeight) / 2;
+
+            ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
         }
 
         function drawFinderPattern(ctx, x, y, dotSize, size) {
